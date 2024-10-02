@@ -48,8 +48,8 @@ public class Member {
     private UserStatus userStatus;
 
     // 프로필 이미지 파일을 경로로 저장하는 방식
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Column(name = "profile_image")
+    private String profileImage;
     private String role;
 
     public MemberDto toDto() {
@@ -61,7 +61,7 @@ public class Member {
                 .nickname(this.nickname)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
-                .profileImageUrl(this.profileImageUrl)
+                .profileImage(this.profileImage)
                 .role(this.role)
                 .build();
     }
