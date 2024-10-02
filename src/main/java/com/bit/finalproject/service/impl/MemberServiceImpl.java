@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
         // 일치하는 값이 있다면 Email의 회원정보를 member객체에 저장한다.
         // 일치하는 값이 없다면 orEleseThrow()로 예외처리한다.
         Member member = memberRepository.findByEmail(memberDto.getEmail()).orElseThrow(
-                () -> new RuntimeException("email not exist")
+                () -> new RuntimeException("Email not exist")
         );
 
         // 사용자가 입력한 password값과 DB에 저장되어있는 암호화된 password값을 비교한다.
@@ -66,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
         // 권한, 활동중, 기본프로필이미지 설정
         memberDto.setRole("ROLE_USER");
         memberDto.setUserStatus(UserStatus.ACTIVE);
-        memberDto.setProfileImage("/images/profile.png");
+        memberDto.setProfileImageUrl("/images/profile.png");
 
         // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
         memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
@@ -86,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Map<String, String> emailCheck(String email) {
 
+        System.out.println("3");
         Map<String, String> emailCheckMap = new HashMap<>();
 
         long emailCheck = memberRepository.countByEmail(email);
@@ -96,6 +97,7 @@ public class MemberServiceImpl implements MemberService {
             emailCheckMap.put("emailCheckMsg", "invalid email");
         }
 
+        System.out.println("4");
         return emailCheckMap;
     }
 
