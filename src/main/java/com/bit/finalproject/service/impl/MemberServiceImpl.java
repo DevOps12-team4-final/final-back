@@ -1,9 +1,12 @@
 package com.bit.finalproject.service.impl;
 
+import com.bit.finalproject.dto.MemberDtailDto;
 import com.bit.finalproject.dto.MemberDto;
 import com.bit.finalproject.entity.Member;
+import com.bit.finalproject.entity.MemberDtail;
 import com.bit.finalproject.entity.UserStatus;
 import com.bit.finalproject.jwt.JwtProvider;
+import com.bit.finalproject.repository.MemberDtailRepository;
 import com.bit.finalproject.repository.MemberRepository;
 import com.bit.finalproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final MemberDtailRepository memberDtailRepository;
 
     @Override
     public MemberDto login(MemberDto memberDto) {
@@ -111,6 +115,30 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return nicknameCheckMap;
+    }
+
+    @Override
+    public MemberDtailDto getmypage(Long UserId) {
+        MemberDtail memberDtail=  memberDtailRepository.findById(UserId).orElseThrow();
+
+        MemberDtailDto ReMemberDtailDto = memberDtail.toDto();
+
+
+
+
+        return ReMemberDtailDto ;
+    }
+
+    @Override
+    public MemberDtailDto getprofilepage(Long UserId) {
+        MemberDtail memberDtail=  memberDtailRepository.findById(UserId).orElseThrow();
+
+        MemberDtailDto ReMemberDtailDto = memberDtail.toDto();
+
+
+
+
+        return ReMemberDtailDto ;
     }
 
 }

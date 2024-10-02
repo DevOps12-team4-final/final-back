@@ -1,12 +1,15 @@
 package com.bit.finalproject.controller;
 
+import com.bit.finalproject.dto.MemberDtailDto;
 import com.bit.finalproject.dto.MemberDto;
 import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -133,4 +136,63 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
+
+    @GetMapping("/my_page")
+    public ResponseEntity<?> getMyPage(Authentication authentication) {
+        ResponseDto<MemberDtailDto> responseDto = new ResponseDto<>();
+
+        try {
+            // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long memberId = userDetails.getMember().getUserId(); // 사용자의 ID 가져오기
+
+            // 사용자 ID를 이용해 마이페이지 정보 조회
+            MemberDtailDto memberDtailDto = memberService.getmypage(memberId);
+
+            // 성공 응답 설정
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(memberDtailDto);
+            return ResponseEntity.ok(responseDto);
+
+        } catch (Exception e) {
+            // 에러 로그 출력 및 실패 응답 설정
+            log.error("Page Loading error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+    @GetMapping("/ProfilePage/{UserId}")
+    public ResponseEntity<?> getProfilePage(@PathVariable("UserId") long UserId) {
+        ResponseDto<MemberDtailDto> responseDto = new ResponseDto<>();
+
+        try {
+            // 전달된 UserId를 이용해 사용자 프로필 정보 조회
+            MemberDtailDto memberDtailDto = memberService.getprofilepage(UserId);
+
+            // 성공 응답 설정
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(memberDtailDto);
+            return ResponseEntity.ok(responseDto);
+
+        } catch (Exception e) {
+            // 에러 로그 출력 및 실패 응답 설정
+            log.error("Profile Loading error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+//    @PatchMapping
+
+
+
+
+
+
+
 }
