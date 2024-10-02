@@ -24,7 +24,7 @@ public class MemberDto {
     private String nickname;
     private LocalDateTime lastLoginDate;
     private UserStatus userStatus;
-    private String profileImageUrl;
+    private String profileImage;
     private String role;
     private String token;
 
@@ -37,7 +37,7 @@ public class MemberDto {
                 .nickname(this.nickname)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
-                .profileImageUrl(this.profileImageUrl)
+                .profileImage(this.profileImage)
                 .role(this.role)
                 .build();
     }
