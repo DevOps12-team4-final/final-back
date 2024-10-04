@@ -10,10 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -187,12 +189,36 @@ public class MemberController {
         }
     }
 
-//    @PatchMapping
+    @PatchMapping
+    public ResponseEntity<?> modify(@RequestPart("memberDto") MemberDto memberDto,
+                                    @RequestPart("memberDtailDto") MemberDtailDto memberDtailDto,
+                                    @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                    Authentication authentication) {
+        ResponseDto<MemberDto> responseDto = new ResponseDto<>();
+
+        try {
+            log.info("modify memberDto: {}", memberDto);
+            log.info("modify memberDtailDto: {}", memberDtailDto);
 
 
 
 
 
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+
+            return ResponseEntity.ok(responseDto);
+        } catch(Exception e) {
+            log.error("modify error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+
+
+    
 
 
 }

@@ -29,7 +29,6 @@ public class Member {
             generator = "memberSeqGenerator"
     )
     private Long UserId;
-
     @Column(unique=true)
     private String email;
     private String password;

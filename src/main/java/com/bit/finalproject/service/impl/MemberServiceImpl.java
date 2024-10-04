@@ -27,6 +27,18 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDtailRepository memberDtailRepository;
 
     @Override
+    public MemberDto modifymember(MemberDto memberDto) {
+        Member member = memberDto.toEntity();
+        return memberRepository.save(member).toDto();
+
+    }
+
+    @Override
+    public MemberDtailDto modifymemberDtail(Member member, MemberDtailDto memberDtailDto) {
+        MemberDtail memberDtail = memberDtailDto.toEntity(member);
+        return memberDtailRepository.save(memberDtail).toDto();    }
+
+    @Override
     public MemberDto login(MemberDto memberDto) {
 
         // memberRepository.findByEmail(memberDto.getEmail()) -> DB에 입력한 Email과 일치하는 값이 있는지 확인한다.
@@ -129,14 +141,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDtailDto getprofilepage(Long UserId) {
+        Member member=  memberRepository.findById(UserId).orElseThrow();
         MemberDtail memberDtail=  memberDtailRepository.findById(UserId).orElseThrow();
 
         MemberDtailDto ReMemberDtailDto = memberDtail.toDto();
 
-
+        MemberDto ReMemberDto = member.toDto();
 
 
         return ReMemberDtailDto ;
     }
+
+
 
 }
