@@ -27,6 +27,7 @@ dependencies {
 
     // Spring Boot Starter JPA: JPA와 Hibernate를 쉽게 사용할 수 있도록 해주는 기본 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Spring Boot Starter Web: 웹 애플리케이션 개발을 위한 기본 라이브러리 (선택사항, 웹 개발 시 사용)
@@ -55,6 +56,15 @@ dependencies {
 
     // Jackson을 사용한 JSON 처리를 위해 추가
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // 이메일 관련 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.security:spring-security-core'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' 이미 있음 // 기구삭정
+//    implementation 'org.springframework.boot:spring-boot-devtools' 개발 환경에서만 사용하도록 되어 있음. // 기능 구현 되면 삭제 예정
+
+
 }
 
 tasks.named('test') {
