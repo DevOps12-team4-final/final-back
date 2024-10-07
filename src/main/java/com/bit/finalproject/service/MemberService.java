@@ -26,6 +26,7 @@ public interface MemberService {
     MemberDtailDto getmypage(Long UserId);
 
     MemberDtailDto getprofilepage(Long UserId);
-    
-    
+
+
+    void deleteMember(Long userId);
 }

@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-// JPA 엔티티임을 나타내는 어노테이션, DB테이블과 매핑시킨다.
 @Entity
 @SequenceGenerator(
         name = "memberSeqGenerator",
@@ -19,8 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 엔티티가 매핑될 DB테이블 이름을 지정하는 어노테이션이다, 만약에 생략되면 클래스이름으로 매핑된다.
-// @Table(name = "member1")
+@Table(name = "member")
 public class Member {
 
     @Id
@@ -28,32 +26,46 @@ public class Member {
             strategy = GenerationType.SEQUENCE,
             generator = "memberSeqGenerator"
     )
-    private Long UserId;
-    @Column(unique=true)
+    private Long userId;  // 사용자 ID
+    @Column(unique = true)
     private String email;
     private String password;
-    private String username; // 이름
-    @Column(unique=true)
-    private String nickname; // 닉네임
-    private LocalDateTime regdate; // 등록일
-    private LocalDateTime moddate; // 수정일
+    private String username;
+    @Column(unique = true)
+    private String nickname;
+    private LocalDateTime regdate;
+    private LocalDateTime moddate;
     @Column(name = "last_login_date")
-    private LocalDateTime lastLoginDate; // 마지막 로그인 날짜
+    private LocalDateTime lastLoginDate;
 
-    // 계정 상태 Enum사용
-    // Enum을 문자열로 저장 (예: "ACTIVE", "INACTIVCE", "WITHDRAWN")
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_Status")
+    @Column(name = "user_status")
     private UserStatus userStatus;
 
-    // 프로필 이미지 파일을 경로로 저장하는 방식
     @Column(name = "profile_image")
     private String profileImage;
     private String role;
 
+    @Builder.Default
+    private boolean deleted = false; // 삭제 플래그
+    private LocalDateTime deletedAt; // 삭제 요청 시간
+
+    // 양방향 매핑: Member가 MemberDtail을 소유
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberDtail memberDtail;
+
+    // 양방향 매핑 편의 메서드
+    public void setMemberDtail(MemberDtail memberDtail) {
+        this.memberDtail = memberDtail;
+        if (memberDtail != null) {
+            memberDtail.setMember(this);  // MemberDtail의 Member 설정
+        }
+    }
+
+    // Member 엔티티를 DTO로 변환하는 메서드
     public MemberDto toDto() {
         return MemberDto.builder()
-                .UserId(this.UserId)
+                .userId(this.userId)
                 .email(this.email)
                 .password(this.password)
                 .username(this.username)
@@ -62,6 +74,9 @@ public class Member {
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
                 .role(this.role)
+                .deleted(this.deleted)
+                .deletedAt(this.deletedAt)
+                .memberDtail(this.memberDtail != null ? this.memberDtail.toDto() : null)
                 .build();
     }
 }

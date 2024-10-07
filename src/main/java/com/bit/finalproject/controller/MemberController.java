@@ -1,9 +1,11 @@
 package com.bit.finalproject.controller;
 
+import com.bit.finalproject.dto.MemberDataDto;
 import com.bit.finalproject.dto.MemberDtailDto;
 import com.bit.finalproject.dto.MemberDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
+import com.bit.finalproject.entity.Member;
 import com.bit.finalproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -172,12 +174,13 @@ public class MemberController {
 
         try {
             // 전달된 UserId를 이용해 사용자 프로필 정보 조회
-            MemberDtailDto memberDtailDto = memberService.getprofilepage(UserId);
+            MemberDtailDto memberDataDto = memberService.getprofilepage(UserId);
 
             // 성공 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            responseDto.setItem(memberDtailDto);
+            ;
+            responseDto.setItem(memberDataDto);
             return ResponseEntity.ok(responseDto);
 
         } catch (Exception e) {
@@ -190,35 +193,92 @@ public class MemberController {
     }
 
     @PatchMapping
-    public ResponseEntity<?> modify(@RequestPart("memberDto") MemberDto memberDto,
-                                    @RequestPart("memberDtailDto") MemberDtailDto memberDtailDto,
-                                    @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                    Authentication authentication) {
-        ResponseDto<MemberDto> responseDto = new ResponseDto<>();
+    public ResponseEntity<?> modify(
+            @RequestPart("memberDto") MemberDto memberDto,  // 회원 기본 정보
+            @RequestPart("memberDtailDto") MemberDtailDto memberDtailDto,  // 회원 상세 정보
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,  // 로그인된 사용자 정보
+            Authentication authentication) {  // 인증 정보 제공
+
+        ResponseDto<MemberDataDto> responseDto = new ResponseDto<>();  // 응답 객체 초기화
 
         try {
+            // 요청 받은 회원 정보 출력 (디버깅용 로그)
             log.info("modify memberDto: {}", memberDto);
             log.info("modify memberDtailDto: {}", memberDtailDto);
 
+            // 회원 기본 정보 수정
+            memberService.modifymember(memberDto);  // 서비스에서 회원 기본 정보 수정
 
+            // 현재 로그인된 사용자 정보에서 Member 추출
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Member member = userDetails.getMember();
 
+            // 회원 상세 정보 수정
+            memberService.modifymemberDtail(member, memberDtailDto);  // 서비스에서 회원 상세 정보 수정
 
+            // 수정된 회원 정보를 DTO로 변환하여 응답에 포함
+            MemberDataDto updatedMemberDataDto = new MemberDataDto(memberDto, memberDtailDto);
+            updatedMemberDataDto.setDataId(null); // 새로 생성된 경우 dataId는 null로 설정
 
-            responseDto.setStatusCode(HttpStatus.OK.value());
-            responseDto.setStatusMessage("ok");
+            // 성공 로그 출력
+            log.info("modify memberDto: {ok}", memberDto);
+            log.info("modify memberDtailDto: {ok}", memberDtailDto);
 
-            return ResponseEntity.ok(responseDto);
-        } catch(Exception e) {
+            // 응답에 수정된 회원 정보를 포함
+            responseDto.setItem(updatedMemberDataDto);  // 수정된 기본 정보와 상세 정보를 포함
+            responseDto.setStatusCode(HttpStatus.OK.value());  // 응답 코드 200 설정
+            responseDto.setStatusMessage("회원 정보가 성공적으로 수정되었습니다.");
+
+            return ResponseEntity.ok(responseDto);  // 200 OK 응답 반환
+
+        } catch (Exception e) {
+            // 예외 처리 및 에러 로그 출력
             log.error("modify error: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDto.setStatusMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDto);
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());  // 응답 코드 500 설정
+            responseDto.setStatusMessage("서버 오류로 인해 회원 정보 수정에 실패했습니다: " + e.getMessage());
+
+            return ResponseEntity.internalServerError().body(responseDto);  // 500 에러 응답 반환
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(Authentication authentication) {
+        ResponseDto<String> responseDto = new ResponseDto<>(); // 응답 객체 초기화
+
+        try {
+            // 현재 로그인된 사용자 정보 가져오기
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Member member = userDetails.getMember(); // Member 객체 가져오기
+
+            // 회원 삭제 서비스 호출
+            memberService.deleteMember(member.getUserId()); // 사용자 ID를 사용하여 삭제
+
+            // 성공 로그 출력
+            log.info("User with ID {} has been successfully marked as deleted.", member.getUserId());
+
+            // 응답 설정
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("회원 정보가 성공적으로 삭제 요청되었습니다.");
+
+            return ResponseEntity.ok(responseDto); // 200 OK 응답 반환
+
+        } catch (Exception e) {
+            // 예외 처리 및 에러 로그 출력
+            log.error("Error deleting user: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()); // 응답 코드 500 설정
+            responseDto.setStatusMessage("서버 오류로 인해 회원 삭제에 실패했습니다: " + e.getMessage());
+
+            return ResponseEntity.internalServerError().body(responseDto); // 500 에러 응답 반환
         }
     }
 
 
 
-    
+
+
+
+
+
 
 
 }
