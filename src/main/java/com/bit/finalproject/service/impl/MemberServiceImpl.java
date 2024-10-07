@@ -56,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
 
         // JWT 토큰 발급
         loginMemberDto.setToken(jwtProvider.createJwt(member));
-
+        System.out.println(loginMemberDto.getToken());
         return loginMemberDto;
     }
 
