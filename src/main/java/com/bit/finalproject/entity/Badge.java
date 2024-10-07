@@ -4,6 +4,8 @@ import com.bit.finalproject.dto.BadgeDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @SequenceGenerator(
         name ="BadgeSeqGenerator",
@@ -27,6 +29,12 @@ public class Badge {
     private String badgeContent;
     private String badgeGrade;
     private String badgeImage;
+    @ManyToOne
+    @JoinColumn(name="userId", referencedColumnName = "UserId")
+    private Member member;
+    private LocalDateTime createTime;
+    @OneToMany
+    @JoinColum()
 
     public BadgeDto toDto(){
         return BadgeDto.builder()
@@ -35,6 +43,8 @@ public class Badge {
                 .badgeContent(this.badgeContent)
                 .badgeGrade(this.badgeGrade)
                 .badgeImage(this.badgeImage)
+                .userId(this.member.getUserId())
+                .createTime(this.createTime)
                 .build();
     }
 }
