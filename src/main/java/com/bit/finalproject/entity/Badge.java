@@ -1,10 +1,8 @@
 package com.bit.finalproject.entity;
 
+import com.bit.finalproject.dto.BadgeDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @SequenceGenerator(
@@ -17,6 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Badge {
     @Id
     @GeneratedValue(
@@ -28,4 +27,14 @@ public class Badge {
     private String badgeContent;
     private String badgeGrade;
     private String badgeImage;
+
+    public BadgeDto toDto(){
+        return BadgeDto.builder()
+                .badgeId(this.badgeId)
+                .badgeName(this.badgeName)
+                .badgeContent(this.badgeContent)
+                .badgeGrade(this.badgeGrade)
+                .badgeImage(this.badgeImage)
+                .build();
+    }
 }
