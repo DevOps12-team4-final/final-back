@@ -4,10 +4,7 @@ import com.bit.finalproject.dto.MemberDtailDto;
 import com.bit.finalproject.dto.MemberDto;
 import com.bit.finalproject.entity.*;
 import com.bit.finalproject.jwt.JwtProvider;
-import com.bit.finalproject.repository.DeletionRequestRepository;
-import com.bit.finalproject.repository.MemberDataRepository;
-import com.bit.finalproject.repository.MemberDtailRepository;
-import com.bit.finalproject.repository.MemberRepository;
+import com.bit.finalproject.repository.*;
 import com.bit.finalproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDataRepository memberDataRepository;
     @Autowired
     private DeletionRequestRepository deletionRequestRepository;
+    @Autowired
+    private FallowRepository fallowRepository;
     @Override
     public MemberDto modifymember(MemberDto memberDto) {
         // 기존에 존재하는 멤버인지 확인 (아이디로 조회)
@@ -171,23 +170,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDtailDto getprofilepage(Long UserId) {
-        // UserId로 회원(Member) 정보와 회원 상세(MemberDtail) 정보 조회
-        Member member = memberRepository.findById(UserId)
+    public MemberDtailDto getprofilepage(Long userId) {
+        // userId로 회원(Member) 정보 조회
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
-        MemberDtail memberDtail = memberDtailRepository.findById(member.getMemberDtail().getDtail_id())
-                .orElseThrow(() -> new RuntimeException("해당 회원 상세 정보를 찾을 수 없습니다."));
+
+        // 회원 상세(MemberDtail) 정보는 Member 엔티티에 이미 포함되어 있으므로 가져옴
+        MemberDtail memberDtail = member.getMemberDtail();
+        if (memberDtail == null) {
+            throw new RuntimeException("해당 회원 상세 정보를 찾을 수 없습니다.");
+        }
 
         // 조회된 Member와 MemberDtail 정보를 각각 DTO로 변환
-        MemberDto ReMemberDto = member.toDto();
-        MemberDtailDto ReMemberDtailDto = memberDtail.toDto();
-
-        // MemberDtailDto에 Member 정보 추가 (원하는 경우, 필요시 사용)
-        ReMemberDtailDto.setMemberId(ReMemberDto.getUserId());  // member_id 추가 (Member 정보에서 가져옴)
+        MemberDto reMemberDto = member.toDto();
+        MemberDtailDto reMemberDtailDto = memberDtail.toDto();
 
         // MemberDtailDto 반환
-        return ReMemberDtailDto;
+        return reMemberDtailDto;
     }
+
 
     @Override
     public void deleteMember(Long userId) {
@@ -211,6 +212,23 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    // 특정 회원의 팔로워 수를 체크하는 메서드
+    public int countFollowers(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+
+        // 팔로워 수 카운트
+        return fallowRepository.countByFallowing(member);
+    }
+
+    // 특정 회원의 팔로잉 수를 체크하는 메서드
+    public int countFollowing(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+
+        // 팔로잉 수 카운트
+        return fallowRepository.countByFallower(member);
+    }
 
 
 }

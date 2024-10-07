@@ -153,6 +153,14 @@ public class MemberController {
             // 사용자 ID를 이용해 마이페이지 정보 조회
             MemberDtailDto memberDtailDto = memberService.getmypage(memberId);
 
+            // 팔로워 및 팔로잉 수 조회
+            int followerCount = memberService.countFollowers(memberId);  // 팔로워 수
+            int followingCount = memberService.countFollowing(memberId); // 팔로잉 수
+
+            // 팔로워 및 팔로잉 정보를 DTO에 추가
+            memberDtailDto.setFollowerCount(followerCount);
+            memberDtailDto.setFollowingCount(followingCount);
+
             // 성공 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
@@ -167,6 +175,7 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
+
 
     @GetMapping("/ProfilePage/{UserId}")
     public ResponseEntity<?> getProfilePage(@PathVariable("UserId") long UserId) {

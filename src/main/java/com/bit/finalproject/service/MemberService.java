@@ -29,4 +29,8 @@ public interface MemberService {
 
 
     void deleteMember(Long userId);
+
+    int countFollowers(Long memberId);
+
+    int countFollowing(Long memberId);
 }

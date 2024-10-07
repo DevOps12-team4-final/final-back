@@ -15,9 +15,8 @@ public class MemberDtail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long dtail_id;  // 수정: 필드 이름을 dtailId로 변경
+    private Long dtailId;  // 수정: 필드 이름을 dtailId로 변경
 
-    // 양방향 매핑: MemberDtail이 Member를 참조
     @OneToOne
     @JoinColumn(name = "member_id", referencedColumnName = "userId")  // userId로 변경
     private Member member;
@@ -27,17 +26,32 @@ public class MemberDtail {
     private String birthDate;     // 수정: snake_case에서 camelCase로 변경
     private String usingTitle;     // 수정: typo 수정 (useing -> using)
     private String statusMessage;   // 수정: snake_case에서 camelCase로 변경
+    private String favoriteExercise;
+    private String favoriteExercisePlen;
+    private Long badge1;
+    private Long badge2;
+    private Long badge3;
+
+    private int followerCount; // 추가: 팔로워 수
+    private int followingCount; // 추가: 팔로잉 수
 
     // MemberDtail 엔티티를 DTO로 변환하는 메서드
     public MemberDtailDto toDto() {
         return MemberDtailDto.builder()
-                .dtailId(this.dtail_id)  // 수정: 필드 이름을 dtailId로 변경
+                .dtailId(this.dtailId)  // 수정: 필드 이름을 dtailId로 변경
                 .memberId(this.member != null ? this.member.getUserId() : null)  // null 체크 추가
                 .gender(this.gender)
                 .phoneNumber(this.phoneNumber)
                 .birthDate(this.birthDate)
                 .usingTitle(this.usingTitle)
                 .statusMessage(this.statusMessage)
+                .favoriteExercise(this.favoriteExercise)
+                .favoriteExercisePlen(this.favoriteExercisePlen)
+                .badge1(this.badge1)
+                .badge2(this.badge2)
+                .badge3(this.badge3)
+                .followerCount(this.followerCount) // DTO로 팔로워 수 추가
+                .followingCount(this.followingCount) // DTO로 팔로잉 수 추가
                 .build();
     }
 }

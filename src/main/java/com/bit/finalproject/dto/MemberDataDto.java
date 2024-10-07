@@ -27,6 +27,14 @@ public class MemberDataDto {
     private String birthDate;          // camelCase로 변경
     private String usingTitle;         // camelCase로 변경
     private String statusMessage;      // camelCase로 변경
+    private String favoriteexercise;
+    private String favoriteexerciseplen;
+    private Long badge1;
+    private Long badge2;
+    private Long badge3;
+
+    private int followerCount; // 추가: 팔로워 수
+    private int followingCount; // 추가: 팔로잉 수
 
     // DTO에서 MemberDto와 MemberDtailDto를 받아서 초기화하는 생성자
     public MemberDataDto(MemberDto memberDto, MemberDtailDto memberDtailDto) {
@@ -43,6 +51,11 @@ public class MemberDataDto {
         this.birthDate = memberDtailDto.getBirthDate();  // camelCase로 변경
         this.usingTitle = memberDtailDto.getUsingTitle();  // camelCase로 변경
         this.statusMessage = memberDtailDto.getStatusMessage();  // camelCase로 변경
+        this.favoriteexercise = memberDtailDto.getFavoriteExercise();
+        this.favoriteexerciseplen = memberDtailDto.getFavoriteExercisePlen();
+        this.badge1 = memberDtailDto.getBadge1();
+        this.badge2 = memberDtailDto.getBadge2();
+        this.badge3 = memberDtailDto.getBadge3();
     }
 
     // 엔티티로 변환
