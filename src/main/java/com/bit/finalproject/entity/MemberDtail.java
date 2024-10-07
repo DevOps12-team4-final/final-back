@@ -15,7 +15,7 @@ import lombok.*;
 public class MemberDtail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long dtail_id;
     @OneToOne
     @JoinColumn(name = "member_id", referencedColumnName = "UserId")
     private Member member;
@@ -23,15 +23,17 @@ public class MemberDtail {
     private String phone_number;
     private String birth_date;
     private String useing_title;
+    private String status_message;
 
     public MemberDtailDto toDto() {
         return MemberDtailDto.builder()
-                    .id(this.id)
+                    .dtail_id(this.dtail_id)
                     .member_id(this.member.getUserId())
                     .gender(this.gender)
                     .phone_number(this.phone_number)
                     .birth_date(this.birth_date)
                     .useing_title(this.useing_title)
+                    .status_message(this.status_message)
                     .build();
 
 
