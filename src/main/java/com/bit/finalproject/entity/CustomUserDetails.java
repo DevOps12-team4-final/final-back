@@ -17,7 +17,6 @@ import java.util.List;
 // UserDetails 인터페이스를 구현하여, Spring Security가 사용자 인증을 처리할 수 있도록 사용자 정보를 제공한다.
 // Member 객체를 이용해 Email, password, authorities(권한)정보를 UserDetails로 변환해준다.
 public class CustomUserDetails implements UserDetails {
-
     private Member member;
 
     private Collection<? extends GrantedAuthority> authorities;

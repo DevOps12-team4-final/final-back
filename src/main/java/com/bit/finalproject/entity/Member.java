@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 // JPA 엔티티임을 나타내는 어노테이션, DB테이블과 매핑시킨다.
 @Entity
@@ -28,7 +29,7 @@ public class Member {
             strategy = GenerationType.SEQUENCE,
             generator = "memberSeqGenerator"
     )
-    private Long UserId;
+    private Long user_id;
 
     @Column(unique=true)
     private String email;
@@ -52,9 +53,13 @@ public class Member {
     private String profileImage;
     private String role;
 
+    // 한 명의 회원이 여러 개의 좋아요를 가질 수 있는 관계 설정
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardLike> likes;  // 사용자가 누른 좋아요 리스트
+
     public MemberDto toDto() {
         return MemberDto.builder()
-                .UserId(this.UserId)
+                .user_id(this.user_id)
                 .email(this.email)
                 .password(this.password)
                 .username(this.username)

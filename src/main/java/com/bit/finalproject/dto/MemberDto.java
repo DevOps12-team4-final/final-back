@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class MemberDto {
 
-    private Long UserId;
+    private Long user_id;
     private String email;
     private String password;
     private String username;
@@ -30,7 +30,7 @@ public class MemberDto {
 
     public Member toEntity(){
         return Member.builder()
-                .UserId(this.UserId)
+                .user_id(this.user_id)
                 .email(this.email)
                 .password(this.password)
                 .username(this.username)
