@@ -1,7 +1,7 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Fallow;
-import com.bit.finalproject.entity.Member;
+import com.bit.finalproject.entity.User;
 import lombok.*;
 
 @Getter
@@ -12,13 +12,13 @@ import lombok.*;
 @Builder
 public class FallowDto {
     private Long fallowId;        // 팔로우 ID
-    private Long fallowerId;      // 팔로워 ID
+    private Long followerId;      // 팔로워 ID
     private Long fallowingId;     // 팔로잉 ID
-    private String fallowerName;  // 팔로워 이름 (추가적인 정보)
-    private String fallowingName; // 팔로잉 이름 (추가적인 정보)
+    private String followerName;  // 팔로워 이름 (추가적인 정보)
+    private String followingName; // 팔로잉 이름 (추가적인 정보)
 
     // FallowDto를 엔티티로 변환하는 메서드
-    public Fallow toEntity(Member fallower, Member fallowing) {
+    public Fallow toEntity(User fallower, User fallowing) {
         return Fallow.builder()
                 .fallowId(this.fallowId)
                 .fallower(fallower)        // 팔로워 Member 객체

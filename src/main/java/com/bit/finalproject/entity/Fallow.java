@@ -26,15 +26,15 @@ public class Fallow {
     private Long fallowId;
 
     @ManyToOne
-    @JoinColumn(name = "fallower_id", referencedColumnName = "userId")
-    private Member fallower;  // 필드명 수정
+    @JoinColumn(name = "fallowerId", referencedColumnName = "userId")
+    private User fallower;  // 필드명 수정
 
     @ManyToOne
-    @JoinColumn(name = "fallowing_id", referencedColumnName = "userId")
-    private Member fallowing;  // 필드명 수정
+    @JoinColumn(name = "fallowingId", referencedColumnName = "userId")
+    private User fallowing;  // 필드명 수정
 
     // FallowDto에서 Fallow 엔티티로 변환하는 메서드 (toEntity)
-    public Fallow toEntity(Member fallower, Member fallowing) {
+    public Fallow toEntity(User fallower, User fallowing) {
         return Fallow.builder()
                 .fallowId(this.fallowId)
                 .fallower(fallower)        // 팔로워 Member 객체 설정

@@ -2,7 +2,7 @@ package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.entity.DeletionRequest;
 import com.bit.finalproject.repository.DeletionRequestRepository;
-import com.bit.finalproject.repository.MemberRepository;
+import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.DeletionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DeletionServiceImpl implements DeletionService {
 
     @Autowired
-    private MemberRepository memberRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private DeletionRequestRepository deletionRequestRepository;
@@ -31,7 +31,7 @@ public class DeletionServiceImpl implements DeletionService {
 
         for (DeletionRequest request : requests) {
             // 사용자 삭제
-            memberRepository.deleteById(request.getUserId());
+            userRepository.deleteById(request.getUserId());
             // 삭제 요청 후 처리 (예: 로그 출력 등)
             System.out.println("User with ID " + request.getUserId() + " has been deleted.");
         }

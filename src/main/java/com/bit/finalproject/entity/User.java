@@ -1,6 +1,6 @@
 package com.bit.finalproject.entity;
 
-import com.bit.finalproject.dto.MemberDto;
+import com.bit.finalproject.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "member")
-public class Member {
+public class User {
 
     @Id
     @GeneratedValue(
@@ -35,14 +35,14 @@ public class Member {
     private String nickname;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
-    @Column(name = "last_login_date")
+    @Column(name = "lastLoginDate")
     private LocalDateTime lastLoginDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_status")
+    @Column(name = "userStatus")
     private UserStatus userStatus;
 
-    @Column(name = "profile_image")
+    @Column(name = "profileImage")
     private String profileImage;
     private String role;
 
@@ -50,21 +50,21 @@ public class Member {
     private boolean deleted = false; // 삭제 플래그
     private LocalDateTime deletedAt; // 삭제 요청 시간
 
-    // 양방향 매핑: Member가 MemberDtail을 소유
+    // 양방향 매핑: Member가 MemberDetail을 소유
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MemberDtail memberDtail;
+    private UserDetail userDetail;
 
     // 양방향 매핑 편의 메서드
-    public void setMemberDtail(MemberDtail memberDtail) {
-        this.memberDtail = memberDtail;
-        if (memberDtail != null) {
-            memberDtail.setMember(this);  // MemberDtail의 Member 설정
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
+        if (userDetail != null) {
+            userDetail.setUser(this);  // MemberDetail의 Member 설정
         }
     }
 
     // Member 엔티티를 DTO로 변환하는 메서드
-    public MemberDto toDto() {
-        return MemberDto.builder()
+    public UserDto toDto() {
+        return UserDto.builder()
                 .userId(this.userId)
                 .email(this.email)
                 .password(this.password)
@@ -76,7 +76,7 @@ public class Member {
                 .role(this.role)
                 .deleted(this.deleted)
                 .deletedAt(this.deletedAt)
-                .memberDtail(this.memberDtail != null ? this.memberDtail.toDto() : null)
+                .memberDetail(this.userDetail != null ? this.userDetail.toDto() : null)
                 .build();
     }
 }

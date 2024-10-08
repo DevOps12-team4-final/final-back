@@ -1,12 +1,13 @@
 package com.bit.finalproject.controller;
 
-import com.bit.finalproject.dto.MemberDataDto;
-import com.bit.finalproject.dto.MemberDtailDto;
-import com.bit.finalproject.dto.MemberDto;
+import com.bit.finalproject.dto.UserDataDto;
+import com.bit.finalproject.dto.UserDetailDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
-import com.bit.finalproject.entity.Member;
-import com.bit.finalproject.service.MemberService;
+import com.bit.finalproject.entity.User;
+import com.bit.finalproject.repository.UserRepository;
+import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,23 +29,23 @@ import java.util.Map;
 //log라는 이름의 Logger 객체를 생성한다. (info, debug, warn, error 등 로그메시지 사용가능)
 @Slf4j
 @RequestMapping("/members")
-public class MemberController {
+public class UserController {
 
-    private final MemberService memberService;
+    private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberDto memberDto) {
-        ResponseDto<MemberDto> responseDto = new ResponseDto<>();
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
-        System.out.println(memberDto.getEmail() + memberDto.getPassword());
+        System.out.println(userDto.getEmail() + userDto.getPassword());
 
         try {
-            log.info("login memberDto: {}", memberDto.toString());
-            MemberDto loginMemberDto = memberService.login(memberDto);
+            log.info("login memberDto: {}", userDto.toString());
+            UserDto loginUserDto = userService.login(userDto);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            responseDto.setItem(loginMemberDto);
+            responseDto.setItem(loginUserDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -57,16 +57,16 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody MemberDto memberDto) {
-        ResponseDto<MemberDto> responseDto = new ResponseDto<>();
+    public ResponseEntity<?> join(@RequestBody UserDto userDto) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
         try {
-            log.info("join memberDto: {}", memberDto.toString());
-            MemberDto joinMemberDto = memberService.join(memberDto);
+            log.info("join memberDto: {}", userDto.toString());
+            UserDto joinUserDto = userService.join(userDto);
 
             responseDto.setStatusCode(HttpStatus.CREATED.value());
             responseDto.setStatusMessage("created");
-            responseDto.setItem(joinMemberDto);
+            responseDto.setItem(joinUserDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -100,13 +100,13 @@ public class MemberController {
     }
 
     @PostMapping("/email-check")
-    public ResponseEntity<?> emailCheck(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<?> emailCheck(@RequestBody UserDto userDto) {
         ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
         try{
-            log.info("email-check: {}", memberDto.getEmail());
+            log.info("email-check: {}", userDto.getEmail());
 
-            Map<String, String> emailCheckMap = memberService.emailCheck(memberDto.getEmail());
+            Map<String, String> emailCheckMap = userService.emailCheck(userDto.getEmail());
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
             responseDto.setItem(emailCheckMap);
@@ -121,13 +121,13 @@ public class MemberController {
     }
 
     @PostMapping("/nickname-check")
-    public ResponseEntity<?> nicknameCheck(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<?> nicknameCheck(@RequestBody UserDto userDto) {
         ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
         try{
-            log.info("nickname-check: {}", memberDto.getNickname());
+            log.info("nickname-check: {}", userDto.getNickname());
 
-            Map<String, String> nicknameCheckMap = memberService.nicknameCheck(memberDto.getNickname());
+            Map<String, String> nicknameCheckMap = userService.nicknameCheck(userDto.getNickname());
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
             responseDto.setItem(nicknameCheckMap);
@@ -143,28 +143,28 @@ public class MemberController {
 
     @GetMapping("/my_page")
     public ResponseEntity<?> getMyPage(Authentication authentication) {
-        ResponseDto<MemberDtailDto> responseDto = new ResponseDto<>();
+        ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
         try {
             // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Long memberId = userDetails.getMember().getUserId(); // 사용자의 ID 가져오기
+            Long memberId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
 
             // 사용자 ID를 이용해 마이페이지 정보 조회
-            MemberDtailDto memberDtailDto = memberService.getmypage(memberId);
+            UserDetailDto userDetailDto = userService.getmypage(memberId);
 
             // 팔로워 및 팔로잉 수 조회
-            int followerCount = memberService.countFollowers(memberId);  // 팔로워 수
-            int followingCount = memberService.countFollowing(memberId); // 팔로잉 수
+            int followerCount = userService.countFollowers(memberId);  // 팔로워 수
+            int followingCount = userService.countFollowing(memberId); // 팔로잉 수
 
             // 팔로워 및 팔로잉 정보를 DTO에 추가
-            memberDtailDto.setFollowerCount(followerCount);
-            memberDtailDto.setFollowingCount(followingCount);
+            userDetailDto.setFollowerCount(followerCount);
+            userDetailDto.setFollowingCount(followingCount);
 
             // 성공 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            responseDto.setItem(memberDtailDto);
+            responseDto.setItem(userDetailDto);
             return ResponseEntity.ok(responseDto);
 
         } catch (Exception e) {
@@ -179,12 +179,22 @@ public class MemberController {
 
     @GetMapping("/ProfilePage/{UserId}")
     public ResponseEntity<?> getProfilePage(@PathVariable("UserId") long UserId) {
-        ResponseDto<MemberDtailDto> responseDto = new ResponseDto<>();
+        ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
         try {
-            // 전달된 UserId를 이용해 사용자 프로필 정보 조회
-            MemberDtailDto memberDataDto = memberService.getprofilepage(UserId);
 
+            // 전달된 UserId를 이용해 사용자 프로필 정보 조회
+            UserDetailDto memberDataDto = userService.getprofilepage(UserId);
+
+            Long memberId = UserId;
+
+            // 팔로워 및 팔로잉 수 조회
+            int followerCount = userService.countFollowers(memberId);  // 팔로워 수
+            int followingCount = userService.countFollowing(memberId); // 팔로잉 수
+
+            // 팔로워 및 팔로잉 정보를 DTO에 추가
+            memberDataDto.setFollowerCount(followerCount);
+            memberDataDto.setFollowingCount(followingCount);
             // 성공 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
@@ -203,38 +213,38 @@ public class MemberController {
 
     @PatchMapping
     public ResponseEntity<?> modify(
-            @RequestPart("memberDto") MemberDto memberDto,  // 회원 기본 정보
-            @RequestPart("memberDtailDto") MemberDtailDto memberDtailDto,  // 회원 상세 정보
+            @RequestPart("memberDto") UserDto userDto,  // 회원 기본 정보
+            @RequestPart("memberDetailDto") UserDetailDto userDetailDto,  // 회원 상세 정보
             @AuthenticationPrincipal CustomUserDetails customUserDetails,  // 로그인된 사용자 정보
             Authentication authentication) {  // 인증 정보 제공
 
-        ResponseDto<MemberDataDto> responseDto = new ResponseDto<>();  // 응답 객체 초기화
+        ResponseDto<UserDataDto> responseDto = new ResponseDto<>();  // 응답 객체 초기화
 
         try {
             // 요청 받은 회원 정보 출력 (디버깅용 로그)
-            log.info("modify memberDto: {}", memberDto);
-            log.info("modify memberDtailDto: {}", memberDtailDto);
+            log.info("modify memberDto: {}", userDto);
+            log.info("modify memberDetailDto: {}", userDetailDto);
 
             // 회원 기본 정보 수정
-            memberService.modifymember(memberDto);  // 서비스에서 회원 기본 정보 수정
+            userService.modifymember(userDto);  // 서비스에서 회원 기본 정보 수정
 
             // 현재 로그인된 사용자 정보에서 Member 추출
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Member member = userDetails.getMember();
+            User user = userDetails.getUser();
 
             // 회원 상세 정보 수정
-            memberService.modifymemberDtail(member, memberDtailDto);  // 서비스에서 회원 상세 정보 수정
+            userService.modifymemberDetail(user, userDetailDto);  // 서비스에서 회원 상세 정보 수정
 
             // 수정된 회원 정보를 DTO로 변환하여 응답에 포함
-            MemberDataDto updatedMemberDataDto = new MemberDataDto(memberDto, memberDtailDto);
-            updatedMemberDataDto.setDataId(null); // 새로 생성된 경우 dataId는 null로 설정
+            UserDataDto updatedUserDataDto = new UserDataDto(userDto, userDetailDto);
+            updatedUserDataDto.setDataId(null); // 새로 생성된 경우 dataId는 null로 설정
 
             // 성공 로그 출력
-            log.info("modify memberDto: {ok}", memberDto);
-            log.info("modify memberDtailDto: {ok}", memberDtailDto);
+            log.info("modify memberDto: {}", userDto);
+            log.info("modify memberDetailDto: {}", userDetailDto);
 
             // 응답에 수정된 회원 정보를 포함
-            responseDto.setItem(updatedMemberDataDto);  // 수정된 기본 정보와 상세 정보를 포함
+            responseDto.setItem(updatedUserDataDto);  // 수정된 기본 정보와 상세 정보를 포함
             responseDto.setStatusCode(HttpStatus.OK.value());  // 응답 코드 200 설정
             responseDto.setStatusMessage("회원 정보가 성공적으로 수정되었습니다.");
 
@@ -257,13 +267,13 @@ public class MemberController {
         try {
             // 현재 로그인된 사용자 정보 가져오기
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Member member = userDetails.getMember(); // Member 객체 가져오기
+            User user = userDetails.getUser(); // Member 객체 가져오기
 
             // 회원 삭제 서비스 호출
-            memberService.deleteMember(member.getUserId()); // 사용자 ID를 사용하여 삭제
+            userService.deleteMember(user.getUserId()); // 사용자 ID를 사용하여 삭제
 
             // 성공 로그 출력
-            log.info("User with ID {} has been successfully marked as deleted.", member.getUserId());
+            log.info("User with ID {} has been successfully marked as deleted.", user.getUserId());
 
             // 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());

@@ -1,7 +1,7 @@
 package com.bit.finalproject.dto;
 
-import com.bit.finalproject.entity.Member;
-import com.bit.finalproject.entity.MemberDtail;
+import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.UserDetail;
 import lombok.*;
 
 @Getter
@@ -10,9 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class MemberDtailDto {
+public class UserDetailDto {
 
-    private Long dtailId; // 필드 이름을 dtailId로 수정
+    private Long detailId; // 필드 이름을 dtailId로 수정
     private Long memberId; // Member의 ID만을 가지고 있음
     private String gender;
     private String phoneNumber; // snake_case에서 camelCase로 변경
@@ -28,16 +28,16 @@ public class MemberDtailDto {
     private int followerCount; // 추가: 팔로워 수
     private int followingCount; // 추가: 팔로잉 수
 
-    // MemberDtailDto를 MemberDtail 엔티티로 변환하는 메서드
-    public MemberDtail toEntity() {
+    // MemberDetailDto를 MemberDetail 엔티티로 변환하는 메서드
+    public UserDetail toEntity() {
         // Member 엔티티 생성 (memberId만 가지고 있으므로 new로 생성)
-        Member member = Member.builder()
+        User user = User.builder()
                 .userId(this.memberId)
                 .build();
 
-        return MemberDtail.builder()
-                .dtailId(this.dtailId) // 필드 이름 수정 (camelCase로 변경)
-                .member(member)  // Member 엔티티 설정
+        return UserDetail.builder()
+                .detailId(this.detailId) // 필드 이름 수정 (camelCase로 변경)
+                .user(user)  // Member 엔티티 설정
                 .gender(this.gender)
                 .phoneNumber(this.phoneNumber) // 필드 이름 수정 (camelCase로 변경)
                 .birthDate(this.birthDate) // 필드 이름 수정 (camelCase로 변경)
