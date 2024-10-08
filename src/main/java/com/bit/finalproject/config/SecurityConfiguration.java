@@ -49,10 +49,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     // 아래의 경로는 인증없이 누구나 접근할 수 있게 설정한다.
                     authorizationManagerRequestMatcherRegistry.requestMatchers(
-                            "/members/email-check",
-                            "/members/nickname-check",
-                            "/members/join",
-                            "/members/login").permitAll();
+                            "/users/email-check",
+                            "/users/nickname-check",
+                            "/users/join",
+                            "/users/login").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();

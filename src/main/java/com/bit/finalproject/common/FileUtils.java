@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.bit.finalproject.config.NaverConfiguration;
-import com.bit.finalproject.dto.BoardFileDto;
+import com.bit.finalproject.dto.FeedFileDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,10 +50,10 @@ public class FileUtils {
     }
 
 
-    public BoardFileDto parserFileInfo(MultipartFile multipartFile, String directory) {
+    public FeedFileDto parserFileInfo(MultipartFile multipartFile, String directory) {
         String bucketName = "bobaesj";
 
-        BoardFileDto boardFileDto = new BoardFileDto();
+        FeedFileDto FeedFileDto = new FeedFileDto();
 
         // 중복값을 제외 하기위한 고유식별자 UUID 사용
         UUID uuid = UUID.randomUUID();
@@ -104,22 +104,22 @@ public class FileUtils {
         if(!type.equals("")) {
             // 타입확인후 image로 설정 그외는 etc로 설정한다
             if(type.startsWith("image")) {
-                boardFileDto.setFiletype("image");
+                FeedFileDto.setFiletype("image");
             } else {
-                boardFileDto.setFiletype("etc");
+                FeedFileDto.setFiletype("etc");
             }
         } else {
-            boardFileDto.setFiletype("etc");
+            FeedFileDto.setFiletype("etc");
         }
 
         // 파일명
-        boardFileDto.setFilename(fileName);
+        FeedFileDto.setFilename(fileName);
         // 원본 파일명
-        boardFileDto.setFileoriginname(multipartFile.getOriginalFilename());
+        FeedFileDto.setFileoriginname(multipartFile.getOriginalFilename());
         // 파일 경로
-        boardFileDto.setFilepath(directory);
+        FeedFileDto.setFilepath(directory);
 
-        return boardFileDto;
+        return FeedFileDto;
     }
 
     // 경로의 파일명 파일 삭제한다.

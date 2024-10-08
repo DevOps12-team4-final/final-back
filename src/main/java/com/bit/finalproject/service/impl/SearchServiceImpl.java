@@ -1,8 +1,8 @@
 package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.SearchDto;
-import com.bit.finalproject.entity.Member;
-import com.bit.finalproject.entity.QMember;
+import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.QUesr;
 import com.bit.finalproject.service.SearchService;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
@@ -19,16 +19,16 @@ public class SearchServiceImpl implements SearchService {
     private final EntityManager entityManager;
 
     @Override
-    public List<?> searchByMember(String searchKeyword) {
-        JPAQuery<Member> query = new JPAQuery<>(entityManager);
-        List<Member> members = query.from(QMember.member)
-                .where(QMember.member.nickname.containsIgnoreCase(searchKeyword))
+    public List<?> searchByUesr(String searchKeyword) {
+        JPAQuery<Uesr> query = new JPAQuery<>(entityManager);
+        List<Uesr> users = query.from(QUesr.uesr)
+                .where(QUesr.uesr.nickname.containsIgnoreCase(searchKeyword))
                 .fetch();
 
-        return members.stream()
-                .map(member -> SearchDto.builder()
-                        .nickname(member.getNickname())
-                        .searchCondition("MEMBER")
+        return users.stream()
+                .map(user -> SearchDto.builder()
+                        .nickname(user.getNickname())
+                        .searchCondition("USER")
                         .searchKeyword(searchKeyword)
                         .build())
                 .collect(Collectors.toList());
