@@ -19,8 +19,6 @@ public class BadgeDto {
     private String badgeContent;
     private String badgeGrade;
     private String badgeImage;
-    private Long userId;
-    private LocalDateTime createTime;
 
     public Badge toEntity(Member member){
         return Badge.builder()
@@ -29,8 +27,6 @@ public class BadgeDto {
                 .badgeContent(this.badgeContent)
                 .badgeGrade(this.badgeGrade)
                 .badgeImage(this.badgeImage)
-                .member(member)
-                .createTime(this.createTime)
                 .build();
     }
 }
