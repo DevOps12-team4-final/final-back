@@ -26,7 +26,7 @@ public class BadgeCondition {
     private Long badgeConditionId;
 
     @ManyToOne
-    @JoinColumn(name = "badge_id", referencedColumnName = "badge_id")
+    @JoinColumn(name = "badge_id", referencedColumnName = "badgeId")
     @JsonBackReference
     private Badge badge;
     private Long workoutId;
