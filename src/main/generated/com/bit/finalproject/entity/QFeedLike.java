@@ -26,7 +26,7 @@ public class QFeedLike extends EntityPathBase<FeedLike> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QUesr user;
+    public final QUser user;
 
     public QFeedLike(String variable) {
         this(FeedLike.class, forVariable(variable), INITS);
@@ -47,7 +47,7 @@ public class QFeedLike extends EntityPathBase<FeedLike> {
     public QFeedLike(Class<? extends FeedLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.feed = inits.isInitialized("feed") ? new QFeed(forProperty("feed"), inits.get("feed")) : null;
-        this.user = inits.isInitialized("user") ? new QUesr(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }
 
 }

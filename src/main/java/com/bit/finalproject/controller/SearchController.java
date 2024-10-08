@@ -1,7 +1,7 @@
 package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedDto;
-import com.bit.finalproject.dto.UesrDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.dto.SearchDto;
 import com.bit.finalproject.service.SearchService;
@@ -37,7 +37,7 @@ public class SearchController {
         try {
             // 검색 조건에 따른 검색 실행
             if (searchCondition.equalsIgnoreCase("USER")) {
-                results = searchService.searchByUesr(searchKeyword);
+                results = searchService.searchByUser(searchKeyword);
             } else {
                 // 잘못된 검색 조건 처리
                 throw new IllegalArgumentException("Invalid search condition: " + searchCondition);

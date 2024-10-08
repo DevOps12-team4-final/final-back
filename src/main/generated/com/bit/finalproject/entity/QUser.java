@@ -11,14 +11,14 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QUesr is a Querydsl query type for Uesr
+ * QUser is a Querydsl query type for User
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QUesr extends EntityPathBase<Uesr> {
+public class QUser extends EntityPathBase<User> {
 
-    private static final long serialVersionUID = 1281353405L;
+    private static final long serialVersionUID = 1281366425L;
 
-    public static final QUesr uesr = new QUesr("uesr");
+    public static final QUser user = new QUser("user");
 
     public final StringPath email = createString("email");
 
@@ -44,16 +44,16 @@ public class QUesr extends EntityPathBase<Uesr> {
 
     public final EnumPath<UserStatus> userStatus = createEnum("userStatus", UserStatus.class);
 
-    public QUesr(String variable) {
-        super(Uesr.class, forVariable(variable));
+    public QUser(String variable) {
+        super(User.class, forVariable(variable));
     }
 
-    public QUesr(Path<? extends Uesr> path) {
+    public QUser(Path<? extends User> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QUesr(PathMetadata metadata) {
-        super(Uesr.class, metadata);
+    public QUser(PathMetadata metadata) {
+        super(User.class, metadata);
     }
 
 }

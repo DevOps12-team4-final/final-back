@@ -1,7 +1,7 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.UserStatus;
-import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Builder
-public class UesrDto {
+public class UserDto {
 
     private Long userId;
     private String email;
@@ -28,8 +28,8 @@ public class UesrDto {
     private String role;
     private String token;
 
-    public Uesr toEntity(){
-        return Uesr.builder()
+    public User toEntity(){
+        return User.builder()
                 .userId(this.userId)
                 .email(this.email)
                 .password(this.password)

@@ -1,8 +1,8 @@
 package com.bit.finalproject.controller;
 
-import com.bit.finalproject.dto.UesrDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
-import com.bit.finalproject.service.UesrService;
+import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,23 +22,23 @@ import java.util.Map;
 //log라는 이름의 Logger 객체를 생성한다. (info, debug, warn, error 등 로그메시지 사용가능)
 @Slf4j
 @RequestMapping("/users")
-public class UesrController {
+public class UserController {
 
-    private final UesrService userService;
+    private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UesrDto userDto) {
-        ResponseDto<UesrDto> responseDto = new ResponseDto<>();
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
         System.out.println(userDto.getEmail() + userDto.getPassword());
 
         try {
             log.info("login userDto: {}", userDto);
-            UesrDto loginUesrDto = userService.login(userDto);
+            UserDto loginUserDto = userService.login(userDto);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            responseDto.setItem(loginUesrDto);
+            responseDto.setItem(loginUserDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -50,16 +50,16 @@ public class UesrController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody UesrDto userDto) {
-        ResponseDto<UesrDto> responseDto = new ResponseDto<>();
+    public ResponseEntity<?> join(@RequestBody UserDto userDto) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
         try {
             log.info("join userDto: {}", userDto.toString());
-            UesrDto joinUesrDto = userService.join(userDto);
+            UserDto joinUserDto = userService.join(userDto);
 
             responseDto.setStatusCode(HttpStatus.CREATED.value());
             responseDto.setStatusMessage("created");
-            responseDto.setItem(joinUesrDto);
+            responseDto.setItem(joinUserDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class UesrController {
     }
 
     @PostMapping("/email-check")
-    public ResponseEntity<?> emailCheck(@RequestBody UesrDto userDto) {
+    public ResponseEntity<?> emailCheck(@RequestBody UserDto userDto) {
         ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
         try{
@@ -114,7 +114,7 @@ public class UesrController {
     }
 
     @PostMapping("/nickname-check")
-    public ResponseEntity<?> nicknameCheck(@RequestBody UesrDto userDto) {
+    public ResponseEntity<?> nicknameCheck(@RequestBody UserDto userDto) {
         ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
         try{

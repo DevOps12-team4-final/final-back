@@ -4,7 +4,7 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.FeedFileDto;
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class FeedServiceImpl implements FeedService {
     private final FileUtils fileUtils;
 
     @Override
-    public Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, Uesr user, Pageable pageable) {
+    public Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, User user, Pageable pageable) {
 
         feedDto.setRegdate(LocalDateTime.now());
         feedDto.setModdate(LocalDateTime.now());

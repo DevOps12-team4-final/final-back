@@ -1,6 +1,6 @@
 package com.bit.finalproject.jwt;
 
-import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.User;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     // Jwt 생성 메서드
-    public String createJwt(Uesr user) {
+    public String createJwt(User user) {
         // 유효기간 (1일)
         Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
         return Jwts.builder()

@@ -34,7 +34,7 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public final DateTimePath<java.time.LocalDateTime> regdate = createDateTime("regdate", java.time.LocalDateTime.class);
 
-    public final QUesr user;
+    public final QUser user;
 
     public QFeed(String variable) {
         this(Feed.class, forVariable(variable), INITS);
@@ -54,7 +54,7 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public QFeed(Class<? extends Feed> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUesr(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }
 
 }

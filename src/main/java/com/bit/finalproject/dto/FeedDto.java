@@ -1,7 +1,7 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class FeedDto {
     private List<FeedFileDto> feedFileDtoList;
     private int likeCount; // 좋아요 개수 필드
 
-    public Feed toEntity(Uesr user) {
+    public Feed toEntity(User user) {
         return Feed.builder()
                 .feedId(this.feedId)
                 .content(this.content)

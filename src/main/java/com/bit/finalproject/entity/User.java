@@ -1,6 +1,6 @@
 package com.bit.finalproject.entity;
 
-import com.bit.finalproject.dto.UesrDto;
+import com.bit.finalproject.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Builder
 // 엔티티가 매핑될 DB테이블 이름을 지정하는 어노테이션이다, 만약에 생략되면 클래스이름으로 매핑된다.
 // @Table(name = "user1")
-public class Uesr {
+public class User {
 
     @Id
     @GeneratedValue(
@@ -57,8 +57,8 @@ public class Uesr {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeedLike> likes;  // 사용자가 누른 좋아요 리스트
 
-    public UesrDto toDto() {
-        return UesrDto.builder()
+    public UserDto toDto() {
+        return UserDto.builder()
                 .userId(this.userId)
                 .email(this.email)
                 .password(this.password)

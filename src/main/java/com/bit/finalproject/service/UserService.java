@@ -1,13 +1,13 @@
 package com.bit.finalproject.service;
 
-import com.bit.finalproject.dto.UesrDto;
+import com.bit.finalproject.dto.UserDto;
 
 import java.util.Map;
 
-public interface UesrService {
-    UesrDto login(UesrDto userDto);
+public interface UserService {
+    UserDto login(UserDto userDto);
 
-    UesrDto join(UesrDto userDto);
+    UserDto join(UserDto userDto);
 
     Map<String, String> emailCheck(String email);
 

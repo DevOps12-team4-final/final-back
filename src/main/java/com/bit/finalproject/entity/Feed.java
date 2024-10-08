@@ -35,7 +35,7 @@ public class Feed {
     // user 엔티티의 user_id의 값을 user_id로 Feed에 생성한다.
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private Uesr user;
+    private User user;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
     @Transient

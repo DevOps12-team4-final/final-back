@@ -2,10 +2,10 @@ package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedLike;
-import com.bit.finalproject.entity.Uesr;
+import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.FeedLikeRepository;
 import com.bit.finalproject.repository.FeedRepository;
-import com.bit.finalproject.repository.UesrRepository;
+import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.FeedLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,14 +16,14 @@ public class FeedLikeServiceImpl implements FeedLikeService {
 
     private final FeedLikeRepository feedLikeRepository;
     private final FeedRepository feedRepository;
-    private final UesrRepository userRepository;
+    private final UserRepository userRepository;
 
     // 좋아요 추가
     @Override
     public void addLike(Long feedId, Long userId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid FeedId:" + feedId));
-        Uesr user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + userId));
 
         // 이미 좋아요를 눌렀는지 확인
@@ -44,7 +44,7 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     public void removeLike(Long feedId, Long userId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid FeedId:" + feedId));
-        Uesr user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + userId));
 
         // 좋아요 찾기

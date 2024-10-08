@@ -21,5 +21,5 @@ public class FeedLike {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Uesr user;  // 좋아요한 사용자
+    private User user;  // 좋아요한 사용자
 }
