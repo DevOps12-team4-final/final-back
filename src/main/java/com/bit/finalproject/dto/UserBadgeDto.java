@@ -1,8 +1,8 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Badge;
-import com.bit.finalproject.entity.MemberDtail;
 import com.bit.finalproject.entity.UserBadge;
+import com.bit.finalproject.entity.UserDetail;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,10 +27,10 @@ public class UserBadgeDto {
 
     private LocalDateTime regdate;
 
-    public UserBadge toEntity(MemberDtail memberDtail, Badge badge) {
+    public UserBadge toEntity(UserDetail userDetail, Badge badge) {
         return UserBadge.builder()
                 .userBadgeId(this.userBadgeId)
-                .memberDtail(memberDtail)
+                .userDetail(userDetail)
                 .badge(badge)
                 .regdate(this.regdate)
                 .build();

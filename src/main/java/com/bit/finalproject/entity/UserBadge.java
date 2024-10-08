@@ -27,9 +27,9 @@ public class UserBadge {
     )
     private Long userBadgeId;
     @ManyToOne
-    @JoinColumn(name = "dtail_id", referencedColumnName = "dtail_id")
+    @JoinColumn(name = "detail_id", referencedColumnName = "detailId")
     @JsonBackReference
-    private MemberDtail memberDtail;
+    private UserDetail userDetail;
     @ManyToOne
     @JoinColumn(name = "badge_id", referencedColumnName = "badge_id")
     private Badge badge;
