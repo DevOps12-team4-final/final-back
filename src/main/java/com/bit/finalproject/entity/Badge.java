@@ -34,7 +34,7 @@ public class Badge {
     private Member member;
     private LocalDateTime createTime;
     @OneToMany
-    @JoinColum()
+//    @JoinColum()
 
     public BadgeDto toDto(){
         return BadgeDto.builder()
