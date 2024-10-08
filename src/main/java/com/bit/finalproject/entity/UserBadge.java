@@ -31,7 +31,7 @@ public class UserBadge {
     @JsonBackReference
     private MemberDtail memberDtail;
     @ManyToOne
-    @JoinColumn(name = "badgeId", referencedColumnName = "badgeId")
+    @JoinColumn(name = "badge_id", referencedColumnName = "badge_id")
     private Badge badge;
 
     private LocalDateTime regdate;
