@@ -29,8 +29,6 @@ public class Badge {
     private String badgeContent;
     private String badgeGrade;
     private String badgeImage;
-    @OneToMany
-//    @JoinColum()
 
     public BadgeDto toDto(){
         return BadgeDto.builder()

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @SequenceGenerator(
         name = "UserBadgeSeqGenerator",
@@ -28,5 +30,9 @@ public class UserBadge {
     @JoinColumn(name = "dtail_id", referencedColumnName = "dtail_id")
     @JsonBackReference
     private MemberDtail memberDtail;
+    @ManyToOne
+    @JoinColumn(name = "badgeId", referencedColumnName = "badgeId")
     private Badge badge;
+
+    private LocalDateTime regdate;
 }
