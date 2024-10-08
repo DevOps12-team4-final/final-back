@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "member_data")  // 테이블 이름을 소문자로 통일
+@Table(name = "user_data")  // 테이블 이름을 소문자로 통일
 public class UserData {
 
     @Id
@@ -25,7 +25,7 @@ public class UserData {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "dtailId", referencedColumnName = "dtail_id")  // MemberDetail 테이블의 ID
+    @JoinColumn(name = "detailId", referencedColumnName = "detailId")  // MemberDetail 테이블의 ID
     private UserDetail userDetail;
 
     // MemberData 엔티티를 DTO로 변환

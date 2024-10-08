@@ -14,7 +14,7 @@ public class BadgeConditionDto {
     private Long badgeConditionId;
     private Long badgeId;
     private Long workoutId;
-    private String condition;
+    private String badgeCondition;
     private Long conditionValue;
     private String hiddenCondition;
 
@@ -23,7 +23,7 @@ public class BadgeConditionDto {
                 .badgeConditionId(this.badgeConditionId)
                 .badge(badge)
                 .workoutId(this.workoutId)
-                .condition(this.condition)
+                .badgeCondition(this.badgeCondition)
                 .conditionValue(this.conditionValue)
                 .hiddenCondition(this.hiddenCondition)
                 .build();

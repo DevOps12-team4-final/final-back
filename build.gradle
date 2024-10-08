@@ -55,6 +55,62 @@ dependencies {
 
     // Jackson을 사용한 JSON 처리를 위해 추가
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // AWS 서비스와의 통합을 쉽게 해주는 다양한 기능을 제공합니다.
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+
+    // QueryDSL JPA 의존성 추가
+    // jakarta 패키지를 사용하는 JPA 구현체를 지원, Q도메인 클래스를 생성하는데 필요한 핵심 라이브러리
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    // JPA 엔티티로부터 Q 도메인 클래스를 생성하하는데 필요한 라이브러리
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    // jakarta 기반의 어노테이션 API로 엔티티와 관련된 어노테이션을 처리하는데 필요하다
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    // jakarta의 JPA API로 JPA 관련 기능 처리하는데 필요한 핵심 라이브러리
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    // Spring Boot Starter JPA: JPA와 Hibernate를 쉽게 사용할 수 있도록 해주는 기본 라이브러리
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Spring Boot Starter Web: 웹 애플리케이션 개발을 위한 기본 라이브러리 (선택사항, 웹 개발 시 사용)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Lombok: 코드 간소화를 위한 라이브러리 (선택사항, getter, setter 자동 생성 등)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // MySQL Connector: MySQL 데이터베이스와 연결하기 위한 드라이버
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // DevTools: 개발 편의성을 위한 라이브러리 (선택사항, 개발 환경에서만 사용)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Test 라이브러리 (선택사항, 테스트 환경에서만 사용)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // JWT 라이브러리의 API 모듈 의존성
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+
+    // JWT 구현체와 의존성 포함 (필수는 아니지만 권장됨)
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+
+    // Jackson을 사용한 JSON 처리를 위해 추가
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // AWS 서비스와의 통합을 쉽게 해주는 다양한 기능을 제공합니다.
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+
+    // QueryDSL JPA 의존성 추가
+    // jakarta 패키지를 사용하는 JPA 구현체를 지원, Q도메인 클래스를 생성하는데 필요한 핵심 라이브러리
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    // JPA 엔티티로부터 Q 도메인 클래스를 생성하하는데 필요한 라이브러리
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    // jakarta 기반의 어노테이션 API로 엔티티와 관련된 어노테이션을 처리하는데 필요하다
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    // jakarta의 JPA API로 JPA 관련 기능 처리하는데 필요한 핵심 라이브러리
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 }
 
 tasks.named('test') {

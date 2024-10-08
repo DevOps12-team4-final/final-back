@@ -7,7 +7,7 @@ import lombok.*;
 
 @Entity
 @SequenceGenerator(
-        name="BadgeCondtionSeqGenerator",
+        name="BadgeConditionSeqGenerator",
         sequenceName="BADGE_CONDITION_SEQ",
         initialValue=1,
         allocationSize=1
@@ -21,7 +21,7 @@ public class BadgeCondition {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "BadgeCondtionSeqGenerator"
+            generator = "BadgeConditionSeqGenerator"
     )
     private Long badgeConditionId;
 
@@ -30,7 +30,7 @@ public class BadgeCondition {
     @JsonBackReference
     private Badge badge;
     private Long workoutId;
-    private String condition;
+    private String badgeCondition;
     private Long conditionValue;
     private String hiddenCondition;
 
@@ -39,7 +39,7 @@ public class BadgeCondition {
                 .badgeConditionId(this.badgeConditionId)
                 .badgeId(badge.getBadgeId())
                 .workoutId(this.workoutId)
-                .condition(this.condition)
+                .badgeCondition(this.badgeCondition)
                 .conditionValue(this.conditionValue)
                 .hiddenCondition(this.hiddenCondition)
                 .build();
