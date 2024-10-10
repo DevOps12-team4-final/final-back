@@ -1,5 +1,6 @@
 package com.bit.finalproject.entity;
 
+
 import com.bit.finalproject.dto.FeedDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -7,12 +8,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
         name = "feedSeqGenerator",
-        sequenceName = "Feed_SEQ",
+        sequenceName = "FEED_SEQ",
         initialValue = 1,
         allocationSize = 1
 )
@@ -30,12 +31,12 @@ public class Feed {
     private Long feedId;
     private String content;
 
-    // Feed 엔티티가 user 엔티티와 다대일 관계
+    // feed 엔티티가 member 엔티티와 다대일 관계
     // 여러개의 게시물이 하나의 회원에 연결될 수 있음
-    // user 엔티티의 user_id의 값을 user_id로 Feed에 생성한다.
+    // member 엔티티의 user_id의 값을 user_id로 feed에 생성한다.
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
+    private Member member;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
     @Transient
@@ -43,15 +44,19 @@ public class Feed {
     @Transient
     private String searchCondition;
 
-    // Feed 엔티티가 Feedfile 엔티티와 일대다 관계
-    // Feed가 여러개의 Feedfile을 가질 수 있다.
+    // feed 엔티티가 feedfile 엔티티와 일대다 관계
+    // feed가 여러개의 feedfile을 가질 수 있다.
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<FeedFile> feedFileList;
+    private List<FeedFile> feedFileList;
 
     // 좋아요와 일대다 관계
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
-    private Set<FeedLike> likes;
+    private List<FeedLike> likes;
+
+    // 댓글과 일대다 관계
+    @OneToMany(mappedBy = "feed", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<FeedComment> feedCommentList;
 
     // 게시글의 좋아요 개수 반환
     public int getLikeCount() {
@@ -61,17 +66,17 @@ public class Feed {
         return this.likes.size();  // 좋아요 개수를 계산
     }
 
+
     public FeedDto toDto() {
         return FeedDto.builder()
                 .feedId(this.feedId)
                 .content(this.content)
-                .userId(this.user.getUserId())
-                .nickname(this.user.getNickname())
+                .userId(this.member.getUserId())
                 .regdate(this.regdate)
                 .moddate(this.moddate)
-//                .searchKeyword(this.searchKeyword)
-//                .searchCondition(this.searchCondition)
-                .feedFileDtoList(
+                .searchKeyword(this.searchKeyword)
+                .searchCondition(this.searchCondition)
+                .feeddFileDtoList(
                         feedFileList != null && feedFileList.size() > 0
                                 ? feedFileList.stream().map(FeedFile::toDto).toList()
                                 : new ArrayList<>()

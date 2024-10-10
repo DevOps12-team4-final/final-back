@@ -1,8 +1,10 @@
 package com.bit.finalproject.controller;
 
+
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
+
 import com.bit.finalproject.service.FeedLikeService;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @RestController
-@RequestMapping("/feed")
+@RequestMapping("/feeds")
 @RequiredArgsConstructor
 @Slf4j
 public class FeedController {
@@ -35,7 +34,7 @@ public class FeedController {
     // @RequestPart: 멀티파트 요청에서 특정 파트를 처리할 때 사용. 주로 파일과 JSON 데이터를 함께 전송할 때 사용.
     @PostMapping("/post")
     public ResponseEntity<?> post(
-            // 요청의 멀티파트 데이터중 FeedDto라는 이름의 부분을 FeedDto 객체로 변환하여 받는다.
+            // 요청의 멀티파트 데이터중 feedDto라는 이름의 부분을 FeedDto 객체로 변환하여 받는다.
             @RequestPart("feedDto") FeedDto feedDto,
             // 요청에 포함된 파일을 배열의 형태로 받는다.
             // required = false 설정, 반드시 파일이 포함되지 않아도 된다.
@@ -49,7 +48,7 @@ public class FeedController {
 
         try {
             log.info("post feedDto : {}", feedDto);
-            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getUser(), pageable);
+            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getMember(), pageable);
 
             log.info("post feedDto list : {}", feedDtoList);
 
@@ -58,7 +57,7 @@ public class FeedController {
             responseDto.setStatusMessage("created");
 
             // 응답에는 생성된 리소스의 위치를 나타내는 URI()를 포함해 반환한다.
-            return ResponseEntity.created(new URI("/feed")).body(responseDto);
+            return ResponseEntity.created(new URI("/feeds")).body(responseDto);
         } catch (Exception e) {
             log.error("post error: {}", e.getMessage());
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -73,7 +72,7 @@ public class FeedController {
     public ResponseEntity<?> addLike(@PathVariable Long feedId,
                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long userId = customUserDetails.getUser().getUserId();
+        Long memberId = customUserDetails.getMember().getUserId();
 
         ResponseDto<Object> responseDto = new ResponseDto<>();
 
@@ -81,7 +80,7 @@ public class FeedController {
             log.info("addLike feedId : {}", feedId);
 
             // 좋아요 추가 로직 실행
-            feedLikeService.addLike(feedId, userId);
+            feedLikeService.addLike(feedId, memberId);
 
             // 성공 시 응답 코드 및 메시지 설정
             responseDto.setStatusCode(HttpStatus.OK.value());  // 200 OK
@@ -100,15 +99,15 @@ public class FeedController {
     public ResponseEntity<?> removeLike(@PathVariable Long feedId,
                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long userId = customUserDetails.getUser().getUserId();
+        Long memberId = customUserDetails.getMember().getUserId();
 
         ResponseDto<Object> responseDto = new ResponseDto<>();
 
         try {
-            log.info("removeLike feedId : {}", feedId);
+            log.info("addLike feedId : {}", feedId);
 
             // 좋아요 추가 로직 실행
-            feedLikeService.removeLike(feedId, userId);
+            feedLikeService.removeLike(feedId, memberId);
 
             // 성공 시 응답 코드 및 메시지 설정
             responseDto.setStatusCode(HttpStatus.OK.value());  // 200 OK
@@ -132,13 +131,10 @@ public class FeedController {
             // 좋아요 개수 가져오기
             int likeCount = feedLikeService.getLikeCount(feedId);
 
-            Map<String, Integer> responseBody = new HashMap<>();
-            responseBody.put("likeCount", likeCount);
-
             // 성공 시 응답 코드 및 좋아요 개수 설정
             responseDto.setStatusCode(HttpStatus.OK.value()); // 200 ok
-            responseDto.setStatusMessage("Like count retrieved successfully.");
-            responseDto.setItem(responseBody);
+            responseDto.setStatusMessage("Like count retrieved succeddfully.");
+            responseDto.setItem(likeCount);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());  // 500 오류
@@ -147,35 +143,33 @@ public class FeedController {
         }
     }
 
-    // 모든 게시글 가져오는 메서드
-    @GetMapping
-    public ResponseEntity<?> getAllFeeds() {
-
-        ResponseDto<List<FeedDto>> responseDto = new ResponseDto<>();
-
-        try{
-            // 서비스에서 게시글 리스트 가져오기
-            List<FeedDto> feedList = feedService.getAllFeeds();
-
-            // 성공 시 응답 데이터 설정
-            responseDto.setStatusCode(HttpStatus.OK.value()); // 200
-            responseDto.setStatusMessage("Feed list retrieved successfully.");
-            responseDto.setItem(feedList);
-
-            return ResponseEntity.ok(responseDto);
-        } catch (Exception e){
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDto.setStatusMessage("Failed to retrieve Feed list: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
-        }
-
-    }
 
 
 
 
 
+
+
+
+
+    // 게시물 상세 정보 (게시물, 댓글, 좋아요 정보 포함)
+//    @GetMapping("/{feedId}")
+//    public ResponseEntity<FeedDto> getfeedDetails(@PathVariable Long feedId) {
+//        // 게시물 정보
+//        FeedDto feed = feedService.getfeedById(feedId);
+//
+//        // 댓글 정보
+//        List<CommentDto> comments = commentService.getCommentsByFeedId(feedId);
+//
+//        // 좋아요 정보
+//        int likeCount = likeService.getLikeCountByFeedId(feedId);
+//
+//        // FeedDto에 댓글과 좋아요 추가
+//        feed.setComments(comments);
+//        feed.setLikeCount(likeCount);
+//
+//        return ResponseEntity.ok(feed);
+//    }
 
 
 }

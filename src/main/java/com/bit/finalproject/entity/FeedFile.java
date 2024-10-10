@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @SequenceGenerator(
         name = "feedFileSeqGenerator",
-        sequenceName = "feed_FILE_SEQ",
+        sequenceName = "FEED_FILE_SEQ",
         initialValue = 1,
         allocationSize = 1
 )
@@ -23,13 +23,13 @@ public class FeedFile {
             strategy = GenerationType.SEQUENCE,
             generator = "feedFileSeqGenerator"
     )
-    private Long feedFileId;
+    private Long feedFile_id;
 
-    // FeedFile 엔티티가 Feed 엔티티와 다대일 관계
+    // feedFile 엔티티가 feed 엔티티와 다대일 관계
     // 여러개의 게시물파일이이 하나의 게시물에 연결될 수 있음
-    // FeedFile의 Feed_id(외래키)를 Feed의 Feed_id(외래키 참조)와 조인한다.
+    // feedFile의 feed_id(외래키)를 feed의 feed_id(외래키 참조)와 조인한다.
     @ManyToOne
-    @JoinColumn(name = "feeId")
+    @JoinColumn(name = "feedId")
     @JsonBackReference
     private Feed feed;
 
@@ -37,14 +37,14 @@ public class FeedFile {
     private String filepath;
     private String fileoriginname;
     private String filetype;
-//    @Transient
+    @Transient
     private String filestatus;
-//    @Transient
+    @Transient
     private String newfilename;
 
     public FeedFileDto toDto() {
         return FeedFileDto.builder()
-                .feedFileId(this.feedFileId)
+                .feedFile_id(this.feedFile_id)
                 .feedId(this.feed.getFeedId())
                 .filename(this.filename)
                 .filepath(this.filepath)

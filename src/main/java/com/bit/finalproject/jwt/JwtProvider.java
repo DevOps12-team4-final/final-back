@@ -1,6 +1,6 @@
 package com.bit.finalproject.jwt;
 
-import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.Member;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +21,14 @@ public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     // Jwt 생성 메서드
-    public String createJwt(User user) {
+    public String createJwt(Member member) {
         // 유효기간 (1일)
         Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
         return Jwts.builder()
                 // 서명 알고리즘과 비밀 키 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 // 주체(사용자 이름)
-                .subject(user.getEmail())
+                .subject(member.getEmail())
                 // 발행자
                 .issuer("final team project")
                 // 발행 시간

@@ -1,13 +1,13 @@
 package com.bit.finalproject.repository;
 
-import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.Member;
 
 import java.util.List;
 
 public interface SearchRepository {
 
     // 계정 검색
-    List<User> searchByUser(String keyword);
+    List<Member> searchByMember(String keyword);
 
 //    // 태그 검색
 //    List<Tag> searchByTag(String keyword);
