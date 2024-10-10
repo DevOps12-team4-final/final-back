@@ -1,12 +1,13 @@
 package com.bit.finalproject.dto;
 
-import com.bit.finalproject.entity.Member;
+
+import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.WorkoutPlan;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import com.bit.finalproject.entity.WorkoutRoutine;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,22 +16,23 @@ import java.time.LocalDateTime;
 @Builder
 public class WorkoutPlanDto {
 
-    private Long plan_id;
-    private Long member_id;
-    private LocalDateTime plan_date;
+    private Long planId;
+    private Long userId;
+    private LocalDateTime planDate;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
-    private LocalDateTime plan_time;
+    private LocalDateTime planTime;
     private boolean planCheck;
+    private List<WorkoutRoutine> workoutRoutineList;
 
-    public WorkoutPlan toEntity(Member member) {
+    public WorkoutPlan toEntity(User user) {
         return WorkoutPlan.builder()
-                .plan_id(this.plan_id)
-                .member(member)
-                .plan_date(this.plan_date)
+                .planId(this.planId)
+                .user(user)
+                .planDate(this.planDate)
                 .regdate(this.regdate)
                 .moddate(this.moddate)
-                .plan_time(this.plan_date)
+                .planTime(this.planTime)
                 .planCheck(this.planCheck)
                 .build();
     }

@@ -1,8 +1,13 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.WorkoutRoutineDto;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -17,28 +22,40 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class WorkoutRoutine {
-
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "workoutRoutineSeqGenerator"
     )
-    private Long routine_id;
+    private Long routineId;
     private int routineNumber;
 
-//    @OneToOne
-//    @JoinColumn(name = "plan_id", referencedColumnName = "workoutId")
-//    private WorkoutPlan workoutPlan;
+    @ManyToOne
+    @JoinColumn(name = "plan_id", referencedColumnName = "planId")
+    @JsonBackReference // 양방향 맵핑에서 순환 참조 에러 방지
+    private WorkoutPlan workoutPlan;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "workout_id", referencedColumnName = "workoutId")
     private Workout workout;
 
+    @OneToMany(mappedBy = "workoutRoutine", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<WorkoutSet> workoutSetList;
+
     public WorkoutRoutineDto toDto() {
         return WorkoutRoutineDto.builder()
-                .routine_id(this.routine_id)
+                .routineId(this.routineId)
                 .routineNumber(this.routineNumber)
-                .workout_id(this.workout.getWorkout_id())
+                .workoutId(this.workout.getWorkoutId())
+                .workoutName(this.workout.getWorkoutName())
+                .mainCategory(this.workout.getMainCategory())
+                .workoutSetList(workoutSetList)
+//                .workoutSetDtoList(
+//                        workoutSetList != null && workoutSetList.size() > 0
+//                                ? workoutSetList.stream().map(WorkoutSet::toDto).toList()
+//                                : new ArrayList<>()
+//                )
                 .build();
     }
 

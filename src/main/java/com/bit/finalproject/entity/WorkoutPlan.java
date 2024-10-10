@@ -1,10 +1,12 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.WorkoutPlanDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -25,27 +27,33 @@ public class WorkoutPlan {
             strategy = GenerationType.SEQUENCE,
             generator = "workoutPlanSeqGenerator"
     )
-    private Long plan_id;
+    private Long planId;
 
-    @OneToOne
-    @JoinColumn( name = "member_id", referencedColumnName = "UserId")
-    private Member member;
+    @OneToOne // plan은 plan계획일 별로 1개씩만 가능
+    @JoinColumn( name = "member_id", referencedColumnName = "member_id") // Member 파일 User로 바뀌는 거 보고 수정하기
+    private User user;
 
-    private LocalDateTime plan_date;
+    private LocalDateTime planDate; // plan계획일
     private LocalDateTime regdate;
     private LocalDateTime moddate;
-    private LocalDateTime plan_time;
+    private LocalDateTime planTime; // plan수행시간
     private boolean planCheck;
+
+    // 한 게시물이 여러개의 파일을 가지고 있는 관계
+    @OneToMany (mappedBy = "workoutPlan", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<WorkoutRoutine> workoutRoutineList;
 
     public WorkoutPlanDto toDto() {
         return WorkoutPlanDto.builder()
-                .plan_id(this.plan_id)
-                .member_id(this.member.getUserId())
-                .plan_date(this.plan_date)
+                .planId(this.planId)
+                .userId(this.user.getUserId())
+                .planDate(this.planDate)
                 .regdate(this.regdate)
                 .moddate(this.moddate)
-                .plan_time(this.plan_date)
+                .planTime(this.planTime)
                 .planCheck(this.planCheck)
+                .workoutRoutineList(workoutRoutineList)
                 .build();
     }
 }

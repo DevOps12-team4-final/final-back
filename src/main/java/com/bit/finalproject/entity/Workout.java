@@ -23,21 +23,25 @@ public class Workout {
             strategy = GenerationType.SEQUENCE,
             generator = "workoutSeqGenerator"
     )
-    private Long workout_id;
+    private Long workoutId;
     private String workoutName;
     private String mainCategory;
     private String subCategory;
     private String equipment;
     private String detailImage;
+    private int favoriteWorkout;
+    @Transient
+    private int checkForAddWorkout; // 1 == 완료 체크
 
     public WorkoutDto toDto() {
         return WorkoutDto.builder()
-                .workout_id(this.workout_id)
+                .workoutId(this.workoutId)
                 .workoutName(this.workoutName)
                 .mainCategory(this.mainCategory)
                 .subCategory(this.subCategory)
                 .equipment(this.equipment)
                 .detailImage(this.detailImage)
+                .favoriteWorkout(this.favoriteWorkout)
                 .build();
     }
 }

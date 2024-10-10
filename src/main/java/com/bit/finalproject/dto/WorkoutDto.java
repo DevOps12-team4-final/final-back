@@ -11,21 +11,23 @@ import lombok.*;
 @Builder
 public class WorkoutDto {
 
-    private Long workout_id;
+    private Long workoutId;
     private String workoutName;
     private String mainCategory;
     private String subCategory;
     private String equipment;
     private String detailImage;
+    private int favoriteWorkout;
 
     public Workout toEntity() {
         return Workout.builder()
-                .workout_id(this.workout_id)
+                .workoutId(this.workoutId)
                 .workoutName(this.workoutName)
                 .mainCategory(this.mainCategory)
                 .subCategory(this.subCategory)
                 .equipment(this.equipment)
                 .detailImage(this.detailImage)
+                .favoriteWorkout(this.favoriteWorkout)
                 .build();
     }
 }

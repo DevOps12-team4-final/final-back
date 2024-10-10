@@ -2,9 +2,12 @@ package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Workout;
 import com.bit.finalproject.entity.WorkoutRoutine;
+import com.bit.finalproject.entity.WorkoutSet;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,23 +15,21 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class WorkoutRoutineDto {
-    private Long routine_id;
+    private Long routineId;
     private int routineNumber;
+    private Long planId;
+    private Long workoutId;
+    private String workoutName;
+    private String mainCategory;
+    private List<WorkoutSet> workoutSetList;
 
-//    @OneToOne
-//    @JoinColumn(name = "plan_id", referencedColumnName = "workoutId")
-//    private WorkoutPlan workoutPlan;
-//    private Long plan_id;
-
-    @OneToOne
-    @JoinColumn(name = "workout_id", referencedColumnName = "workout_id")
-    private Long workout_id;
 
     public WorkoutRoutine toEntity(Workout workout) {
         return WorkoutRoutine.builder()
-                .routine_id(this.routine_id)
+                .routineId(this.routineId)
                 .routineNumber(this.routineNumber)
                 .workout(workout)
+                .workoutSetList(workoutSetList)
                 .build();
     }
 }

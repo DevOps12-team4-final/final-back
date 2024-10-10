@@ -24,26 +24,26 @@ public class WorkoutSet {
             strategy = GenerationType.SEQUENCE,
             generator = "workoutSetSeqGenerator"
     )
-    private Long set_id;
+    private Long setId;
     private int setNumber;
     private double weight;
     private int reps;
     private boolean check;
     private LocalDateTime reptime;
 
-    @OneToOne
-    @JoinColumn(name = "workout_id", referencedColumnName = "workout_id")
-    private Workout workout;
+    @ManyToOne
+    @JoinColumn(name = "routine_id", referencedColumnName = "routineId")
+    private WorkoutRoutine workoutRoutine;
 
     public WorkoutSetDto toDto() {
         return WorkoutSetDto.builder()
-                .set_id(this.set_id)
+                .setId(this.setId)
                 .setNumber(this.setNumber)
                 .weight(this.weight)
                 .reps(this.reps)
                 .check(this.check)
                 .reptime(this.reptime)
-                .workout_id(this.workout.getWorkout_id())
+                .routineId(this.workoutRoutine.getRoutineId())
                 .build();
     }
 }
