@@ -1,10 +1,12 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.BadgeDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -29,6 +31,9 @@ public class Badge {
     private String badgeContent;
     private String badgeGrade;
     private String badgeImage;
+    @OneToMany(mappedBy="badge", cascade=CascadeType.ALL)
+    @JsonBackReference
+    private List<BadgeCondition> badgeConditions;
 
     public BadgeDto toDto(){
         return BadgeDto.builder()
@@ -37,6 +42,7 @@ public class Badge {
                 .badgeContent(this.badgeContent)
                 .badgeGrade(this.badgeGrade)
                 .badgeImage(this.badgeImage)
+                .badgeConditions(this.badgeConditions)
                 .build();
     }
 }
