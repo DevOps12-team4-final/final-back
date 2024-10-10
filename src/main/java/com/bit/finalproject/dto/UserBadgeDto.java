@@ -22,7 +22,7 @@ public class UserBadgeDto {
             generator = "UserBadgeSeqGenerator"
     )
     private Long userBadgeId;
-    private Long dtail_id;
+    private Long detailId;
     private Long badgeId;
 
     private LocalDateTime regdate;

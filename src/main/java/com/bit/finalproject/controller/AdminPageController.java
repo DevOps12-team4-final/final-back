@@ -1,5 +1,6 @@
 package com.bit.finalproject.controller;
 
+
 import com.bit.finalproject.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,19 +12,10 @@ import org.springframework.web.bind.annotation.*;
 //log라는 이름의 Logger 객체를 생성한다. (info, debug, warn, error 등 로그메시지 사용가능)
 @Slf4j
 
-@RequestMapping("/badges") // API 엔드포인트
-public class BadgeController {
+@RequestMapping("/adminpage")
+public class AdminPageController {
 
-    private final BadgeService badgeService;
 
-    public BadgeController(BadgeService badgeService) {
-        this.badgeService = badgeService;
-    }
 
-    // "받기" 버튼 클릭에 대한 요청 처리
-    @PostMapping("/reward/{userId}")
-    public String rewardBadge(@PathVariable Long userId) {
-        badgeService.checkAndRewardBadge(userId);
-        return "배지가 지급되었습니다.";
-    }
+
 }
