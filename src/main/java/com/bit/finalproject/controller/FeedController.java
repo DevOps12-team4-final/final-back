@@ -48,7 +48,7 @@ public class FeedController {
 
         try {
             log.info("post feedDto : {}", feedDto);
-            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getMember(), pageable);
+            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getUser(), pageable);
 
             log.info("post feedDto list : {}", feedDtoList);
 
@@ -72,7 +72,7 @@ public class FeedController {
     public ResponseEntity<?> addLike(@PathVariable Long feedId,
                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long memberId = customUserDetails.getMember().getUserId();
+        Long userId = customUserDetails.getUser().getUserId();
 
         ResponseDto<Object> responseDto = new ResponseDto<>();
 
@@ -80,7 +80,7 @@ public class FeedController {
             log.info("addLike feedId : {}", feedId);
 
             // 좋아요 추가 로직 실행
-            feedLikeService.addLike(feedId, memberId);
+            feedLikeService.addLike(feedId, userId);
 
             // 성공 시 응답 코드 및 메시지 설정
             responseDto.setStatusCode(HttpStatus.OK.value());  // 200 OK
@@ -99,7 +99,7 @@ public class FeedController {
     public ResponseEntity<?> removeLike(@PathVariable Long feedId,
                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long memberId = customUserDetails.getMember().getUserId();
+        Long userId = customUserDetails.getUser().getUserId();
 
         ResponseDto<Object> responseDto = new ResponseDto<>();
 
@@ -107,7 +107,7 @@ public class FeedController {
             log.info("addLike feedId : {}", feedId);
 
             // 좋아요 추가 로직 실행
-            feedLikeService.removeLike(feedId, memberId);
+            feedLikeService.removeLike(feedId, userId);
 
             // 성공 시 응답 코드 및 메시지 설정
             responseDto.setStatusCode(HttpStatus.OK.value());  // 200 OK

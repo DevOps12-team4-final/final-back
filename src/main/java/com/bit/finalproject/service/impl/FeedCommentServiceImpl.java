@@ -4,26 +4,31 @@ import com.bit.finalproject.dto.FeedCommentDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedComment;
-import com.bit.finalproject.entity.Member;
 import com.bit.finalproject.repository.FeedCommentRepository;
 import com.bit.finalproject.repository.FeedRepository;
-import com.bit.finalproject.repository.MemberRepository;
+import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.FeedCommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class FeedCommentServiceImpl implements FeedCommentService {
 
     private final FeedCommentRepository feedCommentRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final FeedRepository feedRepository;
 
     @Override
@@ -37,9 +42,9 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         feedComment.setComment(feedCommentDto.getComment());
         feedComment.setFeed(feed);  // Feed 엔티티 설정
 
-        // Member 정보 설정
-        feedComment.setMember(memberRepository.findById(feedCommentDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"))
+        // User 정보 설정
+        feedComment.setUser(userRepository.findById(feedCommentDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"))
         );
 
         // 부모 댓글이 있는지 확인 후 처리
@@ -68,7 +73,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         FeedCommentDto savedCommentDto = new FeedCommentDto();
         savedCommentDto.setFeedId(savedComment.getFeed().getFeedId());  // Feed ID 설정
         savedCommentDto.setCommentId(savedComment.getCommentId());  // Comment ID 설정
-        savedCommentDto.setUserId(savedComment.getMember().getUserId());  // User ID 설정
+        savedCommentDto.setUserId(savedComment.getUser().getUserId());  // User ID 설정
         savedCommentDto.setComment(savedComment.getComment());  // Comment 설정
         savedCommentDto.setRegdate(savedComment.getRegdate());  // 등록일 설정
         savedCommentDto.setModdate(savedComment.getModdate());  // 수정일 설정
@@ -82,4 +87,100 @@ public class FeedCommentServiceImpl implements FeedCommentService {
 
         return savedCommentDto;
     }
+
+    @Override
+    public FeedCommentDto findById(Long commentId) {
+        // 댓글 ID로 댓글 조회, 없으면 예외 발생
+        FeedComment feedComment = feedCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        // FeedComment 엔티티를 FeedCommentDto로 변환하여 반환
+        FeedCommentDto feedCommentDto = new FeedCommentDto();
+        feedCommentDto.setCommentId(feedComment.getCommentId());
+        feedCommentDto.setComment(feedComment.getComment());
+        feedCommentDto.setUserId(feedComment.getUser().getUserId());
+        feedCommentDto.setFeedId(feedComment.getFeed().getFeedId());
+        feedCommentDto.setRegdate(feedComment.getRegdate());
+        feedCommentDto.setModdate(feedComment.getModdate());
+        feedCommentDto.setIsdelete(feedComment.getIsdelete());
+        feedCommentDto.setDepth(feedComment.getDepth());
+        if (feedComment.getParentCommentId() != null) {
+            feedCommentDto.setParentCommentId(feedComment.getParentCommentId());
+        }
+        return feedCommentDto;
+    }
+
+    @Override
+    public List<FeedCommentDto> findAllCommentsByFeedId(Long feedId) {
+        // Feed 엔티티가 존재하는지 확인
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new IllegalArgumentException("Feed not found with id: " + feedId));
+
+        // feedId에 해당하는 모든 댓글을 가져옴
+        List<FeedComment> comments = feedCommentRepository.findByFeed(feed);
+
+        // 댓글 엔티티 리스트를 DTO 리스트로 변환하여 반환
+        return comments.stream()
+                .map(comment -> {
+                    FeedCommentDto commentDto = new FeedCommentDto();
+                    commentDto.setCommentId(comment.getCommentId());
+                    commentDto.setFeedId(feedId);
+                    commentDto.setUserId(comment.getUser().getUserId());
+                    commentDto.setComment(comment.getComment());
+                    commentDto.setDepth(comment.getDepth());
+                    commentDto.setParentCommentId(comment.getParentCommentId());
+                    commentDto.setRegdate(comment.getRegdate());
+                    commentDto.setModdate(comment.getModdate());
+                    commentDto.setIsdelete(comment.getIsdelete());
+                    return commentDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public FeedCommentDto updateComment(Long commentId, FeedCommentDto feedCommentDto) {
+        // 댓글 조회
+        FeedComment feedComment = feedCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        // 댓글 내용 수정
+        feedComment.setComment(feedCommentDto.getComment());
+        feedComment.setModdate(LocalDateTime.now());  // 수정일시 설정
+
+        // 저장 후 수정된 댓글을 반환
+        FeedComment updatedComment = feedCommentRepository.save(feedComment);
+
+        // FeedComment 엔티티를 FeedCommentDto로 변환하여 반환
+        FeedCommentDto updatedCommentDto = new FeedCommentDto();
+        updatedCommentDto.setCommentId(updatedComment.getCommentId());
+        updatedCommentDto.setComment(updatedComment.getComment());
+        updatedCommentDto.setUserId(updatedComment.getUser().getUserId());
+        updatedCommentDto.setFeedId(updatedComment.getFeed().getFeedId());
+        updatedCommentDto.setRegdate(updatedComment.getRegdate());
+        updatedCommentDto.setModdate(updatedComment.getModdate());
+        updatedCommentDto.setIsdelete(updatedComment.getIsdelete());
+        updatedCommentDto.setDepth(updatedComment.getDepth());
+        if (updatedComment.getParentCommentId() != null) {
+            updatedCommentDto.setParentCommentId(updatedComment.getParentCommentId());
+        }
+        return updatedCommentDto;
+    }
+
+    @Override
+    public void deleteComment(Long commentId, Long userId) throws AccessDeniedException, NoSuchElementException {
+        FeedComment feedComment = feedCommentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("삭제할 댓글이 존재하지 않습니다."));
+
+        // 댓글 작성자와 현재 사용자가 같은지 확인
+        if (!feedComment.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("댓글을 삭제할 권한이 없습니다.");
+        }
+
+        // isdelete 값을 "T"로 설정하여 소프트 삭제
+        feedComment.setIsdelete("T");
+        feedComment.setDeletedate(LocalDateTime.now());
+        feedCommentRepository.save(feedComment);
+
+    }
 }
+

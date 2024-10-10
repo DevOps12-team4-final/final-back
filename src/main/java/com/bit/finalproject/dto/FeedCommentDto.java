@@ -2,8 +2,8 @@ package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedComment;
-import com.bit.finalproject.entity.Member;
 
+import com.bit.finalproject.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -29,11 +29,11 @@ public class FeedCommentDto {
     private String isdelete;
 
     // DTO에서 엔티티로 변환하는 메서드
-    public FeedComment toEntity(Member member, Feed feed) {
+    public FeedComment toEntity(User user, Feed feed) {
         return FeedComment.builder()
                 .commentId(this.commentId)
                 .feed(feed)
-                .member(member)
+                .user(user)
                 .parentCommentId(this.parentCommentId) // 부모 댓글 엔티티 설정
                 .comment(this.comment)
                 .depth(this.depth)

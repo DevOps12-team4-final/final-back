@@ -26,7 +26,7 @@ public class QBoardLike extends EntityPathBase<BoardLike> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QMember member;
+    public final QUser user;
 
     public QBoardLike(String variable) {
         this(BoardLike.class, forVariable(variable), INITS);
@@ -47,7 +47,7 @@ public class QBoardLike extends EntityPathBase<BoardLike> {
     public QBoardLike(Class<? extends BoardLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.board = inits.isInitialized("board") ? new QBoard(forProperty("board"), inits.get("board")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }
 
 }

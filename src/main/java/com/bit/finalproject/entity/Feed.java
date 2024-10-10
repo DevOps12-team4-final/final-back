@@ -31,12 +31,12 @@ public class Feed {
     private Long feedId;
     private String content;
 
-    // feed 엔티티가 member 엔티티와 다대일 관계
+    // feed 엔티티가 user 엔티티와 다대일 관계
     // 여러개의 게시물이 하나의 회원에 연결될 수 있음
-    // member 엔티티의 user_id의 값을 user_id로 feed에 생성한다.
+    // user 엔티티의 user_id의 값을 user_id로 feed에 생성한다.
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private Member member;
+    private User user;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
     @Transient
@@ -71,7 +71,7 @@ public class Feed {
         return FeedDto.builder()
                 .feedId(this.feedId)
                 .content(this.content)
-                .userId(this.member.getUserId())
+                .userId(this.user.getUserId())
                 .regdate(this.regdate)
                 .moddate(this.moddate)
                 .searchKeyword(this.searchKeyword)

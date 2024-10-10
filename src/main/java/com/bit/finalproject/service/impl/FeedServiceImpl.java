@@ -4,7 +4,7 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.FeedFileDto;
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.Member;
+import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ public class FeedServiceImpl implements FeedService {
     private final FileUtils fileUtils;
 
     @Override
-    public Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, Member member, Pageable pageable) {
+    public Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, User user, Pageable pageable) {
 
         feedDto.setRegdate(LocalDateTime.now());
         feedDto.setModdate(LocalDateTime.now());
 
-        // feedDto의 정보를 Feed 엔티티로 변환하면서 member 정보를 같이 넘긴다.
-        Feed feed = feedDto.toEntity(member);
+        // feedDto의 정보를 Feed 엔티티로 변환하면서 user 정보를 같이 넘긴다.
+        Feed feed = feedDto.toEntity(user);
 
         // 파일이 업로드 된다면 진행
         if(uploadFiles != null && uploadFiles.length > 0) {

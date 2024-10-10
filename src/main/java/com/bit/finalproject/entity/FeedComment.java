@@ -30,7 +30,7 @@ public class FeedComment {
 
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private Member member;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "feedId",referencedColumnName = "feedId")
