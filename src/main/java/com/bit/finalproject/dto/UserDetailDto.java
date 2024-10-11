@@ -1,8 +1,11 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.UserBadge;
 import com.bit.finalproject.entity.UserDetail;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +27,12 @@ public class UserDetailDto {
     private Long badge1;
     private Long badge2;
     private Long badge3;
-
+    private List<UserBadge> badgeList;
+    private int totalWeightLifted;         // 운동 무게 총합
+    private int totalMountainsClimbed;     // 등산한 산의 개수
+    private int consecutiveWorkoutDays;    // 연속 운동일수
+    private int yogaSessionsCompleted;     // 요가 수행 회수
+    private double totalDistanceCovered;      // 운동한 거리
     private int followerCount; // 추가: 팔로워 수
     private int followingCount; // 추가: 팔로잉 수
 

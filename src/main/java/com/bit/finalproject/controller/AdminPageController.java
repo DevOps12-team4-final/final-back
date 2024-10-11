@@ -1,7 +1,7 @@
 package com.bit.finalproject.controller;
 
 
-import com.bit.finalproject.service.BadgeService;
+import com.bit.finalproject.service.impl.BadgeEvaluationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 //log라는 이름의 Logger 객체를 생성한다. (info, debug, warn, error 등 로그메시지 사용가능)
 @Slf4j
+@RequiredArgsConstructor
 
-@RequestMapping("/adminpage")
+@RequestMapping("/adminpage/")
 public class AdminPageController {
 
 

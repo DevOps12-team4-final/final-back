@@ -2,10 +2,12 @@ package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.UserDetailDto;
 import com.bit.finalproject.dto.UserDto;
+import com.bit.finalproject.entity.DeletionRequest;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.UserDetail;
 import com.bit.finalproject.entity.UserStatus;
 import com.bit.finalproject.jwt.JwtProvider;
+import com.bit.finalproject.repository.DeletionRequestRepository;
 import com.bit.finalproject.repository.UserDetailRepository;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.UserService;
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserDetailRepository userDetailRepository;
+    private final DeletionRequestRepository deletionRequestRepository; // 삭제 요청 레포지토리 추가
+
 
     @Override
     public UserDto modifymember(UserDto userDto) {
@@ -146,7 +150,7 @@ public class UserServiceImpl implements UserService {
 
         UserDetailDto ReMemberDetailDto = userDetail.toDto();
 
-        UserDto RememberDto = user.toDto();
+
 
 
         return ReMemberDetailDto;
@@ -154,8 +158,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteMember(Long userId) {
+        // 사용자 삭제 요청 생성
+        DeletionRequest deletionRequest = DeletionRequest.builder()
+                .userId(userId)
+                .requestTime(LocalDateTime.now())
+                .build();
 
+        // 삭제 요청 저장
+        deletionRequestRepository.save(deletionRequest);
     }
+
 
     @Override
     public int countFollowers(Long memberId) {

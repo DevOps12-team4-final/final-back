@@ -14,10 +14,7 @@ import lombok.*;
 public class UserData {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "memberSeqGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSeqGenerator")
     private Long dataId;  // camelCase로 변경
 
     @ManyToOne
@@ -25,10 +22,10 @@ public class UserData {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "detailId", referencedColumnName = "detailId")  // MemberDetail 테이블의 ID
+    @JoinColumn(name = "detailId", referencedColumnName = "detailId")  // UserDetail 테이블의 ID
     private UserDetail userDetail;
 
-    // MemberData 엔티티를 DTO로 변환
+    // UserData 엔티티를 DTO로 변환
     public UserDataDto toDto() {
         return UserDataDto.builder()
                 .dataId(this.dataId)
@@ -48,6 +45,12 @@ public class UserData {
                 .badge1(userDetail != null ? userDetail.getBadge1() : null)  // 추가 필드
                 .badge2(userDetail != null ? userDetail.getBadge2() : null)  // 추가 필드
                 .badge3(userDetail != null ? userDetail.getBadge3() : null)  // 추가 필드
+                .totalWeightLifted(userDetail != null ? userDetail.getTotalWeightLifted() : 0) // 추가 필드
+                .totalMountainsClimbed(userDetail != null ? userDetail.getTotalMountainsClimbed() : 0) // 추가 필드
+                .consecutiveWorkoutDays(userDetail != null ? userDetail.getConsecutiveWorkoutDays() : 0) // 추가 필드
+                .yogaSessionsCompleted(userDetail != null ? userDetail.getYogaSessionsCompleted() : 0) // 추가 필드
+                .totalDistanceCovered(userDetail != null ? userDetail.getTotalDistanceCovered() : 0.0) // 추가 필드
+                .badgeList(userDetail != null ? userDetail.getBadgeList() : null) // 배지 리스트 추가
                 .build();
     }
 }

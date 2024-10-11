@@ -17,6 +17,7 @@ public class BadgeDto {
     private Long badgeId;
     private String badgeName;
     private String badgeContent;
+
     private String badgeGrade;
     private String badgeImage;
 

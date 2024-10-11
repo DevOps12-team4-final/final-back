@@ -1,10 +1,9 @@
 package com.bit.finalproject.dto;
 
-import com.bit.finalproject.entity.User;
-import com.bit.finalproject.entity.UserData;
-import com.bit.finalproject.entity.UserDetail;
-import com.bit.finalproject.entity.UserStatus;
+import com.bit.finalproject.entity.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,19 +31,25 @@ public class UserDataDto {
     private Long badge1;
     private Long badge2;
     private Long badge3;
+    private List<UserBadge> badgeList;
+    private int totalWeightLifted;            // 운동 관련 기록 추가
+    private int totalMountainsClimbed;        // 운동 관련 기록 추가
+    private int consecutiveWorkoutDays;       // 운동 관련 기록 추가
+    private int yogaSessionsCompleted;        // 운동 관련 기록 추가
+    private double totalDistanceCovered;      // 운동 관련 기록 추가
 
     private int followerCount; // 추가: 팔로워 수
     private int followingCount; // 추가: 팔로잉 수
 
-    // DTO에서 MemberDto와 MemberDetailDto를 받아서 초기화하는 생성자
+    // DTO에서 UserDto와 UserDetailDto를 받아서 초기화하는 생성자
     public UserDataDto(UserDto userDto, UserDetailDto userDetailDto) {
         this.dataId = null;  // ID는 null로 설정 (새로 생성될 경우)
-        this.userId = userDto.getUserId();  // MemberDto에서 UserId 가져오기
+        this.userId = userDto.getUserId();  // UserDto에서 userId 가져오기
         this.nickname = userDto.getNickname();
         this.userStatus = userDto.getUserStatus();
         this.profileImage = userDto.getProfileImage();
         this.token = userDto.getToken();  // 필요시 추가
-        this.memberDetailId = userDetailDto.getDetailId();  // MemberDetailDto에서 ID 가져오기
+        this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
         this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
         this.gender = userDetailDto.getGender();
         this.phoneNumber = userDetailDto.getPhoneNumber();  // camelCase로 변경
@@ -56,6 +61,16 @@ public class UserDataDto {
         this.badge1 = userDetailDto.getBadge1();
         this.badge2 = userDetailDto.getBadge2();
         this.badge3 = userDetailDto.getBadge3();
+        this.badgeList = userDetailDto.getBadgeList();
+        // 운동 관련 기록 필드 초기화
+        this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
+        this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();
+        this.consecutiveWorkoutDays = userDetailDto.getConsecutiveWorkoutDays();
+        this.yogaSessionsCompleted = userDetailDto.getYogaSessionsCompleted();
+        this.totalDistanceCovered = userDetailDto.getTotalDistanceCovered();
+
+        this.followerCount = userDetailDto.getFollowerCount(); // 팔로워 수 초기화
+        this.followingCount = userDetailDto.getFollowingCount(); // 팔로잉 수 초기화
     }
 
     // 엔티티로 변환
