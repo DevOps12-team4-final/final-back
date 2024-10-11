@@ -68,6 +68,7 @@ public class FollowServiceImpl implements FollowService {
                         .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
                         .followingId(follow.getFollowing().getUserId())         // 팔로잉 대상의 ID
                         .followingName(follow.getFollowing().getUsername())     // 팔로잉 대상의 이름
+                        .followingNameprofileImage(follow.getFollowing().getProfileImage())
                         .build())
                 .collect(Collectors.toList());  // DTO 리스트로 변환 후 반환
     }
@@ -82,6 +83,7 @@ public class FollowServiceImpl implements FollowService {
                         .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
                         .followingId(follow.getFollowing().getUserId())         // 팔로잉 대상의 ID
                         .followingName(follow.getFollowing().getUsername())     // 팔로잉 대상의 이름
+                        .followingNameprofileImage(follow.getFollowing().getProfileImage())
                         .build())
                 .collect(Collectors.toList());  // DTO 리스트로 변환 후 반환
     }

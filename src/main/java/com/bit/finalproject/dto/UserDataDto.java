@@ -22,7 +22,6 @@ public class UserDataDto {
     private Long memberDetailId;      // camelCase로 변경
     private Long memberId;            // camelCase로 변경
     private String gender;
-    private String phoneNumber;        // camelCase로 변경
     private String birthDate;          // camelCase로 변경
     private String usingTitle;         // camelCase로 변경
     private String statusMessage;      // camelCase로 변경
@@ -41,37 +40,37 @@ public class UserDataDto {
     private int followerCount; // 추가: 팔로워 수
     private int followingCount; // 추가: 팔로잉 수
 
-    // DTO에서 UserDto와 UserDetailDto를 받아서 초기화하는 생성자
-    public UserDataDto(UserDto userDto, UserDetailDto userDetailDto) {
-        this.dataId = null;  // ID는 null로 설정 (새로 생성될 경우)
-        this.userId = userDto.getUserId();  // UserDto에서 userId 가져오기
-        this.nickname = userDto.getNickname();
-        this.userStatus = userDto.getUserStatus();
-        this.profileImage = userDto.getProfileImage();
-        this.token = userDto.getToken();  // 필요시 추가
-        this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
-        this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
-        this.gender = userDetailDto.getGender();
-        this.phoneNumber = userDetailDto.getPhoneNumber();  // camelCase로 변경
-        this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경
-        this.usingTitle = userDetailDto.getUsingTitle();  // camelCase로 변경
-        this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
-        this.favoriteExercise = userDetailDto.getFavoriteExercise();
-        this.favoriteExercisePlen = userDetailDto.getFavoriteExercisePlen();
-        this.badge1 = userDetailDto.getBadge1();
-        this.badge2 = userDetailDto.getBadge2();
-        this.badge3 = userDetailDto.getBadge3();
-        this.badgeList = userDetailDto.getBadgeList();
-        // 운동 관련 기록 필드 초기화
-        this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
-        this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();
-        this.consecutiveWorkoutDays = userDetailDto.getConsecutiveWorkoutDays();
-        this.yogaSessionsCompleted = userDetailDto.getYogaSessionsCompleted();
-        this.totalDistanceCovered = userDetailDto.getTotalDistanceCovered();
-
-        this.followerCount = userDetailDto.getFollowerCount(); // 팔로워 수 초기화
-        this.followingCount = userDetailDto.getFollowingCount(); // 팔로잉 수 초기화
-    }
+//    // DTO에서 UserDto와 UserDetailDto를 받아서 초기화하는 생성자
+//    public UserDataDto(UserDto userDto, UserDetailDto userDetailDto) {
+//        this.dataId = null;  // ID는 null로 설정 (새로 생성될 경우)
+//        this.userId = userDto.getUserId();  // UserDto에서 userId 가져오기
+//        this.nickname = userDto.getNickname();
+//        this.userStatus = userDto.getUserStatus();
+//        this.profileImage = userDto.getProfileImage();
+//        this.token = userDto.getToken();  // 필요시 추가
+//        this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
+//        this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
+//        this.gender = userDetailDto.getGender();
+//        this.phoneNumber = userDetailDto.getPhoneNumber();  // camelCase로 변경
+//        this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경
+//        this.usingTitle = userDetailDto.getUsingTitle();  // camelCase로 변경
+//        this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
+//        this.favoriteExercise = userDetailDto.getFavoriteExercise();
+//        this.favoriteExercisePlen = userDetailDto.getFavoriteExercisePlen();
+//        this.badge1 = userDetailDto.getBadge1();
+//        this.badge2 = userDetailDto.getBadge2();
+//        this.badge3 = userDetailDto.getBadge3();
+//        this.badgeList = userDetailDto.getBadgeList();
+//        // 운동 관련 기록 필드 초기화
+//        this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
+//        this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();
+//        this.consecutiveWorkoutDays = userDetailDto.getConsecutiveWorkoutDays();
+//        this.yogaSessionsCompleted = userDetailDto.getYogaSessionsCompleted();
+//        this.totalDistanceCovered = userDetailDto.getTotalDistanceCovered();
+//
+//        this.followerCount = userDetailDto.getFollowerCount(); // 팔로워 수 초기화
+//        this.followingCount = userDetailDto.getFollowingCount(); // 팔로잉 수 초기화
+//    }
 
     // 엔티티로 변환
     public UserData toEntity(User user, UserDetail userDetail) {

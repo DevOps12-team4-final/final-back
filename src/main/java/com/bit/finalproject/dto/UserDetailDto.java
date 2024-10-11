@@ -18,7 +18,6 @@ public class UserDetailDto {
     private Long detailId; // 필드 이름을 dtailId로 수정
     private Long memberId; // Member의 ID만을 가지고 있음
     private String gender;
-    private String phoneNumber; // snake_case에서 camelCase로 변경
     private String birthDate; // snake_case에서 camelCase로 변경
     private String usingTitle; // typo 수정 (useing -> using)
     private String statusMessage; // snake_case에서 camelCase로 변경
@@ -47,7 +46,6 @@ public class UserDetailDto {
                 .detailId(this.detailId) // 필드 이름 수정 (camelCase로 변경)
                 .user(user)  // Member 엔티티 설정
                 .gender(this.gender)
-                .phoneNumber(this.phoneNumber) // 필드 이름 수정 (camelCase로 변경)
                 .birthDate(this.birthDate) // 필드 이름 수정 (camelCase로 변경)
                 .usingTitle(this.usingTitle) // 필드 이름 수정 (camelCase로 변경)
                 .statusMessage(this.statusMessage) // 필드 이름 수정 (camelCase로 변경)
@@ -56,6 +54,7 @@ public class UserDetailDto {
                 .badge1(this.badge1)
                 .badge2(this.badge2)
                 .badge3(this.badge3)
+
                 .followerCount(this.followerCount) // 팔로워 수 추가
                 .followingCount(this.followingCount) // 팔로잉 수 추가
                 .build();

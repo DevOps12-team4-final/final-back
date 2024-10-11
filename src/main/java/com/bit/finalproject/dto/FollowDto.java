@@ -17,7 +17,7 @@ public class FollowDto {
     private Long followingId;     // 팔로잉 ID
     private String followerName;  // 팔로워 이름 (추가적인 정보)
     private String followingName; // 팔로잉 이름 (추가적인 정보)
-
+    private String followingNameprofileImage;
     // followDto를 엔티티로 변환하는 메서드
     public Follow toEntity(User follower, User following) {
         return Follow.builder()

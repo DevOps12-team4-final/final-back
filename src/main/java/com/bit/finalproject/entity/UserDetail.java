@@ -24,7 +24,6 @@ public class UserDetail {
     private User user;  // 유저와 1:1 관계
 
     private String gender;
-    private String phoneNumber;
     private String birthDate;
     private String usingTitle;
     private String statusMessage;
@@ -63,7 +62,6 @@ public class UserDetail {
                 .detailId(this.detailId)
                 .memberId(this.user != null ? this.user.getUserId() : null)
                 .gender(this.gender)
-                .phoneNumber(this.phoneNumber)
                 .birthDate(this.birthDate)
                 .usingTitle(this.usingTitle)
                 .statusMessage(this.statusMessage)

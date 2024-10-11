@@ -36,7 +36,6 @@ public class UserData {
                 .memberId(userDetail != null && userDetail.getUser() != null ?
                         userDetail.getUser().getUserId() : null)  // null 체크 추가
                 .gender(userDetail != null ? userDetail.getGender() : null)  // null 체크 추가
-                .phoneNumber(userDetail != null ? userDetail.getPhoneNumber() : null)  // camelCase 통일
                 .birthDate(userDetail != null ? userDetail.getBirthDate() : null)  // camelCase 통일
                 .usingTitle(userDetail != null ? userDetail.getUsingTitle() : null)  // camelCase 통일
                 .statusMessage(userDetail != null ? userDetail.getStatusMessage() : null)  // camelCase 통일
