@@ -8,11 +8,20 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    boolean existsByFollowerIdAndFolloweeId(Long followerId, Long followeeId); // 팔로우 관계 확인
-    void deleteByFollowerIdAndFolloweeId(Long followerId, Long followeeId); // 팔로우 관계 삭제
 
-    List<Follow> findAllByFollowingId(Long followingId);  // 특정 사용자를 팔로우하는 사람들 조회
-    List<Follow> findAllByFollowerId(Long followerId);    // 특정 사용자가 팔로우하는 사람들 조회
+    // 팔로우 관계 확인 (Follower와 Followee의 User ID 사용)
+    boolean existsByFollower_UserIdAndFollowing_UserId(Long followerId, Long followingId);
 
-    Optional<Object> findByFollowerAndFollowing(User follower, User following);
+    // 팔로우 관계 삭제 (Follower와 Followee의 User ID 사용)
+    void deleteByFollower_UserIdAndFollowing_UserId(Long followerId, Long followingId);
+
+    // 팔로워의 User ID로 모든 팔로우 관계 조회
+    List<Follow> findAllByFollower_UserId(Long followerId);
+
+    // 팔로잉의 User ID로 모든 팔로우 관계 조회
+    List<Follow> findAllByFollowing_UserId(Long followingId);
+
+    // Follower와 Following 객체로 팔로우 관계 조회
+    Optional<Follow> findByFollowerAndFollowing(User follower, User following);
 }
+

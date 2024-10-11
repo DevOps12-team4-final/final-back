@@ -62,7 +62,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<FollowDto> getFollowers(Long userId) {
         // 특정 사용자를 팔로우하는 모든 팔로워 조회
-        return followRepository.findAllByFollowingId(userId).stream()
+        return followRepository.findAllByFollowing_UserId(userId).stream()
                 .map(follow -> FollowDto.builder()
                         .followerId(follow.getFollower().getUserId())           // 팔로워의 ID
                         .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
@@ -76,7 +76,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<FollowDto> getFollowings(Long userId) {
         // 특정 사용자가 팔로우하는 모든 사용자 조회
-        return followRepository.findAllByFollowerId(userId).stream()
+        return followRepository.findAllByFollowing_UserId(userId).stream()
                 .map(follow -> FollowDto.builder()
                         .followerId(follow.getFollower().getUserId())           // 팔로워의 ID
                         .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
