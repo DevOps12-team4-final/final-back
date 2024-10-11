@@ -30,9 +30,9 @@ public class BadgeAlarm {
     private User alarmedUser;
     private String alarmContent;
     private String alarmCheck;
-    @ManyToOne
-    @JoinColumn(name="alarm_user_id", referencedColumnName = "userId")
-    private User alarmingUser;
+    @OneToOne
+    @JoinColumn(name="user_badge_id", referencedColumnName = "userBadgeId")
+    private UserBadge userBadge;
     private LocalDateTime regdate;
 
     public BadgeAlarmDto toDto(){
@@ -41,10 +41,10 @@ public class BadgeAlarm {
                 .alarmedUserId(alarmedUser.getUserId())
                 .alarmContent(this.alarmContent)
                 .alarmCheck(this.alarmCheck)
-                .alarmingUserId(alarmingUser.getUserId())
+                .userBadgeId(userBadge.getUserBadgeId())
                 .regdate(this.regdate)
                 .build();
     }
-    }
+
 
 }

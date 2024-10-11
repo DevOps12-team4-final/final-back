@@ -1,4 +1,7 @@
 package com.bit.finalproject.repository;
 
-public interface BadgeAlarmRepository {
+import com.bit.finalproject.entity.BadgeAlarm;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BadgeAlarmRepository  extends JpaRepository<BadgeAlarm, Long> {
 }

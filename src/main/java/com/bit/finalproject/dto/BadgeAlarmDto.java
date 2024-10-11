@@ -2,6 +2,7 @@ package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.BadgeAlarm;
 import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.UserBadge;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,16 +19,16 @@ public class BadgeAlarmDto {
     private Long alarmedUserId;
     private String alarmContent;
     private String alarmCheck;
-    private Long alarmingUserId;
+    private Long userBadgeId;
     private LocalDateTime regdate;
 
-    public BadgeAlarm toEntity(User alarmedUser, User alarmingUser){
+    public BadgeAlarm toEntity(User alarmedUser, UserBadge userBadge){
         return BadgeAlarm.builder()
                 .badgeAlarmId(this.badgeAlarmId)
                 .alarmedUser(alarmedUser)
                 .alarmContent(this.alarmContent)
                 .alarmCheck(this.alarmCheck)
-                .alarmingUser(alarmingUser)
+                .userBadge(userBadge)
                 .regdate(this.regdate)
                 .build();
     }
