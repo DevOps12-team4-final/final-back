@@ -1,8 +1,8 @@
 package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.SearchDto;
-import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.QUser;
+import com.bit.finalproject.entity.User;
 import com.bit.finalproject.service.SearchService;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
