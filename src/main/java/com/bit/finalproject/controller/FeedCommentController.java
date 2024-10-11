@@ -4,8 +4,12 @@ import com.bit.finalproject.dto.FeedCommentDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.FeedComment;
+import com.bit.finalproject.entity.User;
+import com.bit.finalproject.service.CommentLikeService;
 import com.bit.finalproject.service.FeedCommentService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +20,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/feed-comment")
 @RequiredArgsConstructor
+@Slf4j
 public class FeedCommentController {
 
     private final FeedCommentService feedCommentService;
+
 
     @PostMapping
     public ResponseEntity<ResponseDto<FeedCommentDto>> createComment(
@@ -136,4 +144,39 @@ public class FeedCommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
+
+    private final CommentLikeService commentLikeService;
+
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ResponseDto<?>> likeComment(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        ResponseDto<String> responseDto = new ResponseDto<>();
+        try {
+            commentLikeService.likeComment(id, userDetails.getUser().getUserId());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Comment liked successfully");
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Error liking comment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
+
+    // unlikeComment API 추가
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<ResponseDto<?>> unlikeComment(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        ResponseDto<String> responseDto = new ResponseDto<>();
+        try {
+            commentLikeService.unlikeComment(id, userDetails.getUser().getUserId());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Comment unliked successfully");
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Error unliking comment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
+    
 }

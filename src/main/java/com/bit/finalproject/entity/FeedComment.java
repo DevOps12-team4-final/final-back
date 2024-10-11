@@ -7,6 +7,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -22,10 +24,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FeedComment {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "feedCommentSeqGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     @ManyToOne
@@ -42,8 +41,8 @@ public class FeedComment {
     // 부모 댓글 ID는 Long 타입으로 설정
     private Long parentCommentId;  // 부모 댓글의 ID
 
-    @Column(nullable = false) //DB에서 null 허용 안 됨
-    private int ordernumber = 0;  // 기본값 0 설정
+    @Builder.Default
+    private int orderNumber = 0;  // 기본값 0 설정
 
     @CreatedDate
     private LocalDateTime regdate;  // 등록일
@@ -55,6 +54,11 @@ public class FeedComment {
 
     private String isdelete;
 
+    // 좋아요와의 일대다 관계
+    @OneToMany(mappedBy = "feedComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> likes = new ArrayList<>();
+
+
     public FeedCommentDto toDto(){
         return FeedCommentDto.builder()
                 .commentId(commentId)
@@ -62,7 +66,7 @@ public class FeedComment {
                 .parentCommentId(parentCommentId)
                 .comment(comment)
                 .depth(depth)
-                .ordernumber(ordernumber)
+                .orderNumber(orderNumber)
                 .regdate(regdate)
                 .moddate(moddate)
                 .isdelete(isdelete)

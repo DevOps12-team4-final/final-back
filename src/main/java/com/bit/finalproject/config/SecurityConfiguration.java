@@ -55,8 +55,7 @@ public class SecurityConfiguration {
                             "/users/login",
                             "/feeds/**",
                             "/feed-comment",
-                            "/feed-comment/feed/**",
-                            "/feed-comment/feed/comment/update/**").permitAll();
+                            "/feed-comment/feed/**").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
