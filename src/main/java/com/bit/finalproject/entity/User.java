@@ -59,6 +59,7 @@ public class User {
     private List<FeedLike> likes;  // 사용자가 누른 좋아요 리스트
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CommentLike> commentLikes = new ArrayList<>();
 
     public UserDto toDto() {

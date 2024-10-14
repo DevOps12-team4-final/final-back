@@ -1,6 +1,7 @@
 package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedCommentDto;
+import com.bit.finalproject.dto.LikeDataDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.FeedComment;
@@ -20,10 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/feed-comment")
@@ -65,6 +63,7 @@ public class FeedCommentController {
             response.setStatusMessage("Error occurred while creating comment.");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
     // 특정 피드의 모든 댓글을 조회하는 API
@@ -148,11 +147,11 @@ public class FeedCommentController {
     private final CommentLikeService commentLikeService;
 
 
-    @PostMapping("/{id}/like")
-    public ResponseEntity<ResponseDto<?>> likeComment(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("/{commentId}/like")
+    public ResponseEntity<ResponseDto<?>> likeComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ResponseDto<String> responseDto = new ResponseDto<>();
         try {
-            commentLikeService.likeComment(id, userDetails.getUser().getUserId());
+            commentLikeService.likeComment(commentId, userDetails.getUser().getUserId());
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("Comment liked successfully");
             return ResponseEntity.ok(responseDto);
@@ -164,11 +163,11 @@ public class FeedCommentController {
     }
 
     // unlikeComment API 추가
-    @DeleteMapping("/{id}/like")
-    public ResponseEntity<ResponseDto<?>> unlikeComment(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @DeleteMapping("/{commentId}/like")
+    public ResponseEntity<ResponseDto<?>> unlikeComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ResponseDto<String> responseDto = new ResponseDto<>();
         try {
-            commentLikeService.unlikeComment(id, userDetails.getUser().getUserId());
+            commentLikeService.unlikeComment(commentId, userDetails.getUser().getUserId());
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("Comment unliked successfully");
             return ResponseEntity.ok(responseDto);
@@ -178,5 +177,18 @@ public class FeedCommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
-    
+
+    // 댓글 좋아요 수와 좋아요한 사용자 목록을 가져오는 API
+    @GetMapping("/{id}/likes-user")
+    public ResponseDto<LikeDataDto> getLikeCountAndLikedUsers(@PathVariable("id") Long commentId) {
+        // commentLikeService를 통해 좋아요 수와 사용자 목록을 가져옴
+        LikeDataDto likeData = commentLikeService.getLikeCountAndUsers(commentId);
+
+        // ResponseDto 객체 생성 후 setItem 호출
+        ResponseDto<LikeDataDto> response = new ResponseDto<>();
+        response.setItem(likeData);
+
+        return response; // 설정한 ResponseDto 반환
+
+    }
 }

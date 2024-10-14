@@ -1,30 +1,28 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.FeedCommentDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@SequenceGenerator(
-        name = "feedCommentSeqGenerator",
-        sequenceName = "FEED_COMMENT_SEQ",
-        initialValue = 1,
-        allocationSize = 1
-)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class FeedComment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long commentId;
 
     @ManyToOne
@@ -41,8 +39,8 @@ public class FeedComment {
     // 부모 댓글 ID는 Long 타입으로 설정
     private Long parentCommentId;  // 부모 댓글의 ID
 
-    @Builder.Default
-    private int orderNumber = 0;  // 기본값 0 설정
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int orderNumber;
 
     @CreatedDate
     private LocalDateTime regdate;  // 등록일
@@ -56,7 +54,10 @@ public class FeedComment {
 
     // 좋아요와의 일대다 관계
     @OneToMany(mappedBy = "feedComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentLike> likes = new ArrayList<>();
+    @JsonManagedReference  // 직렬화할 때 순환 참조를 방지
+    @Builder.Default
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
 
 
     public FeedCommentDto toDto(){

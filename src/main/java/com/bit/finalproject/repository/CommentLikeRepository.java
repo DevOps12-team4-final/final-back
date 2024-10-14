@@ -16,5 +16,11 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     Optional<CommentLike> findByFeedCommentAndUser(FeedComment feedComment, User user);
     // 댓글 사용자를 찾는
 
+    // 특정 댓글의 좋아요 개수
+    Long countByFeedCommentCommentId(Long commentId);
+
+    // 특정 댓글을 좋아요한 사용자 목록
+    List<CommentLike> findByFeedCommentCommentId(Long commentId);
+
 
 }

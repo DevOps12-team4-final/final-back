@@ -1,5 +1,6 @@
 package com.bit.finalproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class CommentLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commentId", nullable = false)
+    @JsonBackReference  // 역방향 참조 무시
     private FeedComment feedComment; //FeedComment와의 관계
 
     @ManyToOne(fetch = FetchType.LAZY)

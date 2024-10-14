@@ -1,6 +1,7 @@
 package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.FeedCommentDto;
+import com.bit.finalproject.dto.NotificationDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedComment;
@@ -9,6 +10,7 @@ import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.FeedCommentService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +26,14 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class FeedCommentServiceImpl implements FeedCommentService {
 
     private final FeedCommentRepository feedCommentRepository;
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private NotificationServiceImpl notificationService;
 
     @Override
     public FeedCommentDto createComment(FeedCommentDto feedCommentDto) {
@@ -40,6 +44,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         // FeedComment 엔티티 생성
         FeedComment feedComment = new FeedComment();
         feedComment.setComment(feedCommentDto.getComment());
+        feedComment.setOrderNumber(0);  // 기본값 0을 명시적으로 설정
         feedComment.setFeed(feed);  // Feed 엔티티 설정
 
         // User 정보 설정
@@ -69,6 +74,35 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         // 댓글 저장
         FeedComment savedComment = feedCommentRepository.save(feedComment);
 
+        // 알림 생성
+        NotificationDto notificationDto = null;
+        try {
+            notificationDto = new NotificationDto(
+                    null,
+                    savedComment.getUser().getUserId(),  // 댓글 작성자에게 알림
+                    "새로운 댓글이 달렸습니다.",
+                    savedComment.getCommentId(),  // 댓글 ID
+                    "COMMENT",
+                    LocalDateTime.now(),
+                    false
+            );
+            notificationService.createNotification(notificationDto);
+        } catch (Exception e) {
+            log.error("알림 생성 중 오류 발생: {}", e.getMessage());
+        }
+
+        // 필드 값들을 로그로 출력
+        log.info("feedComment ID: {}", savedComment.getCommentId());
+        log.info("feedComment 작성자 ID: {}", savedComment.getUser().getUserId());
+
+        if (notificationDto != null) {
+            log.info("Alarm Content: {}", notificationDto.getAlarmContent());
+            log.info("Alarm Target ID: {}", notificationDto.getAlarmTargetId());
+            log.info("Alarm Type: {}", notificationDto.getAlarmType());
+            log.info("Created Alarm Time: {}", notificationDto.getCreatedAlarmTime());
+            log.info("Is Read: {}", notificationDto.isRead());
+        }
+
         // 저장된 댓글을 FeedCommentDto로 변환하여 반환
         FeedCommentDto savedCommentDto = new FeedCommentDto();
         savedCommentDto.setFeedId(savedComment.getFeed().getFeedId());  // Feed ID 설정
@@ -84,6 +118,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         if (savedComment.getParentCommentId() != null) {
             savedCommentDto.setParentCommentId(savedComment.getParentCommentId());
         }
+
 
         return savedCommentDto;
     }
