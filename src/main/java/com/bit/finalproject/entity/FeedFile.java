@@ -23,7 +23,7 @@ public class FeedFile {
             strategy = GenerationType.SEQUENCE,
             generator = "feedFileSeqGenerator"
     )
-    private Long feedFile_id;
+    private Long feedFileId;
 
     // feedFile 엔티티가 feed 엔티티와 다대일 관계
     // 여러개의 게시물파일이이 하나의 게시물에 연결될 수 있음
@@ -44,7 +44,7 @@ public class FeedFile {
 
     public FeedFileDto toDto() {
         return FeedFileDto.builder()
-                .feedFile_id(this.feedFile_id)
+                .feedFileId(this.feedFileId)
                 .feedId(this.feed.getFeedId())
                 .filename(this.filename)
                 .filepath(this.filepath)

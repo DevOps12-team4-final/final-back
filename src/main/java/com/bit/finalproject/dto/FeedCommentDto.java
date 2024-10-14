@@ -22,7 +22,7 @@ public class FeedCommentDto {
     private String comment;
     private Long parentCommentId;  // 부모 댓글 ID
     private int depth;
-    private int ordernumber;
+    private int orderNumber;
     private LocalDateTime regdate;  // 등록일
     private LocalDateTime moddate;  // 수정일
     private LocalDateTime deletedate;
@@ -37,7 +37,7 @@ public class FeedCommentDto {
                 .parentCommentId(this.parentCommentId) // 부모 댓글 엔티티 설정
                 .comment(this.comment)
                 .depth(this.depth)
-                .ordernumber(this.ordernumber)
+                .orderNumber(this.orderNumber)
                 .regdate(this.regdate)
                 .moddate(this.moddate)
                 .deletedate(this.deletedate)

@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @ToString
 public class FeedFileDto {
-    private Long feedFile_id;
+    private Long feedFileId;
     private Long feedId;
     private String filename;
     private String filepath;
@@ -22,7 +22,7 @@ public class FeedFileDto {
 
     public FeedFile toEntity(Feed feed) {
         return FeedFile.builder()
-                .feedFile_id(this.feedFile_id)
+                .feedFileId(this.feedFileId)
                 .feed(feed)
                 .filename(this.filename)
                 .filepath(this.filepath)

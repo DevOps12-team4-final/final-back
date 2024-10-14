@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                             "/feeds/**",
                             "/feed-comment",
                             "/feed-comment/feed/**",
-                            "/feed-comment/feed/comment/update/**").permitAll();
+                            "/notifications/**").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();

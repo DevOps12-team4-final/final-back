@@ -1,11 +1,16 @@
 package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedCommentDto;
+import com.bit.finalproject.dto.LikeDataDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.FeedComment;
+import com.bit.finalproject.entity.User;
+import com.bit.finalproject.service.CommentLikeService;
 import com.bit.finalproject.service.FeedCommentService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +21,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/feed-comment")
 @RequiredArgsConstructor
+@Slf4j
 public class FeedCommentController {
 
     private final FeedCommentService feedCommentService;
+
 
     @PostMapping
     public ResponseEntity<ResponseDto<FeedCommentDto>> createComment(
@@ -57,6 +63,7 @@ public class FeedCommentController {
             response.setStatusMessage("Error occurred while creating comment.");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
     // 특정 피드의 모든 댓글을 조회하는 API
@@ -135,5 +142,53 @@ public class FeedCommentController {
             responseDto.setStatusMessage("댓글 삭제 중 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
+    }
+
+    private final CommentLikeService commentLikeService;
+
+
+    @PostMapping("/{commentId}/like")
+    public ResponseEntity<ResponseDto<?>> likeComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        ResponseDto<String> responseDto = new ResponseDto<>();
+        try {
+            commentLikeService.likeComment(commentId, userDetails.getUser().getUserId());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Comment liked successfully");
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Error liking comment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
+
+    // unlikeComment API 추가
+    @DeleteMapping("/{commentId}/like")
+    public ResponseEntity<ResponseDto<?>> unlikeComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        ResponseDto<String> responseDto = new ResponseDto<>();
+        try {
+            commentLikeService.unlikeComment(commentId, userDetails.getUser().getUserId());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Comment unliked successfully");
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Error unliking comment: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
+
+    // 댓글 좋아요 수와 좋아요한 사용자 목록을 가져오는 API
+    @GetMapping("/{id}/likes-user")
+    public ResponseDto<LikeDataDto> getLikeCountAndLikedUsers(@PathVariable("id") Long commentId) {
+        // commentLikeService를 통해 좋아요 수와 사용자 목록을 가져옴
+        LikeDataDto likeData = commentLikeService.getLikeCountAndUsers(commentId);
+
+        // ResponseDto 객체 생성 후 setItem 호출
+        ResponseDto<LikeDataDto> response = new ResponseDto<>();
+        response.setItem(likeData);
+
+        return response; // 설정한 ResponseDto 반환
+
     }
 }
