@@ -44,9 +44,6 @@ public class Notification {
     @Column(nullable = false)
     private boolean isRead;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
 
     // NotificationDto로 변환하는 메서드 수정
     public NotificationDto toDto() {
