@@ -20,6 +20,7 @@ public class UserDto {
     private String username;
     private String nickname;
     private LocalDateTime lastLoginDate;
+    private String PhoneNumber;
     private UserStatus userStatus;
     private String profileImage;
     private String role;

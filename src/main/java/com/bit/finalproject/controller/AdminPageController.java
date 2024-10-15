@@ -1,6 +1,8 @@
 package com.bit.finalproject.controller;
 
 
+import com.bit.finalproject.dto.StatisticsDto;
+import com.bit.finalproject.service.StatisticsService;
 import com.bit.finalproject.service.impl.BadgeEvaluationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/adminpage/")
 public class AdminPageController {
 
+    private final StatisticsService statisticsService;
 
+    @GetMapping("/summary")
+    public StatisticsDto getStatisticsSummary() {
+        return statisticsService.getStatisticsSummary();
+    }
 
 
 }

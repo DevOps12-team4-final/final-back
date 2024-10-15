@@ -51,7 +51,7 @@ public class User {
     private LocalDateTime deletedAt; // 삭제 요청 시간
 
     // 양방향 매핑: Member가 MemberDetail을 소유
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "userDto", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserDetail userDetail;
 
     // 양방향 매핑 편의 메서드
