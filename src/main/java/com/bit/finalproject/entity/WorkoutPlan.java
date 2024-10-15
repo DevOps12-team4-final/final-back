@@ -30,7 +30,7 @@ public class WorkoutPlan {
     private Long planId;
 
     @OneToOne // plan은 plan계획일 별로 1개씩만 가능
-    @JoinColumn( name = "member_id", referencedColumnName = "member_id") // Member 파일 User로 바뀌는 거 보고 수정하기
+    @JoinColumn( name = "user_id", referencedColumnName = "userId") // Member 파일 User로 바뀌는 거 보고 수정하기
     private User user;
 
     private LocalDateTime planDate; // plan계획일
