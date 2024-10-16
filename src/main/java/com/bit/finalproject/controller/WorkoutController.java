@@ -40,7 +40,6 @@ public class WorkoutController {
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
             responseDto.setItem(workoutDtoList);
-            // 데이터 값 확인해봐야함
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -80,10 +79,9 @@ public class WorkoutController {
         }
     }
 
-
-//    // ----------------------------------------- //
-//    // [오늘 운동 완료하기] 버튼 클릭시 캘린더 박제하는 기능 //
-//    // ----------------------------------------- //
+    // ----------------------------------------- //
+    // [오늘 운동 완료하기] 버튼 클릭시 캘린더 박제하는 기능 //
+    // ----------------------------------------- //
     @PostMapping("/plan")
     public ResponseEntity<?> addWorkoutPlanOnCalendar(@RequestBody List<WorkoutRoutineDto> workoutRoutineDtoList) {
         ResponseDto<WorkoutPlanDto> responseDto = new ResponseDto<>();
