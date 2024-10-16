@@ -18,7 +18,4 @@ public class BadgeController {
 
     private final BadgeService badgeService;
 
-//    @PostMapping("/add")
-//    public ResponseDto<?> addBadge(@RequestParam Badge badge)
-
 }

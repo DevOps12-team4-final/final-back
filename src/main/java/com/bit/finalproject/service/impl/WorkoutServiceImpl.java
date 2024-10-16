@@ -3,11 +3,13 @@ package com.bit.finalproject.service.impl;
 import com.bit.finalproject.dto.WorkoutDto;
 import com.bit.finalproject.dto.WorkoutPlanDto;
 import com.bit.finalproject.dto.WorkoutRoutineDto;
-import com.bit.finalproject.entity.*;
+import com.bit.finalproject.entity.WorkoutRoutine;
+import com.bit.finalproject.entity.WorkoutSet;
 import com.bit.finalproject.jwt.JwtProvider;
+import com.bit.finalproject.repository.WorkoutRepository;
+import com.bit.finalproject.entity.*;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.repository.WorkoutPlanRepository;
-import com.bit.finalproject.repository.WorkoutRepository;
 import com.bit.finalproject.repository.WorkoutRoutineRepository;
 import com.bit.finalproject.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
@@ -46,10 +48,6 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         for (WorkoutDto workoutDto : workoutDtoList) {
             WorkoutRoutineDto workoutRoutineDto = new WorkoutRoutineDto();
-//            workoutRoutineDto.setWorkoutId(workoutRepository.findByWorkoutId(workoutDto.getWorkoutId()).getWorkoutId());
-//            workoutRoutineDto.setWorkoutName(workoutRepository.findByWorkoutId(workoutDto.getWorkoutId()).getWorkoutName());
-//            workoutRoutineDto.setMainCategory(workoutRepository.findByWorkoutId(workoutDto.getWorkoutId()).getMainCategory());
-//            workoutRoutineDto.getWorkoutSetList().add(new WorkoutSet()); // 이거 setWorkoutSetList 해야하나 ?
 
             workoutRoutineDto.setWorkoutId(workoutDto.getWorkoutId());
             workoutRoutineDto.setWorkoutName(workoutDto.getWorkoutName());
@@ -64,22 +62,6 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutRoutineDtoList;
     }
 
-//    @Override
-//    public WorkoutPlanDto addWorkoutPlan(List<WorkoutRoutineDto> workoutRoutineDtoList) {
-//        // set루틴리스트 할건데 매개변수가 루틴Dto리스트라 엔터티로 변환 해줘서 담아야함.
-//        // 하나씩 변환하고 루틴리스트에 add해서 -> set루틴리스트 하기
-//        WorkoutPlanDto workoutPlanDto = new WorkoutPlanDto();
-//        List<WorkoutRoutine> workoutRoutineList = new ArrayList<>();
-//
-//        for (WorkoutRoutineDto workoutRoutineDto : workoutRoutineDtoList) {
-//            workoutRepository.saveWorkoutRoutine(workoutRoutineDto); // 루틴 DB에 저장 //
-//            workoutRoutineList.add(workoutRoutineDto.toEntity(workoutRepository.findByWorkoutId(workoutRoutineDto.getWorkoutId()).toEntity())); // 값 찍어보기
-//        }
-//        workoutPlanDto.setWorkoutRoutineList(workoutRoutineList);
-//        workoutRepository.saveWorkoutPlan(workoutPlanDto); // 플랜 DB에 저장 //
-//
-//        return workoutPlanDto;
-//    }
     // ================= //
     // 여기서부터 다시 작업하기 //
     // ================= //
@@ -91,13 +73,12 @@ public class WorkoutServiceImpl implements WorkoutService {
         // WorkoutRoutineDto를 엔티티로 변환하여 리스트에 추가
         for (WorkoutRoutineDto workoutRoutineDto : workoutRoutineDtoList) {
             // WorkoutRoutine 엔티티 변환
-            Workout workout = workoutRepository.findByWorkoutId(workoutRoutineDto.getWorkoutId()).toEntity(); // workout 찾기
+            Workout workout = workoutRepository.findByWorkoutId(workoutRoutineDto.getWorkoutId()); // workout 찾기
             WorkoutRoutine workoutRoutine = workoutRoutineDto.toEntity(workout);
 
             workoutRoutineList.add(workoutRoutine); // 루틴 엔티티를 리스트에 추가 (루프 후에 일괄 저장)
         }
-//        User user = userRepository.findByUserId(workoutPlanDto.getUser_id()); // UserRepository에 findByUserId 추가해야함.
-        User user = new User();
+        User user = userRepository.findByUserId(workoutPlanDto.getUserId()); // UserRepository에 findByUserId 추가해야함.
         WorkoutPlan workoutPlan = workoutPlanDto.toEntity(user); // WorkoutPlan 엔티티 변환
 
         workoutPlanDto.setWorkoutRoutineList(workoutRoutineList);  // for문으로 변환한 엔티티 plan객체에 추가

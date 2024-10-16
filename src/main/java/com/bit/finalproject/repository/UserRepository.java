@@ -1,6 +1,5 @@
 package com.bit.finalproject.repository;
 
-import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     long countByNickname(String nickname);
 
-    UserDto findByUserId(Long userId);
+    User findByUserId(Long userId);
 }

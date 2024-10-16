@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class UserDto {
-
-    private Long userId;
+    private Long userId;  // 소문자 userId로 수정
     private String email;
     private String password;
     private String username;
