@@ -3,19 +3,12 @@ package com.bit.finalproject.service.impl;
 import com.bit.finalproject.dto.WorkoutDto;
 import com.bit.finalproject.dto.WorkoutPlanDto;
 import com.bit.finalproject.dto.WorkoutRoutineDto;
-<<<<<<< HEAD
-import com.bit.finalproject.entity.WorkoutRoutine;
-import com.bit.finalproject.entity.WorkoutSet;
-import com.bit.finalproject.jwt.JwtProvider;
-import com.bit.finalproject.repository.WorkoutRepository;
-=======
 import com.bit.finalproject.entity.*;
 import com.bit.finalproject.jwt.JwtProvider;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.repository.WorkoutPlanRepository;
 import com.bit.finalproject.repository.WorkoutRepository;
 import com.bit.finalproject.repository.WorkoutRoutineRepository;
->>>>>>> origin/feature/workout-woobin
 import com.bit.finalproject.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -104,7 +97,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             workoutRoutineList.add(workoutRoutine); // 루틴 엔티티를 리스트에 추가 (루프 후에 일괄 저장)
         }
 //        User user = userRepository.findByUserId(workoutPlanDto.getUser_id()); // UserRepository에 findByUserId 추가해야함.
-
+        User user = new User();
         WorkoutPlan workoutPlan = workoutPlanDto.toEntity(user); // WorkoutPlan 엔티티 변환
 
         workoutPlanDto.setWorkoutRoutineList(workoutRoutineList);  // for문으로 변환한 엔티티 plan객체에 추가

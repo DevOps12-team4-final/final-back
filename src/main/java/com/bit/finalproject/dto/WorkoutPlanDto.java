@@ -1,9 +1,5 @@
 package com.bit.finalproject.dto;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/feature/workout-woobin
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.WorkoutPlan;
 import com.bit.finalproject.entity.WorkoutRoutine;
@@ -20,11 +16,7 @@ import java.util.List;
 public class WorkoutPlanDto {
 
     private Long planId;
-<<<<<<< HEAD
     private Long userId;
-=======
-    private Long user_id;
->>>>>>> origin/feature/workout-woobin
     private LocalDateTime planDate;
     private LocalDateTime regdate;
     private LocalDateTime moddate;

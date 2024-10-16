@@ -52,15 +52,11 @@ public class SecurityConfiguration {
                             "/users/email-check",
                             "/users/nickname-check",
                             "/users/join",
-<<<<<<< HEAD
-                            "/users/login").permitAll();
-=======
                             "/users/login",
                             "/feeds/**",
                             "/feed-comment",
                             "/feed-comment/feed/**",
                             "/notifications/**").permitAll();
->>>>>>> origin/feature/workout-woobin
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
