@@ -29,7 +29,6 @@ public class Workout {
     private String subCategory;
     private String equipment;
     private String detailImage;
-    private int favoriteWorkout;
     @Transient
     private int checkForAddWorkout; // 1 == 완료 체크
 
@@ -41,7 +40,6 @@ public class Workout {
                 .subCategory(this.subCategory)
                 .equipment(this.equipment)
                 .detailImage(this.detailImage)
-                .favoriteWorkout(this.favoriteWorkout)
                 .build();
     }
 }

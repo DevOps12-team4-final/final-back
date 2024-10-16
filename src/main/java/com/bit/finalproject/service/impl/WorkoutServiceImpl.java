@@ -3,13 +3,11 @@ package com.bit.finalproject.service.impl;
 import com.bit.finalproject.dto.WorkoutDto;
 import com.bit.finalproject.dto.WorkoutPlanDto;
 import com.bit.finalproject.dto.WorkoutRoutineDto;
-import com.bit.finalproject.entity.WorkoutRoutine;
-import com.bit.finalproject.entity.WorkoutSet;
-import com.bit.finalproject.jwt.JwtProvider;
-import com.bit.finalproject.repository.WorkoutRepository;
 import com.bit.finalproject.entity.*;
+import com.bit.finalproject.jwt.JwtProvider;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.repository.WorkoutPlanRepository;
+import com.bit.finalproject.repository.WorkoutRepository;
 import com.bit.finalproject.repository.WorkoutRoutineRepository;
 import com.bit.finalproject.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +30,15 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<WorkoutDto> findByCategory(WorkoutDto workoutDto) {
+        List<WorkoutDto> workoutDtoList = new ArrayList<>();
 
-        List<WorkoutDto> userSelectedList = workoutRepository.findByMainCategory(workoutDto);
+        List<Workout> workouts = workoutRepository.findAllByMainCategory(workoutDto.getMainCategory());
 
-        if(workoutDto.getSubCategory() == null) { // 첫 화면에 즐겨찾기 조회 되도록 //
-            userSelectedList = workoutRepository.findByMainCategory(workoutDto);
+        for (Workout workout : workouts) {
+            workoutDtoList.add(workout.toDto());
         }
-
-        return userSelectedList;
+        
+        return workoutDtoList;
     }
 
     @Override
@@ -62,9 +61,6 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutRoutineDtoList;
     }
 
-    // ================= //
-    // 여기서부터 다시 작업하기 //
-    // ================= //
     @Override
     public WorkoutPlanDto addWorkoutPlan(List<WorkoutRoutineDto> workoutRoutineDtoList) {
         WorkoutPlanDto workoutPlanDto = new WorkoutPlanDto();
@@ -79,6 +75,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             workoutRoutineList.add(workoutRoutine); // 루틴 엔티티를 리스트에 추가 (루프 후에 일괄 저장)
         }
         User user = userRepository.findByUserId(workoutPlanDto.getUserId()); // UserRepository에 findByUserId 추가해야함.
+
         WorkoutPlan workoutPlan = workoutPlanDto.toEntity(user); // WorkoutPlan 엔티티 변환
 
         workoutPlanDto.setWorkoutRoutineList(workoutRoutineList);  // for문으로 변환한 엔티티 plan객체에 추가
@@ -86,6 +83,19 @@ public class WorkoutServiceImpl implements WorkoutService {
         workoutPlanRepository.save(workoutPlan); // WorkoutPlan 저장
 
         workoutRoutineRepository.saveAll(workoutRoutineList); // 변환한 routine리스트 한 번에 저장
+
+        return workoutPlanDto;
+    }
+
+    @Override
+    public WorkoutPlanDto deleteWorkoutPlanById(Long planId) {
+        workoutPlanRepository.deleteById(planId);
+
+        WorkoutPlan workoutPlan = workoutPlanRepository.findById(planId).orElseThrow(
+                () -> new RuntimeException("workoutPlan not exist") // 플랜 없을 때 표출할 문구 화면단에서 구현하기 ! //
+        );
+
+        WorkoutPlanDto workoutPlanDto = workoutPlan.toDto();
 
         return workoutPlanDto;
     }
