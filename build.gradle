@@ -118,6 +118,19 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     // jakarta의 JPA API로 JPA 관련 기능 처리하는데 필요한 핵심 라이브러리
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'javax.transaction:javax.transaction-api:1.3'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
 }
 
 tasks.named('test') {

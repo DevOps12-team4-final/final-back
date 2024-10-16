@@ -19,4 +19,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
     void saveWorkoutRoutine(WorkoutRoutineDto workoutRoutineDto);
 
+    List<WorkoutDto> findByMainCategory(WorkoutDto workoutDto);
+
 }

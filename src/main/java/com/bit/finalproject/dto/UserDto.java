@@ -2,6 +2,12 @@ package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.UserStatus;
 import com.bit.finalproject.entity.User;
+<<<<<<< HEAD
+=======
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+>>>>>>> origin/feature/workout-woobin
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +20,11 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDto {
 
+<<<<<<< HEAD
     private Long userId;  // 소문자 userId로 수정
+=======
+    private Long userId;
+>>>>>>> origin/feature/workout-woobin
     private String email;
     private String password;
     private String username;
@@ -25,6 +35,7 @@ public class UserDto {
     private String role;
     private String token;
 
+<<<<<<< HEAD
     @Builder.Default
     private boolean deleted = false; // 삭제 플래그
     private LocalDateTime deletedAt; // 삭제 요청 시간
@@ -32,6 +43,9 @@ public class UserDto {
 
     // MemberDto를 Member 엔티티로 변환하는 메서드
     public User toEntity() {
+=======
+    public User toEntity(){
+>>>>>>> origin/feature/workout-woobin
         return User.builder()
                 .userId(this.userId)
                 .email(this.email)

@@ -1,8 +1,10 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.WorkoutSetDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,11 +30,12 @@ public class WorkoutSet {
     private int setNumber;
     private double weight;
     private int reps;
-    private boolean check;
+    private boolean setChk; // check단어 mysql 명령어 중복으로 사용 불가능 //
     private LocalDateTime reptime;
 
     @ManyToOne
     @JoinColumn(name = "routine_id", referencedColumnName = "routineId")
+    @JsonBackReference
     private WorkoutRoutine workoutRoutine;
 
     public WorkoutSetDto toDto() {
@@ -41,7 +44,7 @@ public class WorkoutSet {
                 .setNumber(this.setNumber)
                 .weight(this.weight)
                 .reps(this.reps)
-                .check(this.check)
+                .setChk(this.setChk)
                 .reptime(this.reptime)
                 .routineId(this.workoutRoutine.getRoutineId())
                 .build();

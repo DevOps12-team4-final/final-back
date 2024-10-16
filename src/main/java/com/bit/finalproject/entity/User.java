@@ -5,11 +5,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+// JPA 엔티티임을 나타내는 어노테이션, DB테이블과 매핑시킨다.
 @Entity
 @SequenceGenerator(
-        name = "memberSeqGenerator",
-        sequenceName = "MEMBER_SEQ",
+        name = "userSeqGenerator",
+        sequenceName = "USER_SEQ",
         initialValue = 1,
         allocationSize = 1
 )
@@ -18,7 +21,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "member")
+// 엔티티가 매핑될 DB테이블 이름을 지정하는 어노테이션이다, 만약에 생략되면 클래스이름으로 매핑된다.
+// @Table(name = "user1")
 public class User {
 
     @Id
@@ -62,7 +66,14 @@ public class User {
         }
     }
 
-    // Member 엔티티를 DTO로 변환하는 메서드
+    // 한 명의 회원이 여러 개의 좋아요를 가질 수 있는 관계 설정
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedLike> likes;  // 사용자가 누른 좋아요 리스트
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
     public UserDto toDto() {
         return UserDto.builder()
                 .userId(this.userId)

@@ -1,12 +1,11 @@
 package com.bit.finalproject.entity;
 
 import com.bit.finalproject.dto.WorkoutRoutineDto;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,7 +39,7 @@ public class WorkoutRoutine {
     private Workout workout;
 
     @OneToMany(mappedBy = "workoutRoutine", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<WorkoutSet> workoutSetList;
 
     public WorkoutRoutineDto toDto() {
@@ -51,11 +50,6 @@ public class WorkoutRoutine {
                 .workoutName(this.workout.getWorkoutName())
                 .mainCategory(this.workout.getMainCategory())
                 .workoutSetList(workoutSetList)
-//                .workoutSetDtoList(
-//                        workoutSetList != null && workoutSetList.size() > 0
-//                                ? workoutSetList.stream().map(WorkoutSet::toDto).toList()
-//                                : new ArrayList<>()
-//                )
                 .build();
     }
 

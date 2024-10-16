@@ -18,4 +18,5 @@ public interface UserService {
      void deleteMember(Long userId);
      int countFollowers(Long memberId);
      int countFollowing(Long memberId);
+
 }

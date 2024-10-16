@@ -28,7 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 //log라는 이름의 Logger 객체를 생성한다. (info, debug, warn, error 등 로그메시지 사용가능)
 @Slf4j
-@RequestMapping("/members")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -40,7 +40,7 @@ public class UserController {
         System.out.println(userDto.getEmail() + userDto.getPassword());
 
         try {
-            log.info("login memberDto: {}", userDto.toString());
+            log.info("login userDto: {}", userDto);
             UserDto loginUserDto = userService.login(userDto);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
@@ -61,7 +61,7 @@ public class UserController {
         ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
         try {
-            log.info("join memberDto: {}", userDto.toString());
+            log.info("join userDto: {}", userDto.toString());
             UserDto joinUserDto = userService.join(userDto);
 
             responseDto.setStatusCode(HttpStatus.CREATED.value());
@@ -290,14 +290,5 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto); // 500 에러 응답 반환
         }
     }
-
-
-
-
-
-
-
-
-
 
 }

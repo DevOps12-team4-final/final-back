@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto login(UserDto userDto) {
 
-        // memberRepository.findByEmail(memberDto.getEmail()) -> DB에 입력한 Email과 일치하는 값이 있는지 확인한다.
-        // 일치하는 값이 있다면 Email의 회원정보를 member객체에 저장한다.
+        // userRepository.findByEmail(userDto.getEmail()) -> DB에 입력한 Email과 일치하는 값이 있는지 확인한다.
+        // 일치하는 값이 있다면 Email의 회원정보를 user객체에 저장한다.
         // 일치하는 값이 없다면 orEleseThrow()로 예외처리한다.
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(
                 () -> new RuntimeException("email not exist")
@@ -54,7 +54,8 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("wrong password");
         }
 
-        // member.toDto() -> Entity객체인 member를 Dto객체로 변환한다.
+
+        // user.toDto() -> Entity객체인 user를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
 
@@ -83,12 +84,12 @@ public class UserServiceImpl implements UserService {
         // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        // 1. memberDto.toEntity() -> Dto 객체를 Entity 객체로 변환시켜 DB에 저장할 수 있는 상태로 만든다.
+        // 1. userDto.toEntity() -> Dto 객체를 Entity 객체로 변환시켜 DB에 저장할 수 있는 상태로 만든다.
         // 2. save 메서드는 Entity 객체를 DB에 저장하고, 저장된 Entity 객체를 반환한다.
-        // 3. memberRepository.save(memberDto.toEntity()).toDto() -> Entity 객체를 타입에맞게 Dto객체로 다시 변환한다.
+        // 3. userRepository.save(userDto.toEntity()).toDto() -> Entity 객체를 타입에맞게 Dto객체로 다시 변환한다.
         UserDto joinedUserDto = userRepository.save(userDto.toEntity()).toDto();
 
-        // DB에 저장된 후 joinedMemberDto의 password를 빈 문자열로 설정한다.
+        // DB에 저장된 후 joinedUserDto의 password를 빈 문자열로 설정한다.
         // 보안적인 이유로 password가 클라이언트측에 노출되는 것을 방지하기 위함이다.
         joinedUserDto.setPassword("");
 
@@ -166,6 +167,5 @@ public class UserServiceImpl implements UserService {
     public int countFollowing(Long memberId) {
         return 0;
     }
-
 
 }
