@@ -13,4 +13,6 @@ public interface WorkoutService {
     List<WorkoutRoutineDto> findByWorkoutId(List<WorkoutDto> workoutDtoList);
 
     WorkoutPlanDto addWorkoutPlan(List<WorkoutRoutineDto> workoutRoutineDtoList);
+
+    WorkoutDto setWorkout(WorkoutDto workoutDto);
 }

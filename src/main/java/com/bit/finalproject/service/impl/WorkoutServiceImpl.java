@@ -90,4 +90,14 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutPlanDto;
     }
 
+    @Override
+    public WorkoutDto setWorkout(WorkoutDto workoutDto) {
+
+        if(workoutDto.getDetailImage() == null){
+            workoutDto.setDetailImage("/images/test.png");
+        }
+        
+        return workoutRepository.save(workoutDto.toEntity()).toDto();
+    }
+
 }

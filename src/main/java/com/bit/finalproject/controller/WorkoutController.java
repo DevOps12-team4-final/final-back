@@ -26,7 +26,6 @@ import java.util.List;
 public class WorkoutController {
 
     private final WorkoutService workoutService;
-
     // ------------------- //
     // 운동 목록 가져오는 메소드 //
     // ------------------- //
@@ -97,6 +96,32 @@ public class WorkoutController {
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             log.error("addWorkoutPlanOnCalendar error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+
+    /**
+     *
+     * Workout 저장하는 메소드
+     * @param workoutDto
+     * @return
+     */
+    @PostMapping("/workout")
+    public ResponseEntity<?> setWorkout(@RequestBody WorkoutDto workoutDto) {
+        ResponseDto<WorkoutDto> responseDto = new ResponseDto<>();
+        try{
+            WorkoutDto workout = workoutService.setWorkout(workoutDto);
+            responseDto.setStatusCode(HttpStatus.CREATED.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(workout);
+
+            return ResponseEntity.ok(responseDto);
+        }catch(Exception e){
+            log.error("setWorkout error : {}", e.getMessage());
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             responseDto.setStatusMessage(e.getMessage());
 
