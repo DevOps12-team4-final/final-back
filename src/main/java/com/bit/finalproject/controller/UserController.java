@@ -189,8 +189,8 @@ public class UserController {
             Long memberId = UserId;
 
             // 팔로워 및 팔로잉 수 조회
-            int followerCount = userService.countFollowers(memberId);  // 팔로워 수
-            int followingCount = userService.countFollowing(memberId); // 팔로잉 수
+            int followerCount = userService.countFollowers(UserId);  // 팔로워 수
+            int followingCount = userService.countFollowing(UserId); // 팔로잉 수
 
             // 팔로워 및 팔로잉 정보를 DTO에 추가
             memberDataDto.setFollowerCount(followerCount);

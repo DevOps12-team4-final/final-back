@@ -8,10 +8,13 @@ import com.bit.finalproject.entity.UserDetail;
 import com.bit.finalproject.entity.UserStatus;
 import com.bit.finalproject.jwt.JwtProvider;
 import com.bit.finalproject.repository.DeletionRequestRepository;
+import com.bit.finalproject.repository.FollowRepository;
 import com.bit.finalproject.repository.UserDetailRepository;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +28,10 @@ public class UserServiceImpl implements UserService {
 
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private static final UserRepository userRepository = null;
     private final UserDetailRepository userDetailRepository;
     private final DeletionRequestRepository deletionRequestRepository; // 삭제 요청 레포지토리 추가
-
+    private final FollowRepository followRepository;
 
     @Override
     public UserDto modifymember(UserDto userDto) {
@@ -171,14 +174,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int countFollowers(Long memberId) {
-        return 0;
+        return followRepository.countFollowers(memberId);
     }
 
     @Override
     public int countFollowing(Long memberId) {
-        return 0;
+        return followRepository.countFollowing(memberId);
     }
 
+    // 사용자 목록 보기 (페이징)
+    public static Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 
+    // 사용자 검색 및 필터
+    public static Page<User> searchUsers(String keyword, Pageable pageable) {
+        return userRepository.findByKeyword(keyword, pageable);
+    }
+
+    // 특정 역할을 가진 사용자 필터링
+    public static Page<User> getUsersByRole(String role, Pageable pageable) {
+        return userRepository.findByRole(role, pageable);
+    }
 
 }
