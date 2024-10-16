@@ -17,7 +17,6 @@ public class WorkoutDto {
     private String subCategory;
     private String equipment;
     private String detailImage;
-    private int favoriteWorkout;
 
     public Workout toEntity() {
         return Workout.builder()
@@ -27,7 +26,6 @@ public class WorkoutDto {
                 .subCategory(this.subCategory)
                 .equipment(this.equipment)
                 .detailImage(this.detailImage)
-                .favoriteWorkout(this.favoriteWorkout)
                 .build();
     }
 }

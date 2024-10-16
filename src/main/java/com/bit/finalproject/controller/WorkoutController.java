@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -60,7 +57,6 @@ public class WorkoutController {
         ResponseDto<List<WorkoutRoutineDto>> responseDto = new ResponseDto<>();
 
         try {
-            log.info("ok you got this");
             List<WorkoutRoutineDto> workoutRoutineDtoList = workoutService.findByWorkoutId(selectedWorkoutList);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
@@ -86,7 +82,6 @@ public class WorkoutController {
         ResponseDto<WorkoutPlanDto> responseDto = new ResponseDto<>();
 
         try {
-            log.info("되나요?");
             WorkoutPlanDto workoutPlanDto = workoutService.addWorkoutPlan(workoutRoutineDtoList);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
@@ -102,8 +97,6 @@ public class WorkoutController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
-
-
     /**
      *
      * Workout 저장하는 메소드
@@ -113,15 +106,35 @@ public class WorkoutController {
     @PostMapping("/workout")
     public ResponseEntity<?> setWorkout(@RequestBody WorkoutDto workoutDto) {
         ResponseDto<WorkoutDto> responseDto = new ResponseDto<>();
-        try{
+        try {
             WorkoutDto workout = workoutService.setWorkout(workoutDto);
             responseDto.setStatusCode(HttpStatus.CREATED.value());
             responseDto.setStatusMessage("ok");
             responseDto.setItem(workout);
 
             return ResponseEntity.ok(responseDto);
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("setWorkout error : {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+    @DeleteMapping("/plan/{plan_id}")
+    public ResponseEntity<?> deleteWorkoutPlanOnCalendar(@PathVariable("plan_id") Long planId) {
+        ResponseDto<WorkoutPlanDto> responseDto = new ResponseDto<>();
+
+        try {
+            WorkoutPlanDto workoutPlanDto = workoutService.deleteWorkoutPlanById(planId);
+
+            responseDto.setStatusCode(HttpStatus.NO_CONTENT.value());
+            responseDto.setStatusMessage("no content");
+            responseDto.setItem(workoutPlanDto);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            log.error("deleteWorkoutPlanOnCalendar error: {}", e.getMessage());
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             responseDto.setStatusMessage(e.getMessage());
 

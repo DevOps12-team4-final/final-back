@@ -15,4 +15,5 @@ public interface WorkoutService {
     WorkoutPlanDto addWorkoutPlan(List<WorkoutRoutineDto> workoutRoutineDtoList);
 
     WorkoutDto setWorkout(WorkoutDto workoutDto);
+    WorkoutPlanDto deleteWorkoutPlanById(Long planId);
 }
