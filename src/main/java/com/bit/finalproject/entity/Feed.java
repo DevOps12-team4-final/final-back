@@ -58,6 +58,10 @@ public class Feed {
     @OneToMany(mappedBy = "feed", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<FeedComment> feedCommentList;
 
+    // 해시태그와 일대다 관계
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FeedHashtag> feedHashtags = new ArrayList<>();
+
     // 게시글의 좋아요 개수 반환
     public int getLikeCount() {
         if (this.likes == null) {
