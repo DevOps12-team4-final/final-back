@@ -7,10 +7,10 @@ import lombok.*;
 
 @Entity
 @SequenceGenerator(
-        name="BadgeConditionSeqGenerator",
-        sequenceName="BADGE_CONDITION_SEQ",
-        initialValue=1,
-        allocationSize=1
+        name = "BadgeConditionSeqGenerator",
+        sequenceName = "BADGE_CONDITION_SEQ",
+        initialValue = 1,
+        allocationSize = 1
 )
 @Getter
 @Setter
@@ -18,6 +18,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class BadgeCondition {
+
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -29,12 +30,13 @@ public class BadgeCondition {
     @JoinColumn(name = "badge_id", referencedColumnName = "badgeId")
     @JsonBackReference
     private Badge badge;
+
     private Long workoutId;
     private String badgeCondition;
     private Long conditionValue;
     private String hiddenCondition;
 
-    public BadgeConditionDto toDto(){
+    public BadgeConditionDto toDto() {
         return BadgeConditionDto.builder()
                 .badgeConditionId(this.badgeConditionId)
                 .badgeId(badge.getBadgeId())
@@ -43,6 +45,5 @@ public class BadgeCondition {
                 .conditionValue(this.conditionValue)
                 .hiddenCondition(this.hiddenCondition)
                 .build();
-
     }
 }

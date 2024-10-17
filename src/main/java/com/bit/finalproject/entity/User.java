@@ -50,8 +50,11 @@ public class User {
     private boolean deleted = false; // 삭제 플래그
     private LocalDateTime deletedAt; // 삭제 요청 시간
 
-    // 양방향 매핑: Member가 MemberDetail을 소유
-    @OneToOne(mappedBy = "userDto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private boolean active = true;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_detail_id")  // 외래 키
     private UserDetail userDetail;
 
     // 양방향 매핑 편의 메서드
@@ -77,6 +80,7 @@ public class User {
                 .deleted(this.deleted)
                 .deletedAt(this.deletedAt)
                 .memberDetail(this.userDetail != null ? this.userDetail.toDto() : null)
+                .active(this.active)
                 .build();
     }
 }

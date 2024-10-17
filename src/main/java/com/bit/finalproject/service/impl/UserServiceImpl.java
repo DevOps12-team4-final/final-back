@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.isActive;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -57,10 +59,11 @@ public class UserServiceImpl implements UserService {
 
         // 사용자가 입력한 password값과 DB에 저장되어있는 암호화된 password값을 비교한다.
         // 일치하지 않으면 예외처리한다.
+
         if(!passwordEncoder.matches(userDto.getPassword(), user.getPassword())){
             throw new RuntimeException("wrong password");
         }
-
+        userDto.setUserStatus(UserStatus.ACTIVE);
         // member.toDto() -> Entity객체인 member를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
@@ -73,6 +76,9 @@ public class UserServiceImpl implements UserService {
         loginUserDto.setPassword("");
         loginUserDto.setLastLoginDate(LocalDateTime.now());
 
+        if(!loginUserDto.isActive()){
+            throw new RuntimeException("User Is Banded");
+        }
         // JWT 토큰 발급
         loginUserDto.setToken(jwtProvider.createJwt(user));
         System.out.println(loginUserDto.getToken());
@@ -84,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         // 권한, 활동중, 기본프로필이미지 설정
         userDto.setRole("ROLE_USER");
-        userDto.setUserStatus(UserStatus.ACTIVE);
+        userDto.setUserStatus(UserStatus.INACTIVE);
         userDto.setProfileImage("/images/profile.png");
 
         // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
@@ -181,19 +187,30 @@ public class UserServiceImpl implements UserService {
     public int countFollowing(Long memberId) {
         return followRepository.countFollowing(memberId);
     }
+    // 특정 사용자를 밴하는 메소드
+    @Override
+    public User banUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);  // 사용자를 밴하여 비활성화
+        return userRepository.save(user);
+    }
 
     // 사용자 목록 보기 (페이징)
-    public static Page<User> getAllUsers(Pageable pageable) {
+    @Override
+    public  Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
     // 사용자 검색 및 필터
-    public static Page<User> searchUsers(String keyword, Pageable pageable) {
+    @Override
+    public  Page<User> searchUsers(String keyword, Pageable pageable) {
         return userRepository.findByKeyword(keyword, pageable);
     }
 
     // 특정 역할을 가진 사용자 필터링
-    public static Page<User> getUsersByRole(String role, Pageable pageable) {
+    @Override
+    public  Page<User> getUsersByRole(String role, Pageable pageable) {
         return userRepository.findByRole(role, pageable);
     }
 

@@ -27,7 +27,11 @@ public class UserDto {
     private String token;
 
     @Builder.Default
+    private boolean active = true;
+
+    @Builder.Default
     private boolean deleted = false; // 삭제 플래그
+
     private LocalDateTime deletedAt; // 삭제 요청 시간
     private UserDetailDto memberDetail;  // MemberDetailDto 포함
 

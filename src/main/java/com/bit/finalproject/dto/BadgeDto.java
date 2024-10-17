@@ -3,9 +3,8 @@ package com.bit.finalproject.dto;
 import com.bit.finalproject.entity.Badge;
 import com.bit.finalproject.entity.User;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,11 +16,13 @@ public class BadgeDto {
     private Long badgeId;
     private String badgeName;
     private String badgeContent;
-
     private String badgeGrade;
     private String badgeImage;
 
-    public Badge toEntity(User user){
+    // 배지 조건 리스트 추가
+    private List<BadgeConditionDto> badgeConditions;
+
+    public Badge toEntity() {
         return Badge.builder()
                 .badgeId(this.badgeId)
                 .badgeName(this.badgeName)
@@ -31,3 +32,4 @@ public class BadgeDto {
                 .build();
     }
 }
+

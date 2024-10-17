@@ -19,6 +19,10 @@ public class UserDataDto {
     private String profileImage;
     private String token;
     private String phoneNumber;
+
+    @Builder.Default
+    private boolean active = true;
+
     private Long memberDetailId;      // camelCase로 변경
     private Long memberId;            // camelCase로 변경
     private String gender;

@@ -3,6 +3,8 @@ package com.bit.finalproject.service;
 import com.bit.finalproject.dto.UserDetailDto;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
@@ -18,4 +20,12 @@ public interface UserService {
      void deleteMember(Long userId);
      int countFollowers(Long memberId);
      int countFollowing(Long memberId);
+
+     User banUser(Long id);
+
+     Page<User> getAllUsers(Pageable pageable);
+
+     Page<User> searchUsers(String keyword, Pageable pageable);
+
+     Page<User> getUsersByRole(String role, Pageable pageable);
 }

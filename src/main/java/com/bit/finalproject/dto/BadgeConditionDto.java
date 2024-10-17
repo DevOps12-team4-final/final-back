@@ -18,7 +18,7 @@ public class BadgeConditionDto {
     private Long conditionValue;
     private String hiddenCondition;
 
-    public BadgeCondition toEntity(Badge badge){
+    public BadgeCondition toEntity(Badge badge) {
         return BadgeCondition.builder()
                 .badgeConditionId(this.badgeConditionId)
                 .badge(badge)
@@ -27,6 +27,6 @@ public class BadgeConditionDto {
                 .conditionValue(this.conditionValue)
                 .hiddenCondition(this.hiddenCondition)
                 .build();
-
     }
 }
+
