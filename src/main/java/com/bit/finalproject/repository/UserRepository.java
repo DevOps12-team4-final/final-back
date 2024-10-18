@@ -11,6 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import com.bit.finalproject.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -51,4 +56,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 팔로잉 수 계산 (특정 사용자가 팔로우하는 사람 수)
     @Query("SELECT COUNT(f) FROM Follow f WHERE f.follower.userId = :memberId")
     int countFollowing(Long memberId);
+    long countByTel(String tel);
+
+    User findByTel(String tel);
 }
