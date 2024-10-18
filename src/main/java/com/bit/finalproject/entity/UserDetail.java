@@ -30,14 +30,7 @@ public class UserDetail {
     private String favoriteExercise;
     private String favoriteExercisePlen;
 
-    // 직접 표시할 배지 ID
-    private Long badge1;
-    private Long badge2;
-    private Long badge3;
 
-    // 모든 배지 목록
-    @OneToMany(mappedBy = "userDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UserBadge> badgeList;  // 유저가 소유한 모든 배지 리스트
 
     // 운동 관련 기록 필드 (적절한 기본값 설정)
     @Builder.Default
@@ -67,10 +60,6 @@ public class UserDetail {
                 .statusMessage(this.statusMessage)
                 .favoriteExercise(this.favoriteExercise)
                 .favoriteExercisePlen(this.favoriteExercisePlen)
-                .badge1(this.badge1) // 직접 표시할 배지 ID
-                .badge2(this.badge2) // 직접 표시할 배지 ID
-                .badge3(this.badge3) // 직접 표시할 배지 ID
-                .badgeList(this.badgeList)
                 .totalWeightLifted(this.totalWeightLifted)
                 .totalMountainsClimbed(this.totalMountainsClimbed)
                 .consecutiveWorkoutDays(this.consecutiveWorkoutDays)

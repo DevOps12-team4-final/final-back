@@ -2,10 +2,7 @@ package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.UserDetailDto;
 import com.bit.finalproject.dto.UserDto;
-import com.bit.finalproject.entity.DeletionRequest;
-import com.bit.finalproject.entity.User;
-import com.bit.finalproject.entity.UserDetail;
-import com.bit.finalproject.entity.UserStatus;
+import com.bit.finalproject.entity.*;
 import com.bit.finalproject.jwt.JwtProvider;
 import com.bit.finalproject.repository.DeletionRequestRepository;
 import com.bit.finalproject.repository.FollowRepository;
@@ -187,14 +184,7 @@ public class UserServiceImpl implements UserService {
     public int countFollowing(Long memberId) {
         return followRepository.countFollowing(memberId);
     }
-    // 특정 사용자를 밴하는 메소드
-    @Override
-    public User banUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setActive(false);  // 사용자를 밴하여 비활성화
-        return userRepository.save(user);
-    }
+
 
     // 사용자 목록 보기 (페이징)
     @Override
@@ -213,5 +203,23 @@ public class UserServiceImpl implements UserService {
     public  Page<User> getUsersByRole(String role, Pageable pageable) {
         return userRepository.findByRole(role, pageable);
     }
+
+    @Override
+    public UserDto banUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 사용자 상태를 BAN 상태로 변경
+        if (user.getUserStatus() != UserStatus.BANNED) {
+            user.setUserStatus(UserStatus.BANNED);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("User is already banned");
+        }
+
+        return user.toDto();
+    }
+
+
 
 }

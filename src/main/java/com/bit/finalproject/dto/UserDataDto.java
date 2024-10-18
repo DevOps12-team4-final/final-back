@@ -31,10 +31,8 @@ public class UserDataDto {
     private String statusMessage;      // camelCase로 변경
     private String favoriteExercise;
     private String favoriteExercisePlen;
-    private Long badge1;
-    private Long badge2;
-    private Long badge3;
-    private List<UserBadge> badgeList;
+
+
     private int totalWeightLifted;            // 운동 관련 기록 추가
     private int totalMountainsClimbed;        // 운동 관련 기록 추가
     private int consecutiveWorkoutDays;       // 운동 관련 기록 추가
@@ -61,10 +59,7 @@ public class UserDataDto {
         this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
         this.favoriteExercise = userDetailDto.getFavoriteExercise();
         this.favoriteExercisePlen = userDetailDto.getFavoriteExercisePlen();
-        this.badge1 = userDetailDto.getBadge1();
-        this.badge2 = userDetailDto.getBadge2();
-        this.badge3 = userDetailDto.getBadge3();
-        this.badgeList = userDetailDto.getBadgeList();
+
         // 운동 관련 기록 필드 초기화
         this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
         this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();

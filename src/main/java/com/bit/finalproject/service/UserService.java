@@ -21,7 +21,7 @@ public interface UserService {
      int countFollowers(Long memberId);
      int countFollowing(Long memberId);
 
-     User banUser(Long id);
+     UserDto banUser(Long id);
 
      Page<User> getAllUsers(Pageable pageable);
 

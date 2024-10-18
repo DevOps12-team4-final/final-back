@@ -1,7 +1,6 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.User;
-import com.bit.finalproject.entity.UserBadge;
 import com.bit.finalproject.entity.UserDetail;
 import lombok.*;
 
@@ -23,10 +22,6 @@ public class UserDetailDto {
     private String statusMessage; // snake_case에서 camelCase로 변경
     private String favoriteExercise; // camelCase로 수정
     private String favoriteExercisePlen; // camelCase로 수정
-    private Long badge1;
-    private Long badge2;
-    private Long badge3;
-    private List<UserBadge> badgeList;
     private int totalWeightLifted;         // 운동 무게 총합
     private int totalMountainsClimbed;     // 등산한 산의 개수
     private int consecutiveWorkoutDays;    // 연속 운동일수
@@ -51,10 +46,6 @@ public class UserDetailDto {
                 .statusMessage(this.statusMessage) // 필드 이름 수정 (camelCase로 변경)
                 .favoriteExercise(this.favoriteExercise) // 필드 이름 수정 (camelCase로 변경)
                 .favoriteExercisePlen(this.favoriteExercisePlen) // 필드 이름 수정 (camelCase로 변경)
-                .badge1(this.badge1)
-                .badge2(this.badge2)
-                .badge3(this.badge3)
-
                 .followerCount(this.followerCount) // 팔로워 수 추가
                 .followingCount(this.followingCount) // 팔로잉 수 추가
                 .build();
