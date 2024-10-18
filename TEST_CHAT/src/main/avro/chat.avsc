@@ -1,0 +1,10 @@
+{"namespace": "chatService.chat",
+  "type": "record",
+  "name": "Chat",
+  "fields": [
+    {"name": "room_id",  "type": "long"},
+    {"name": "user_id",  "type": "long"},
+    {"name": "message", "type": "string"},
+    {"name": "type", "type": "string"}
+  ]
+}
