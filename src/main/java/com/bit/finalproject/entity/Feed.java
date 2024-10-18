@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,6 +57,10 @@ public class Feed {
     // 좋아요와 일대다 관계
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
     private Set<FeedLike> likes;
+
+    // 해시태그와 일대다 관계
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FeedHashtag> feedHashtags = new ArrayList<>();
 
     // 게시글의 좋아요 개수 반환
     public int getLikeCount() {
