@@ -22,6 +22,7 @@ public class UserDto {
     private String password;
     private String username;
     private String nickname;
+    private String tel;
     private LocalDateTime lastLoginDate;
     private UserStatus userStatus;
     private String profileImage;
@@ -35,6 +36,7 @@ public class UserDto {
                 .password(this.password)
                 .username(this.username)
                 .nickname(this.nickname)
+                .tel(this.tel)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)

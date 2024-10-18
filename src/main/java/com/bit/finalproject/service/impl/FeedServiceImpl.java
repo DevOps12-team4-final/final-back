@@ -9,7 +9,9 @@ import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +28,7 @@ public class FeedServiceImpl implements FeedService {
     private final FileUtils fileUtils;
 
     @Override
-    public Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, User user, Pageable pageable) {
+    public FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user) {
 
         feedDto.setRegdate(LocalDateTime.now());
         feedDto.setModdate(LocalDateTime.now());
@@ -54,22 +56,51 @@ public class FeedServiceImpl implements FeedService {
 
         feedRepository.save(feed);
 
-        return feedRepository.findAll(pageable).map(Feed::toDto);
+        return feed.toDto();
     }
 
     @Override
     public List<FeedDto> getAllFeeds() {
 
+        // feedFile을 순서대로 가져오기위한 sort 객체 사용
+        Sort sort = Sort.by(Sort.Direction.ASC, "feedFileList.feedFileId");
+
         // 모든 게시글 가져오기
-        List<Feed> feedList = feedRepository.findAll();
+        List<Feed> feedList = feedRepository.findAll(sort);
 
         // 각 게시글을 Dto로 변환하여 리스트로 반환
         return feedList.stream()
-                .map(this::converTodto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    private FeedDto converTodto(Feed feed) {
+//    @Override
+//    public List<FeedDto> getAllFeedsExcludingUser(Long userId) {
+//
+//        // 모든 게시글 가져오기
+//        List<Feed> feedList = feedRepository.findAll();
+//
+//        // 사용자 게시물 제외
+//        List<Feed> filteredFeedList = feedList.stream()
+//                .filter(feed -> !feed.getUser().getUserId().equals(userId))
+//                .toList();
+//
+//        // 각 게시글을 Dto로 변환하여 리스트로 반환
+//        return filteredFeedList.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
+
+    @Override
+    public Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable) {
+
+        // 모든 게시글 가져오기
+        Page<Feed> feedList = feedRepository.findByUser_UserIdNot(userId, pageable);
+
+        return feedList.map(this::convertToDto);
+    }
+
+    private FeedDto convertToDto(Feed feed) {
         FeedDto feedDto = new FeedDto();
         feedDto.setFeedId(feed.getFeedId());  // 게시글 고유 id
         feedDto.setContent(feed.getContent());    // 게시글 내용
@@ -77,6 +108,7 @@ public class FeedServiceImpl implements FeedService {
         feedDto.setModdate(feed.getModdate());    // 게시글 수정일
         feedDto.setUserId(feed.getUser().getUserId());    // 게시글 올린 유저 id
         feedDto.setNickname(feed.getUser().getNickname());  // 게시글 올린 유저 nickname
+        feedDto.setProfileImage(feed.getUser().getProfileImage());
 
         // 사진 파일 리스트
         List<FeedFileDto> feedFileDtoList = feed.getFeedFileList().stream()
@@ -100,7 +132,6 @@ public class FeedServiceImpl implements FeedService {
         // 댓글 가져오는 기능 구현
 
         // 운동 가져오는 기능 구현
-
 
         return feedDto;
     }

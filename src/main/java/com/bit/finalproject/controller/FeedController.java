@@ -2,6 +2,7 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.service.FeedLikeService;
 import com.bit.finalproject.service.FeedService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,19 +43,17 @@ public class FeedController {
             // required = false 설정, 반드시 파일이 포함되지 않아도 된다.
             @RequestPart(value = "uploadFiles", required = false) MultipartFile[] uploadFiles,
             // CustomUserDetails객체는 현재 로그인된 사용자 정보를 담고있다.
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            // 기본적으로 첫 번째 페이지(page = 0)에서 10개의 항목(size = 10)을 요청한다.
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         ResponseDto<FeedDto> responseDto = new ResponseDto<>();
 
         try {
             log.info("post feedDto : {}", feedDto);
-            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getUser(), pageable);
+            FeedDto postfeedDto = feedService.post(feedDto, uploadFiles, customUserDetails.getUser());
 
-            log.info("post feedDto list : {}", feedDtoList);
+            log.info("post feedDto list : {}", postfeedDto);
 
-            responseDto.setPageItems(feedDtoList);
+            responseDto.setItem(postfeedDto);
             responseDto.setStatusCode(HttpStatus.CREATED.value());
             responseDto.setStatusMessage("created");
 
@@ -148,14 +148,71 @@ public class FeedController {
     }
 
     // 모든 게시글 가져오는 메서드
-    @GetMapping
-    public ResponseEntity<?> getAllFeeds() {
+//    @GetMapping
+//    public ResponseEntity<?> getAllFeeds() {
+//
+//        ResponseDto<List<FeedDto>> responseDto = new ResponseDto<>();
+//
+//        try{
+//            // 서비스에서 게시글 리스트 가져오기
+//            List<FeedDto> feedList = feedService.getAllFeeds();
+//
+//            // 성공 시 응답 데이터 설정
+//            responseDto.setStatusCode(HttpStatus.OK.value()); // 200
+//            responseDto.setStatusMessage("Feed list retrieved successfully.");
+//            responseDto.setItem(feedList);
+//
+//            return ResponseEntity.ok(responseDto);
+//        } catch (Exception e){
+//            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            responseDto.setStatusMessage("Failed to retrieve Feed list: " + e.getMessage());
+//
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+//        }
+//    }
 
-        ResponseDto<List<FeedDto>> responseDto = new ResponseDto<>();
+
+//    @GetMapping
+//    public ResponseEntity<?> getAllFeedsExcludingUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+//
+//        ResponseDto<List<FeedDto>> responseDto = new ResponseDto<>();
+//
+//        try{
+//            // 인증된 사용자의 userId를 가져옴
+//            Long userId = customUserDetails.getUser().getUserId(); // CustomUserDetails에서 userId를 가져옴
+//
+//            System.out.println(userId);
+//            // 서비스에서 게시글 리스트 가져오기
+//            List<FeedDto> feedList = feedService.getAllFeedsExcludingUser(userId);
+//
+//            // 성공 시 응답 데이터 설정
+//            responseDto.setStatusCode(HttpStatus.OK.value()); // 200
+//            responseDto.setStatusMessage("Feed list retrieved successfully.");
+//            responseDto.setItem(feedList);
+//
+//            return ResponseEntity.ok(responseDto);
+//        } catch (Exception e){
+//            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            responseDto.setStatusMessage("Failed to retrieve Feed list: " + e.getMessage());
+//
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+//        }
+//    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllFeedsExcludingUserP(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                       @PageableDefault(page = 0, size = 10, sort = "regdate", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        ResponseDto<Page<FeedDto>> responseDto = new ResponseDto<>();
 
         try{
+            // 인증된 사용자의 userId를 가져옴
+            Long userId = customUserDetails.getUser().getUserId(); // CustomUserDetails에서 userId를 가져옴
+
+            System.out.println(userId);
+
             // 서비스에서 게시글 리스트 가져오기
-            List<FeedDto> feedList = feedService.getAllFeeds();
+            Page<FeedDto> feedList = feedService.getAllFeedsExcludingUserP(userId, pageable);
 
             // 성공 시 응답 데이터 설정
             responseDto.setStatusCode(HttpStatus.OK.value()); // 200
@@ -169,9 +226,7 @@ public class FeedController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
-
     }
-
 
 
 

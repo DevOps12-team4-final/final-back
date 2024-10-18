@@ -9,7 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FeedService {
-    Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, User user, Pageable pageable);
+    FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user);
 
     List<FeedDto> getAllFeeds();
+
+//    List<FeedDto> getAllFeedsExcludingUser(Long userId);
+
+    Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable);
 }

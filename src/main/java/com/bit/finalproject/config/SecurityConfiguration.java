@@ -52,7 +52,11 @@ public class SecurityConfiguration {
                             "/users/email-check",
                             "/users/nickname-check",
                             "/users/join",
-                            "/users/login").permitAll();
+                            "/users/login",
+                            "/users/tel-check",
+                            "/users/send",
+                            "/users/modify-password",
+                            "/feed").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();

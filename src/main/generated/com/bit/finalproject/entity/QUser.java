@@ -38,6 +38,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath role = createString("role");
 
+    public final StringPath tel = createString("tel");
+
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public final StringPath username = createString("username");

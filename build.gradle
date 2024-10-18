@@ -70,6 +70,12 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     // jakarta의 JPA API로 JPA 관련 기능 처리하는데 필요한 핵심 라이브러리
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    // 전화번호 인증을 위한 coolsmsAPI 의존성 추가
+    implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
+
+    // 비밀번호 찾기를 위한 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.0'
 }
 
 //Q 도메인 클래스 생성 위치 변수로 선언

@@ -2,6 +2,7 @@ package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.User;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class FeedDto {
     private LocalDateTime moddate;  // 수정일
 //    private String searchKeyword;
 //    private String searchCondition;
+    private String profileImage;
     private List<FeedFileDto> feedFileDtoList;
     private int likeCount; // 좋아요 개수 필드
 
@@ -33,6 +35,7 @@ public class FeedDto {
                 .user(user)
                 .regdate(this.regdate)
                 .moddate(this.moddate)
+                .profileImage(this.profileImage)
 //                .searchKeyword(this.searchKeyword)
 //                .searchCondition(this.searchCondition)
                 .feedFileList(new HashSet<>())

@@ -30,6 +30,9 @@ public class Feed {
     private Long feedId;
     private String content;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     // Feed 엔티티가 user 엔티티와 다대일 관계
     // 여러개의 게시물이 하나의 회원에 연결될 수 있음
     // user 엔티티의 user_id의 값을 user_id로 Feed에 생성한다.
@@ -46,6 +49,7 @@ public class Feed {
     // Feed 엔티티가 Feedfile 엔티티와 일대다 관계
     // Feed가 여러개의 Feedfile을 가질 수 있다.
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    @OrderBy("feedFileId ASC")  // feedFileId를 기준으로 오름차순 정렬
     @JsonManagedReference
     private Set<FeedFile> feedFileList;
 
@@ -66,6 +70,7 @@ public class Feed {
                 .feedId(this.feedId)
                 .content(this.content)
                 .userId(this.user.getUserId())
+                .profileImage(this.user.getProfileImage())
                 .nickname(this.user.getNickname())
                 .regdate(this.regdate)
                 .moddate(this.moddate)

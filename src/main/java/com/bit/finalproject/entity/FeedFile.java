@@ -29,7 +29,7 @@ public class FeedFile {
     // 여러개의 게시물파일이이 하나의 게시물에 연결될 수 있음
     // FeedFile의 Feed_id(외래키)를 Feed의 Feed_id(외래키 참조)와 조인한다.
     @ManyToOne
-    @JoinColumn(name = "feeId")
+    @JoinColumn(name = "feedId")
     @JsonBackReference
     private Feed feed;
 

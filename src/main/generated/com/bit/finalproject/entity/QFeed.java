@@ -32,6 +32,8 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public final DateTimePath<java.time.LocalDateTime> moddate = createDateTime("moddate", java.time.LocalDateTime.class);
 
+    public final StringPath profileImage = createString("profileImage");
+
     public final DateTimePath<java.time.LocalDateTime> regdate = createDateTime("regdate", java.time.LocalDateTime.class);
 
     public final QUser user;

@@ -1,5 +1,6 @@
 package com.bit.finalproject.service.impl;
 
+import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.UserStatus;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final FileUtils fileUtils;
 
     @Override
     public UserDto login(UserDto userDto) {
@@ -52,6 +54,8 @@ public class UserServiceImpl implements UserService {
 
         // JWT 토큰 발급
         loginUserDto.setToken(jwtProvider.createJwt(user));
+
+
         System.out.println(loginUserDto.getToken());
         return loginUserDto;
     }
@@ -59,10 +63,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto join(UserDto userDto) {
 
+        String defaultProfileImageUrl = "profileImage/default-profile.jpg";
+
         // 권한, 활동중, 기본프로필이미지 설정
         userDto.setRole("ROLE_USER");
         userDto.setUserStatus(UserStatus.ACTIVE);
-        userDto.setProfileImage("/images/profile.png");
+
+        // 사용자의 프로필 이미지가 없을 경우, 기본 이미지로 설정
+        if (userDto.getProfileImage() == null || userDto.getProfileImage().isEmpty()) {
+            userDto.setProfileImage(defaultProfileImageUrl);
+        }
+
 
         // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -111,4 +122,39 @@ public class UserServiceImpl implements UserService {
         return nicknameCheckMap;
     }
 
+    @Override
+    public Map<String, String> telCheck(String tel) {
+
+        Map <String, String> telCheckMap = new HashMap<>();
+
+        long telCheck = userRepository.countByTel(tel);
+
+        if (telCheck == 0) {
+            telCheckMap.put("telCheckMsg", "not exist tel");
+        } else {
+            User user = userRepository.findByTel(tel);
+            if(user != null) {
+                telCheckMap.put("telCheckMsg", "exist tel");
+                telCheckMap.put("email", user.getEmail());
+                telCheckMap.put("nickname", user.getNickname());
+            }
+        }
+        return telCheckMap;
+    }
+
+    @Override
+    public UserDto modifyPw(UserDto userDto) {
+
+        User existingUser = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        User updatedUser = userRepository.save(existingUser);
+
+        UserDto modifyPw = updatedUser.toDto();
+        modifyPw.setPassword("");
+
+        return modifyPw;
+    }
 }
