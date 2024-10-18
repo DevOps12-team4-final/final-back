@@ -21,5 +21,5 @@ public interface FeedService {
 //    Page<FeedDto> post(FeedDto feedDto, MultipartFile[] uploadFiles, User user, Pageable pageable);
 
     // 해시태그를 이용해 관련된 게시글 찾기
-    List<Feed> searchFeedsByHashtag(String hashtag);=
+    List<Feed> searchFeedsByHashtag(String hashtag);
 }
