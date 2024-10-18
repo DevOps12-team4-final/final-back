@@ -13,7 +13,7 @@ public class FeedLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long like_id;
 
     @ManyToOne
     @JoinColumn(name = "feedId")

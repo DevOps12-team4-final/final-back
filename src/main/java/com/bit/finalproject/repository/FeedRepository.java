@@ -1,5 +1,4 @@
 package com.bit.finalproject.repository;
-
 import com.bit.finalproject.entity.Feed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +15,5 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     List<Feed> findAll();  // 관련 엔티티들과 함께 모든 게시글을 가져오기
 
     Page<Feed> findByUser_UserIdNot(Long userId, Pageable pageable);
+
 }

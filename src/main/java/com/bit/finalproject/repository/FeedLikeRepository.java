@@ -1,7 +1,8 @@
 package com.bit.finalproject.repository;
 
-import com.bit.finalproject.entity.Feed;
+
 import com.bit.finalproject.entity.FeedLike;
+import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

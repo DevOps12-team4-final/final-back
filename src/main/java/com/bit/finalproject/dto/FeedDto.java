@@ -22,7 +22,7 @@ public class FeedDto {
     private String nickname;
     private LocalDateTime regdate;  // 등록일
     private LocalDateTime moddate;  // 수정일
-//    private String searchKeyword;
+    //    private String searchKeyword;
 //    private String searchCondition;
     private String profileImage;
     private List<FeedFileDto> feedFileDtoList;
