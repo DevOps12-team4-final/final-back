@@ -11,10 +11,6 @@ import java.util.Map;
 public interface UserService {
      UserDto modifymember(UserDto userDto) ;
      UserDetailDto modifymemberDetail(User user, UserDetailDto userDtailDto) ;
-     UserDto login(UserDto userDto);
-     UserDto join(UserDto userDto);
-     Map<String, String> emailCheck(String email);
-     Map<String, String> nicknameCheck(String nickname);
      UserDetailDto getmypage(Long UserId);
      UserDetailDto getprofilepage(Long UserId);
      void deleteMember(Long userId);
@@ -28,4 +24,15 @@ public interface UserService {
      Page<User> searchUsers(String keyword, Pageable pageable);
 
      Page<User> getUsersByRole(String role, Pageable pageable);
+    UserDto login(UserDto userDto);
+
+    UserDto join(UserDto userDto);
+
+    Map<String, String> emailCheck(String email);
+
+    Map<String, String> nicknameCheck(String nickname);
+
+    Map<String, String> telCheck(String tel);
+
+    UserDto modifyPw(UserDto userDto);
 }

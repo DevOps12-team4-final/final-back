@@ -12,14 +12,20 @@ import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.bit.finalproject.common.FileUtils;
+import com.bit.finalproject.dto.UserDto;
+import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.UserStatus;
+import com.bit.finalproject.jwt.JwtProvider;
+import com.bit.finalproject.repository.UserRepository;
+import com.bit.finalproject.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.isActive;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +53,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto login(UserDto userDto) {
 
-        // memberRepository.findByEmail(memberDto.getEmail()) -> DB에 입력한 Email과 일치하는 값이 있는지 확인한다.
-        // 일치하는 값이 있다면 Email의 회원정보를 member객체에 저장한다.
+        // userRepository.findByEmail(userDto.getEmail()) -> DB에 입력한 Email과 일치하는 값이 있는지 확인한다.
+        // 일치하는 값이 있다면 Email의 회원정보를 user객체에 저장한다.
         // 일치하는 값이 없다면 orEleseThrow()로 예외처리한다.
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(
                 () -> new RuntimeException("email not exist")
@@ -56,7 +62,6 @@ public class UserServiceImpl implements UserService {
 
         // 사용자가 입력한 password값과 DB에 저장되어있는 암호화된 password값을 비교한다.
         // 일치하지 않으면 예외처리한다.
-
         if(!passwordEncoder.matches(userDto.getPassword(), user.getPassword())){
             throw new RuntimeException("wrong password");
         }
@@ -84,21 +89,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto join(UserDto userDto) {
+        String defaultProfileImageUrl = "profileImage/default-profile.jpg";
 
         // 권한, 활동중, 기본프로필이미지 설정
         userDto.setRole("ROLE_USER");
-        userDto.setUserStatus(UserStatus.INACTIVE);
-        userDto.setProfileImage("/images/profile.png");
+        userDto.setUserStatus(UserStatus.ACTIVE);
+
+        // 사용자의 프로필 이미지가 없을 경우, 기본 이미지로 설정
+        if (userDto.getProfileImage() == null || userDto.getProfileImage().isEmpty()) {
+            userDto.setProfileImage(defaultProfileImageUrl);
+        }
 
         // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        // 1. memberDto.toEntity() -> Dto 객체를 Entity 객체로 변환시켜 DB에 저장할 수 있는 상태로 만든다.
+        // 1. userDto.toEntity() -> Dto 객체를 Entity 객체로 변환시켜 DB에 저장할 수 있는 상태로 만든다.
         // 2. save 메서드는 Entity 객체를 DB에 저장하고, 저장된 Entity 객체를 반환한다.
-        // 3. memberRepository.save(memberDto.toEntity()).toDto() -> Entity 객체를 타입에맞게 Dto객체로 다시 변환한다.
+        // 3. userRepository.save(userDto.toEntity()).toDto() -> Entity 객체를 타입에맞게 Dto객체로 다시 변환한다.
         UserDto joinedUserDto = userRepository.save(userDto.toEntity()).toDto();
 
-        // DB에 저장된 후 joinedMemberDto의 password를 빈 문자열로 설정한다.
+        // DB에 저장된 후 joinedUserDto의 password를 빈 문자열로 설정한다.
         // 보안적인 이유로 password가 클라이언트측에 노출되는 것을 방지하기 위함이다.
         joinedUserDto.setPassword("");
 
@@ -204,6 +214,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByRole(role, pageable);
     }
 
+
     @Override
     public UserDto banUser(Long id) {
         User user = userRepository.findById(id)
@@ -221,5 +232,41 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+
+    public Map<String, String> telCheck(String tel) {
+
+        Map <String, String> telCheckMap = new HashMap<>();
+
+        long telCheck = userRepository.countByTel(tel);
+
+        if (telCheck == 0) {
+            telCheckMap.put("telCheckMsg", "not exist tel");
+        } else {
+            User user = userRepository.findByTel(tel);
+            if(user != null) {
+                telCheckMap.put("telCheckMsg", "exist tel");
+                telCheckMap.put("email", user.getEmail());
+                telCheckMap.put("nickname", user.getNickname());
+            }
+        }
+        return telCheckMap;
+    }
+
+    @Override
+    public UserDto modifyPw(UserDto userDto) {
+
+        User existingUser = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        User updatedUser = userRepository.save(existingUser);
+
+        UserDto modifyPw = updatedUser.toDto();
+        modifyPw.setPassword("");
+
+        return modifyPw;
+    }
 
 }

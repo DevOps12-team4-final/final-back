@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDto {
 
-    private Long userId;  // 소문자 userId로 수정
+    private Long userId;
     private String email;
     private String password;
     private String username;
     private String nickname;
+    private String tel;
     private LocalDateTime lastLoginDate;
     private String PhoneNumber;
     private UserStatus userStatus;
@@ -43,6 +44,7 @@ public class UserDto {
                 .password(this.password)
                 .username(this.username)
                 .nickname(this.nickname)
+                .tel(this.tel)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
