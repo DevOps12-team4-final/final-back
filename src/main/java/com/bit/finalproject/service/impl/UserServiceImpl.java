@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private static final UserRepository userRepository = null;
+    private final UserRepository userRepository;
     private final UserDetailRepository userDetailRepository;
     private final DeletionRequestRepository deletionRequestRepository; // 삭제 요청 레포지토리 추가
     private final FollowRepository followRepository;
