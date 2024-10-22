@@ -1,9 +1,7 @@
 package com.bit.finalproject.controller;
 
-import com.bit.finalproject.dto.UserDataDto;
-import com.bit.finalproject.dto.UserDetailDto;
-import com.bit.finalproject.dto.UserDto;
-import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.common.FileUtils;
+import com.bit.finalproject.dto.*;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.UserRepository;
@@ -27,7 +25,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class UserController {
 
     private final UserService userService;
     private final CoolSmsService coolSmsService;
+    private final FileUtils fileUtils;
 
     // 로그인
     @PostMapping("/login")
@@ -264,7 +266,8 @@ public class UserController {
     @PatchMapping
     public ResponseEntity<?> modify(
             @RequestPart("memberDto") UserDto userDto,  // 회원 기본 정보
-            @RequestPart("memberDetailDto") UserDetailDto userDetailDto,  // 회원 상세 정보
+            @RequestPart("memberDetailDto") UserDetailDto userDetailDto,
+            @RequestPart(value = "file", required = false) MultipartFile file,// 회원 상세 정보
             @AuthenticationPrincipal CustomUserDetails customUserDetails,  // 로그인된 사용자 정보
             Authentication authentication) {  // 인증 정보 제공
 
@@ -274,7 +277,21 @@ public class UserController {
             // 요청 받은 회원 정보 출력 (디버깅용 로그)
             log.info("modify memberDto: {}", userDto);
             log.info("modify memberDetailDto: {}", userDetailDto);
+            // 파일이 업로드 된다면 파일 처리 로직
+            if (file != null) {
 
+                    if (file.getOriginalFilename() != null &&
+                            !file.getOriginalFilename().equalsIgnoreCase("")) {
+                        fileUtils.deleteFile("User/",userDto.getProfileImage());
+                        FeedFileDto feedFileDto = fileUtils.parserFileInfo(file, "User/");
+                        // filestatus와 newfilename 설정
+                        // filestatus와 newfilename 설정
+                        feedFileDto.setFilestatus("uploaded");  // 파일이 업로드됨
+                        feedFileDto.setNewfilename(feedFileDto.getFilename());  // 새 파일명 설
+                        userDto.setProfileImage(feedFileDto.getFilepath());
+                    }
+
+            }
             // 회원 기본 정보 수정
             userService.modifymember(userDto);  // 서비스에서 회원 기본 정보 수정
 
