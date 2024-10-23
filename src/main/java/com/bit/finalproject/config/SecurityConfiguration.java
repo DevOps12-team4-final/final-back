@@ -52,7 +52,11 @@ public class SecurityConfiguration {
                             "/members/email-check",
                             "/members/nickname-check",
                             "/members/join",
-                            "/members/login").permitAll();
+                            "/members/login",
+                            "/live/info/{channelId}",
+                            "/live/url/{channelId}",
+                            "/live/delete/{channelId}",
+                            "/live/create").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
