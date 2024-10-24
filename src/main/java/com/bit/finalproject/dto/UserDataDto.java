@@ -18,7 +18,8 @@ public class UserDataDto {
     private UserStatus userStatus;
     private String profileImage;
     private String token;
-    private String phoneNumber;
+    private String tel;
+
 
     @Builder.Default
     private boolean active = true;
@@ -53,19 +54,10 @@ public class UserDataDto {
         this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
         this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
         this.gender = userDetailDto.getGender();
-        this.phoneNumber = userDto.getPhoneNumber();  // camelCase로 변경
+        this.tel = userDto.getTel();  // camelCase로 변경
         this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경
-        this.usingTitle = userDetailDto.getUsingTitle();  // camelCase로 변경
         this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
-        this.favoriteExercise = userDetailDto.getFavoriteExercise();
-        this.favoriteExercisePlen = userDetailDto.getFavoriteExercisePlen();
 
-        // 운동 관련 기록 필드 초기화
-        this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
-        this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();
-        this.consecutiveWorkoutDays = userDetailDto.getConsecutiveWorkoutDays();
-        this.yogaSessionsCompleted = userDetailDto.getYogaSessionsCompleted();
-        this.totalDistanceCovered = userDetailDto.getTotalDistanceCovered();
 
         this.followerCount = userDetailDto.getFollowerCount(); // 팔로워 수 초기화
         this.followingCount = userDetailDto.getFollowingCount(); // 팔로잉 수 초기화

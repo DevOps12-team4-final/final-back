@@ -38,15 +38,7 @@ public class UserData {
                 .active(user != null ? user.isActive() : null)
                 .gender(userDetail != null ? userDetail.getGender() : null)  // null 체크 추가
                 .birthDate(userDetail != null ? userDetail.getBirthDate() : null)  // camelCase 통일
-                .usingTitle(userDetail != null ? userDetail.getUsingTitle() : null)  // camelCase 통일
                 .statusMessage(userDetail != null ? userDetail.getStatusMessage() : null)  // camelCase 통일
-                .favoriteExercise(userDetail != null ? userDetail.getFavoriteExercise() : null)  // 추가 필드
-                .favoriteExercisePlen(userDetail != null ? userDetail.getFavoriteExercisePlen() : null)  // 추가 필드
-                .totalWeightLifted(userDetail != null ? userDetail.getTotalWeightLifted() : 0) // 추가 필드
-                .totalMountainsClimbed(userDetail != null ? userDetail.getTotalMountainsClimbed() : 0) // 추가 필드
-                .consecutiveWorkoutDays(userDetail != null ? userDetail.getConsecutiveWorkoutDays() : 0) // 추가 필드
-                .yogaSessionsCompleted(userDetail != null ? userDetail.getYogaSessionsCompleted() : 0) // 추가 필드
-                .totalDistanceCovered(userDetail != null ? userDetail.getTotalDistanceCovered() : 0.0) // 추가 필드
                 .build();
     }
 }
