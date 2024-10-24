@@ -4,7 +4,6 @@ import com.bit.finalproject.config.CoolSmsConfiguration;
 import com.bit.finalproject.service.CoolSmsService;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;
-import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

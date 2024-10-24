@@ -13,13 +13,13 @@ public class FeedLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long like_id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "feedId")
+    @JoinColumn(name = "feed_Id")
     private Feed feed;  // 게시글과의 관계
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_Id")
     private User user;  // 좋아요한 사용자
 }

@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,6 +30,13 @@ public class Feed {
     )
     private Long feedId;
     private String content;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "feed_hashtag",
+//            joinColumns = @JoinColumn(name = "feed_id"),
+//            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
+//    )
+//    private Set<HashTag> hashtags = new HashSet<>();
 
     @Column(name = "profile_image")
     private String profileImage;
@@ -37,7 +45,7 @@ public class Feed {
     // 여러개의 게시물이 하나의 회원에 연결될 수 있음
     // user 엔티티의 user_id의 값을 user_id로 Feed에 생성한다.
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "user_Id", referencedColumnName = "userId")
     private User user;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
@@ -45,6 +53,7 @@ public class Feed {
     private String searchKeyword;
     @Transient
     private String searchCondition;
+    private boolean isFollowing;
 
     // Feed 엔티티가 Feedfile 엔티티와 일대다 관계
     // Feed가 여러개의 Feedfile을 가질 수 있다.
@@ -74,6 +83,7 @@ public class Feed {
                 .nickname(this.user.getNickname())
                 .regdate(this.regdate)
                 .moddate(this.moddate)
+                .isFollowing(this.isFollowing)
 //                .searchKeyword(this.searchKeyword)
 //                .searchCondition(this.searchCondition)
                 .feedFileDtoList(

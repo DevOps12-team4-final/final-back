@@ -53,7 +53,7 @@ public class FileUtils {
     public FeedFileDto parserFileInfo(MultipartFile multipartFile, String directory) {
         String bucketName = "bobaesj";
 
-        FeedFileDto feedFileDto = new FeedFileDto();
+        FeedFileDto FeedFileDto = new FeedFileDto();
 
         // 중복값을 제외 하기위한 고유식별자 UUID 사용
         UUID uuid = UUID.randomUUID();
@@ -104,22 +104,22 @@ public class FileUtils {
         if(!type.equals("")) {
             // 타입확인후 image로 설정 그외는 etc로 설정한다
             if(type.startsWith("image")) {
-                feedFileDto.setFiletype("image");
+                FeedFileDto.setFiletype("image");
             } else {
-                feedFileDto.setFiletype("etc");
+                FeedFileDto.setFiletype("etc");
             }
         } else {
-            feedFileDto.setFiletype("etc");
+            FeedFileDto.setFiletype("etc");
         }
 
         // 파일명
-        feedFileDto.setFilename(fileName);
+        FeedFileDto.setFilename(fileName);
         // 원본 파일명
-        feedFileDto.setFileoriginname(multipartFile.getOriginalFilename());
+        FeedFileDto.setFileoriginname(multipartFile.getOriginalFilename());
         // 파일 경로
-        feedFileDto.setFilepath(directory);
+        FeedFileDto.setFilepath(directory);
 
-        return feedFileDto;
+        return FeedFileDto;
     }
 
     // 경로의 파일명 파일 삭제한다.

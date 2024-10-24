@@ -1,6 +1,7 @@
 package com.bit.finalproject.service;
 
 import com.bit.finalproject.dto.FeedDto;
+import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ public interface FeedService {
 
     List<FeedDto> getAllFeeds();
 
-//    List<FeedDto> getAllFeedsExcludingUser(Long userId);
+    Page<FeedDto> getAllFeedsExcludingUser(Long userId, Pageable pageable);
 
-    Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable);
+    Page<FeedDto> getAllFollowingFeeds(Long userId, Pageable pageable);
 }

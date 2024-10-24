@@ -3,9 +3,12 @@ package com.bit.finalproject.service.impl;
 import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.FeedFileDto;
+import com.bit.finalproject.dto.UserDto;
+import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.FeedRepository;
+import com.bit.finalproject.repository.FollowRepository;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +29,7 @@ public class FeedServiceImpl implements FeedService {
 
     private final FeedRepository feedRepository;
     private final FileUtils fileUtils;
+    private final FollowRepository followRepository;
 
     @Override
     public FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user) {
@@ -92,12 +96,23 @@ public class FeedServiceImpl implements FeedService {
 //    }
 
     @Override
-    public Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable) {
+    public Page<FeedDto> getAllFeedsExcludingUser(Long userId, Pageable pageable) {
 
         // 모든 게시글 가져오기
         Page<Feed> feedList = feedRepository.findByUser_UserIdNot(userId, pageable);
 
         return feedList.map(this::convertToDto);
+    }
+
+    @Override
+    public Page<FeedDto> getAllFollowingFeeds(Long userId, Pageable pageable) {
+
+        // 팔로우한 사용자 목록 가져오기
+        List<Long> followingIdList = followRepository.findFollowingUserIdsByFollowerUserId(userId);
+
+        // 팔로우한 사용자 게시물 가져오기
+        return feedRepository.findByUser_UserIdIn(followingIdList, pageable)
+                .map(this::convertToDto);
     }
 
     private FeedDto convertToDto(Feed feed) {
@@ -109,6 +124,7 @@ public class FeedServiceImpl implements FeedService {
         feedDto.setUserId(feed.getUser().getUserId());    // 게시글 올린 유저 id
         feedDto.setNickname(feed.getUser().getNickname());  // 게시글 올린 유저 nickname
         feedDto.setProfileImage(feed.getUser().getProfileImage());
+        feedDto.setFollowing(feed.isFollowing());
 
         // 사진 파일 리스트
         List<FeedFileDto> feedFileDtoList = feed.getFeedFileList().stream()
@@ -130,8 +146,6 @@ public class FeedServiceImpl implements FeedService {
         feedDto.setLikeCount(feed.getLikeCount());
 
         // 댓글 가져오는 기능 구현
-
-        // 운동 가져오는 기능 구현
 
         return feedDto;
     }

@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,11 +23,12 @@ public class FeedDto {
     private String nickname;
     private LocalDateTime regdate;  // 등록일
     private LocalDateTime moddate;  // 수정일
-    //    private String searchKeyword;
+//    private String searchKeyword;
 //    private String searchCondition;
     private String profileImage;
     private List<FeedFileDto> feedFileDtoList;
     private int likeCount; // 좋아요 개수 필드
+    private boolean isFollowing;
 
     public Feed toEntity(User user) {
         return Feed.builder()
@@ -36,6 +38,7 @@ public class FeedDto {
                 .regdate(this.regdate)
                 .moddate(this.moddate)
                 .profileImage(this.profileImage)
+                .isFollowing(this.isFollowing)
 //                .searchKeyword(this.searchKeyword)
 //                .searchCondition(this.searchCondition)
                 .feedFileList(new HashSet<>())
