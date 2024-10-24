@@ -4,25 +4,39 @@ import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
+<<<<<<< HEAD
 import com.bit.finalproject.repository.FollowRepository;
+=======
+
+import com.bit.finalproject.entity.Feed;
+import com.bit.finalproject.entity.Hashtag;
+>>>>>>> 35a1433166b1f1cd73cb567dd787c98e3a848c70
 import com.bit.finalproject.service.FeedLikeService;
 import com.bit.finalproject.service.FeedService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+
 import java.net.URI;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+=======
+import java.util.List;
+>>>>>>> 35a1433166b1f1cd73cb567dd787c98e3a848c70
 
 
 @RestController
@@ -52,21 +66,30 @@ public class FeedController {
         try {
             log.info("post feedDto : {}", feedDto);
             FeedDto postfeedDto = feedService.post(feedDto, uploadFiles, customUserDetails.getUser());
+            // 서비스 계층에서 FeedDto 리스트를 페이지네이션된 형태로 받음
+//            Page<FeedDto> feedDtoList = feedService.post(feedDto, uploadFiles, customUserDetails.getUser(), pageable);
+
 
             log.info("post feedDto list : {}", postfeedDto);
 
             responseDto.setItem(postfeedDto);
+            // Page<FeedDto>를 그대로 설정
+//            responseDto.setItems(feedDtoList.getContent());
             responseDto.setStatusCode(HttpStatus.CREATED.value());
             responseDto.setStatusMessage("created");
 
+<<<<<<< HEAD
             // 응답에는 생성된 리소스의 위치를 나타내는 URI()를 포함해 반환한다.
             return ResponseEntity.created(new URI("/feed")).body(responseDto);
+=======
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+>>>>>>> 35a1433166b1f1cd73cb567dd787c98e3a848c70
         } catch (Exception e) {
             log.error("post error: {}", e.getMessage());
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             responseDto.setStatusMessage(e.getMessage());
 
-            return ResponseEntity.internalServerError().body(responseDto);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
 
@@ -184,11 +207,27 @@ public class FeedController {
         }
     }
 
+<<<<<<< HEAD
     @GetMapping("/following")
     public ResponseEntity<?> getAllFollowingFeeds(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                   @PageableDefault(page = 0, size = 10, sort = "regdate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         ResponseDto<Page<FeedDto>> responseDto = new ResponseDto<>();
+=======
+    @GetMapping("/search")
+    public ResponseEntity<?> searchFeeds(@RequestParam String hashtag) {
+        try {
+            List<Feed> feeds = feedService.searchFeedsByHashtag(hashtag);
+            return ResponseEntity.ok(feeds);
+        } catch (EntityNotFoundException e) {
+            // 예외가 발생했을 때, 적절한 메시지와 상태 코드 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 해시태그를 가진 게시글이 없습니다.");
+        } catch (Exception e) {
+            // 그 외 일반적인 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버에서 오류가 발생했습니다.");
+        }
+    }
+>>>>>>> 35a1433166b1f1cd73cb567dd787c98e3a848c70
 
         try{
             Long userId = customUserDetails.getUser().getUserId();

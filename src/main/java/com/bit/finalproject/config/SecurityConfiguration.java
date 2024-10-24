@@ -56,7 +56,16 @@ public class SecurityConfiguration {
                             "/users/tel-check",
                             "/users/send",
                             "/users/modify-password",
+<<<<<<< HEAD
                             "/feeds").permitAll();
+=======
+                            "/feed",
+                            "/feeds/**",
+                            "/feed-comment",
+                            "/feed-comment/feed/**",
+                            "/notifications/**",
+                            "/feeds/search").permitAll();
+>>>>>>> 35a1433166b1f1cd73cb567dd787c98e3a848c70
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
