@@ -39,16 +39,16 @@ public class UserServiceImpl implements UserService {
     private final FollowRepository followRepository;
 
     @Override
-    public UserDto modifymember(UserDto userDto) {
+    public UserDto modifyUser(UserDto userDto) {
         User user = userDto.toEntity();
         return userRepository.save(user).toDto();
 
     }
 
     @Override
-    public UserDetailDto modifymemberDetail(User user, UserDetailDto userDetailDto) {
-        UserDetail memberDtail = userDetailDto.toEntity();
-        return userDetailRepository.save(memberDtail).toDto();    }
+    public UserDetailDto modifyUserDetail(User user, UserDetailDto userDetailDto) {
+        UserDetail userDtail = userDetailDto.toEntity();
+        return userDetailRepository.save(userDtail).toDto();    }
 
     @Override
     public UserDto login(UserDto userDto) {
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("wrong password");
         }
         userDto.setUserStatus(UserStatus.ACTIVE);
-        // member.toDto() -> Entity객체인 member를 Dto객체로 변환한다.
+        // user.toDto() -> Entity객체인 user를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
 
@@ -198,8 +198,8 @@ public class UserServiceImpl implements UserService {
                 });
 
         // UserDetail을 DTO로 변환하여 반환
-        UserDetailDto rememberDetailDto = userDetail.toDto();
-        return rememberDetailDto;
+        UserDetailDto reuserDetailDto = userDetail.toDto();
+        return reuserDetailDto;
     }
 
 
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteMember(Long userId) {
+    public void deleteUser(Long userId) {
         // 사용자 삭제 요청 생성
         DeletionRequest deletionRequest = DeletionRequest.builder()
                 .userId(userId)
@@ -245,13 +245,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public int countFollowers(Long memberId) {
-        return followRepository.countFollowers(memberId);
+    public int countFollowers(Long userId) {
+        return followRepository.countFollowers(userId);
     }
 
     @Override
-    public int countFollowing(Long memberId) {
-        return followRepository.countFollowing(memberId);
+    public int countFollowing(Long userId) {
+        return followRepository.countFollowing(userId);
     }
 
 

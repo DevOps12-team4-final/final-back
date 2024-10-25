@@ -24,8 +24,8 @@ public class UserDataDto {
     @Builder.Default
     private boolean active = true;
 
-    private Long memberDetailId;      // camelCase로 변경
-    private Long memberId;            // camelCase로 변경
+    private Long userDetailId;      // camelCase로 변경
+    private Long userIdchek;            // camelCase로 변경
     private String gender;
     private String birthDate;          // camelCase로 변경
     private String usingTitle;         // camelCase로 변경
@@ -51,8 +51,8 @@ public class UserDataDto {
         this.userStatus = userDto.getUserStatus();
         this.profileImage = userDto.getProfileImage();
         this.token = userDto.getToken();  // 필요시 추가
-        this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
-        this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
+        this.userDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
+        this.userIdchek = userDetailDto.getUserId();  // camelCase로 변경
         this.gender = userDetailDto.getGender();
         this.tel = userDto.getTel();  // camelCase로 변경
         this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경

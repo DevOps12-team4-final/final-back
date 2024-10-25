@@ -162,14 +162,14 @@ public class UserController {
         try {
             // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Long memberId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
+            Long userId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
 
             // 사용자 ID를 이용해 마이페이지 정보 조회
-            UserDetailDto userDetailDto = userService.getmypage(memberId);
+            UserDetailDto userDetailDto = userService.getmypage(userId);
 
             // 팔로워 및 팔로잉 수 조회
-            int followerCount = userService.countFollowers(memberId);  // 팔로워 수
-            int followingCount = userService.countFollowing(memberId); // 팔로잉 수
+            int followerCount = userService.countFollowers(userId);  // 팔로워 수
+            int followingCount = userService.countFollowing(userId); // 팔로잉 수
 
             // 팔로워 및 팔로잉 정보를 DTO에 추가
             userDetailDto.setFollowerCount(followerCount);
@@ -216,22 +216,21 @@ public class UserController {
         try {
             log.info("ProfilePage userId: {}", UserId);
             // 전달된 UserId를 이용해 사용자 프로필 정보 조회
-            UserDetailDto memberDataDto = userService.getprofilepage(UserId);
+            UserDetailDto userDataDto = userService.getprofilepage(UserId);
 
-            Long memberId = UserId;
 
             // 팔로워 및 팔로잉 수 조회
             int followerCount = userService.countFollowers(UserId);  // 팔로워 수
             int followingCount = userService.countFollowing(UserId); // 팔로잉 수
 
             // 팔로워 및 팔로잉 정보를 DTO에 추가
-            memberDataDto.setFollowerCount(followerCount);
-            memberDataDto.setFollowingCount(followingCount);
+            userDataDto.setFollowerCount(followerCount);
+            userDataDto.setFollowingCount(followingCount);
             // 성공 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            ;
-            responseDto.setItem(memberDataDto);
+
+            responseDto.setItem(userDataDto);
             return ResponseEntity.ok(responseDto);
 
         } catch (Exception e) {
@@ -265,8 +264,8 @@ public class UserController {
 
     @PatchMapping
     public ResponseEntity<?> modify(
-            @RequestPart("memberDto") UserDto userDto,  // 회원 기본 정보
-            @RequestPart("memberDetailDto") UserDetailDto userDetailDto,
+            @RequestPart("userDto") UserDto userDto,  // 회원 기본 정보
+            @RequestPart("userDetailDto") UserDetailDto userDetailDto,
             @RequestPart(value = "file", required = false) MultipartFile file,// 회원 상세 정보
             @AuthenticationPrincipal CustomUserDetails customUserDetails,  // 로그인된 사용자 정보
             Authentication authentication) {  // 인증 정보 제공
@@ -275,8 +274,8 @@ public class UserController {
 
         try {
             // 요청 받은 회원 정보 출력 (디버깅용 로그)
-            log.info("modify memberDto: {}", userDto);
-            log.info("modify memberDetailDto: {}", userDetailDto);
+            log.info("modify userDto: {}", userDto);
+            log.info("modify userDetailDto: {}", userDetailDto);
             // 파일이 업로드 된다면 파일 처리 로직
             if (file != null) {
 
@@ -293,22 +292,22 @@ public class UserController {
 
             }
             // 회원 기본 정보 수정
-            userService.modifymember(userDto);  // 서비스에서 회원 기본 정보 수정
+            userService.modifyUser(userDto);  // 서비스에서 회원 기본 정보 수정
 
-            // 현재 로그인된 사용자 정보에서 Member 추출
+            // 현재 로그인된 사용자 정보에서 user 추출
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             User user = userDetails.getUser();
 
             // 회원 상세 정보 수정
-            userService.modifymemberDetail(user, userDetailDto);  // 서비스에서 회원 상세 정보 수정
+            userService.modifyUserDetail(user, userDetailDto);  // 서비스에서 회원 상세 정보 수정
 
             // 수정된 회원 정보를 DTO로 변환하여 응답에 포함
             UserDataDto updatedUserDataDto = new UserDataDto(userDto, userDetailDto);
             updatedUserDataDto.setDataId(null); // 새로 생성된 경우 dataId는 null로 설정
 
             // 성공 로그 출력
-            log.info("modify memberDto: {}", userDto);
-            log.info("modify memberDetailDto: {}", userDetailDto);
+            log.info("modify userDto: {}", userDto);
+            log.info("modify userDetailDto: {}", userDetailDto);
 
             // 응답에 수정된 회원 정보를 포함
             responseDto.setItem(updatedUserDataDto);  // 수정된 기본 정보와 상세 정보를 포함
@@ -334,10 +333,10 @@ public class UserController {
         try {
             // 현재 로그인된 사용자 정보 가져오기
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            User user = userDetails.getUser(); // Member 객체 가져오기
+            User user = userDetails.getUser(); // user 객체 가져오기
 
             // 회원 삭제 서비스 호출
-            userService.deleteMember(user.getUserId()); // 사용자 ID를 사용하여 삭제
+            userService.deleteUser(user.getUserId()); // 사용자 ID를 사용하여 삭제
 
             // 성공 로그 출력
             log.info("User with ID {} has been successfully marked as deleted.", user.getUserId());

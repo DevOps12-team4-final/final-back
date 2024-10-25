@@ -20,7 +20,7 @@ public class UserDetail {
     private Long detailId;  // ID 필드
 
     @OneToOne
-    @JoinColumn(name = "memberId", referencedColumnName = "userId")
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;  // 유저와 1:1 관계
 
     @Builder.Default
@@ -44,7 +44,7 @@ public class UserDetail {
     public UserDetailDto toDto() {
         return UserDetailDto.builder()
                 .detailId(this.detailId)
-                .memberId(this.user != null ? this.user.getUserId() : null)
+                .userId(this.user != null ? this.user.getUserId() : null)
                 .gender(this.gender)
                 .birthDate(this.birthDate)
                 .statusMessage(this.statusMessage)

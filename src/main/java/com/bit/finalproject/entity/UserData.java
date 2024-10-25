@@ -18,11 +18,11 @@ public class UserData {
     private Long dataId;  // camelCase로 변경
 
     @ManyToOne
-    @JoinColumn(name = "memberId", referencedColumnName = "userId")
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "detailId", referencedColumnName = "detailId")  // UserDetail 테이블의 ID
+    @JoinColumn(name = "userdetailId", referencedColumnName = "detailId")  // UserDetail 테이블의 ID
     private UserDetail userDetail;
 
     // UserData 엔티티를 DTO로 변환
@@ -32,8 +32,8 @@ public class UserData {
                 .userId(user != null ? user.getUserId() : null)  // null 체크 추가
                 .nickname(user != null ? user.getNickname() : null)  // null 체크 추가
                 .userStatus(user != null ? user.getUserStatus() : null)  // null 체크 추가
-                .memberDetailId(userDetail != null ? userDetail.getDetailId() : null)  // camelCase 통일
-                .memberId(userDetail != null && userDetail.getUser() != null ?
+                .userDetailId(userDetail != null ? userDetail.getDetailId() : null)  // camelCase 통일
+                .userIdchek(userDetail != null && userDetail.getUser() != null ?
                         userDetail.getUser().getUserId() : null)  // null 체크 추가
                 .active(user != null ? user.isActive() : null)
                 .gender(userDetail != null ? userDetail.getGender() : null)  // null 체크 추가

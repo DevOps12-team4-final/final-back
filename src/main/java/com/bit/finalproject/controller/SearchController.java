@@ -35,7 +35,7 @@ public class SearchController {
 
         try {
             // 검색 조건에 따른 검색 실행
-            if (searchCondition.equalsIgnoreCase("MEMBER")) {
+            if (searchCondition.equalsIgnoreCase("USER")) {
                 results = searchService.searchByUser(searchKeyword);
             } else {
                 // 잘못된 검색 조건 처리

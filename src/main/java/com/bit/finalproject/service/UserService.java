@@ -9,13 +9,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 public interface UserService {
-     UserDto modifymember(UserDto userDto) ;
-     UserDetailDto modifymemberDetail(User user, UserDetailDto userDtailDto) ;
+     UserDto modifyUser(UserDto userDto) ;
+     UserDetailDto modifyUserDetail(User user, UserDetailDto userDtailDto) ;
      UserDetailDto getmypage(Long UserId);
      UserDetailDto getprofilepage(Long UserId);
-     void deleteMember(Long userId);
-     int countFollowers(Long memberId);
-     int countFollowing(Long memberId);
+     void deleteUser(Long userId);
+     int countFollowers(Long userId);
+     int countFollowing(Long userId);
 
      UserDto banUser(Long id);
 

@@ -15,7 +15,7 @@ import java.util.List;
 public class UserDetailDto {
 
     private Long detailId; // 필드 이름을 dtailId로 수정
-    private Long memberId; // Member의 ID만을 가지고 있음
+    private Long userId; // Member의 ID만을 가지고 있음
     private String gender;
     private String birthDate; // snake_case에서 camelCase로 변경
     private String statusMessage; // snake_case에서 camelCase로 변경
@@ -26,7 +26,7 @@ public class UserDetailDto {
     public UserDetail toEntity() {
         // Member 엔티티 생성 (memberId만 가지고 있으므로 new로 생성)
         User user = User.builder()
-                .userId(this.memberId)
+                .userId(this.userId)
                 .build();
 
         return UserDetail.builder()
