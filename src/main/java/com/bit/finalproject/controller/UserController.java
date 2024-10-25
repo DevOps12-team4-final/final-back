@@ -214,7 +214,7 @@ public class UserController {
         ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
         try {
-
+            log.info("ProfilePage userId: {}", UserId);
             // 전달된 UserId를 이용해 사용자 프로필 정보 조회
             UserDetailDto memberDataDto = userService.getprofilepage(UserId);
 

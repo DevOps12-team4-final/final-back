@@ -23,10 +23,17 @@ public class UserDetail {
     @JoinColumn(name = "memberId", referencedColumnName = "userId")
     private User user;  // 유저와 1:1 관계
 
-    private String gender;
-    private String birthDate;
-    private String usingTitle;
-    private String statusMessage;
+    @Builder.Default
+    private String gender = "Not Specified"; // 기본값 "Not Specified"
+
+    @Builder.Default
+    private String birthDate = "0000-00-00"; // 기본값 "0000-00-00"
+
+    @Builder.Default
+    private String usingTitle = "User"; // 기본값 "User"
+
+    @Builder.Default
+    private String statusMessage = "Hello, I'm using this app!"; // 기본값 "Hello, I'm using this app!"
 
     @Builder.Default
     private int followerCount = 0; // 팔로워 수 (기본값 0)
