@@ -3,7 +3,7 @@ package com.bit.finalproject.dto;
 import com.bit.finalproject.entity.*;
 import lombok.*;
 
-import java.util.List;
+
 
 @Getter
 @Setter

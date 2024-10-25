@@ -4,7 +4,7 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.FeedFileDto;
 import com.bit.finalproject.dto.FeedHashtagDto;
-import com.bit.finalproject.dto.HashtagDto;
+
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedHashtag;
 import com.bit.finalproject.entity.Hashtag;
@@ -16,7 +16,7 @@ import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

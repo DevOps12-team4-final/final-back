@@ -2,7 +2,7 @@ package com.bit.finalproject.service.impl;
 
 import com.bit.finalproject.dto.FeedCommentDto;
 import com.bit.finalproject.dto.NotificationDto;
-import com.bit.finalproject.dto.ResponseDto;
+
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedComment;
 import com.bit.finalproject.repository.FeedCommentRepository;
@@ -11,14 +11,10 @@ import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.FeedCommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.List;
 import java.time.LocalDateTime;

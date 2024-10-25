@@ -3,11 +3,10 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.ResponseDto;
-import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.Hashtag;
+
 import com.bit.finalproject.service.FeedLikeService;
 import com.bit.finalproject.service.FeedService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 
-import java.net.URI;
+
 import java.util.List;
 
 

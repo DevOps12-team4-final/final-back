@@ -4,7 +4,7 @@ import com.bit.finalproject.dto.UserDetailDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+
 
 @Entity
 @Getter

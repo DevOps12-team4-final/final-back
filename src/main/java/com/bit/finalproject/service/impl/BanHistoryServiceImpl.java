@@ -4,7 +4,7 @@ import com.bit.finalproject.entity.BanHistory;
 import com.bit.finalproject.repository.BanHistoryRepository;
 import com.bit.finalproject.service.BanHistoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

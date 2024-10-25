@@ -4,7 +4,6 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.*;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.User;
-import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,20 +14,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.service.CoolSmsService;
-import com.bit.finalproject.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.nurigo.java_sdk.Coolsms;
-import net.nurigo.java_sdk.exceptions.CoolsmsException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.*;
 
-import java.util.Arrays;
+
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,7 +148,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/my_page")
+    @GetMapping("/my-page")
     public ResponseEntity<?> getMyPage(Authentication authentication) {
         ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
@@ -209,12 +202,12 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
-    @GetMapping("/ProfilePage/{UserId}")
+    @GetMapping("/profile-page/{UserId}")
     public ResponseEntity<?> getProfilePage(@PathVariable("UserId") long UserId) {
         ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
         try {
-            log.info("ProfilePage userId: {}", UserId);
+            log.info("profile-page userId: {}", UserId);
             // 전달된 UserId를 이용해 사용자 프로필 정보 조회
             UserDetailDto userDataDto = userService.getprofilepage(UserId);
 
@@ -339,7 +332,7 @@ public class UserController {
             userService.deleteUser(user.getUserId()); // 사용자 ID를 사용하여 삭제
 
             // 성공 로그 출력
-            log.info("User with ID {} has been successfully marked as deleted.", user.getUserId());
+            log.info("user with ID {} has been successfully marked as deleted.", user.getUserId());
 
             // 응답 설정
             responseDto.setStatusCode(HttpStatus.OK.value());

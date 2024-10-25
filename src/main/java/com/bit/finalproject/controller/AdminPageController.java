@@ -3,7 +3,7 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.StatisticsDto;
 import com.bit.finalproject.dto.UserDto;
-import com.bit.finalproject.entity.BanHistory;
+
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.service.BanHistoryService;
 import com.bit.finalproject.service.StatisticsService;

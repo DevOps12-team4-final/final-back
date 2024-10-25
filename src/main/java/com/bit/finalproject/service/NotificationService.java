@@ -2,8 +2,7 @@ package com.bit.finalproject.service;
 
 
 import com.bit.finalproject.dto.NotificationDto;
-import com.bit.finalproject.entity.Notification;
-import com.bit.finalproject.entity.User;
+
 
 import java.util.List;
 

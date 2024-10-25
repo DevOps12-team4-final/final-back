@@ -4,23 +4,19 @@ import com.bit.finalproject.dto.FeedCommentDto;
 import com.bit.finalproject.dto.LikeDataDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
-import com.bit.finalproject.entity.FeedComment;
-import com.bit.finalproject.entity.User;
+
 import com.bit.finalproject.service.CommentLikeService;
 import com.bit.finalproject.service.FeedCommentService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+
 import java.util.*;
 
 @RestController

@@ -4,7 +4,7 @@ import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.UserDetail;
 import lombok.*;
 
-import java.util.List;
+
 
 @Getter
 @Setter
