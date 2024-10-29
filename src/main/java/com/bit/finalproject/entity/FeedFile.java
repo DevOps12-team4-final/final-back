@@ -37,9 +37,9 @@ public class FeedFile {
     private String filepath;
     private String fileoriginname;
     private String filetype;
-    @Transient
+//    @Transient
     private String filestatus;
-    @Transient
+//    @Transient
     private String newfilename;
 
     public FeedFileDto toDto() {

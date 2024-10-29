@@ -39,6 +39,9 @@ public class FeedCommentController {
 
         ResponseDto<FeedCommentDto> response = new ResponseDto<>();
 
+        log.info("Profile Image: {}", feedCommentDto.getProfileImage());
+        log.info("Comment: {}", feedCommentDto.getComment());
+
         try {
             if (userDetails == null) {
                 response.setStatusCode(HttpStatus.UNAUTHORIZED.value());
@@ -49,6 +52,8 @@ public class FeedCommentController {
             // 사용자의 User 정보 가져오기
             Long userId = userDetails.getUser().getUserId();  // CustomUserDetails에서 User 가져옴
             feedCommentDto.setUserId(userId);
+            feedCommentDto.setProfileImage(userDetails.getUser().getProfileImage());
+
 
             // 서비스 레이어에서 댓글 생성 처리
             FeedCommentDto createdComment = feedCommentService.createComment(feedCommentDto);
@@ -63,6 +68,7 @@ public class FeedCommentController {
             response.setStatusMessage("Error occurred while creating comment.");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
 
     }
 

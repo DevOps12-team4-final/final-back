@@ -53,11 +53,15 @@ public class SecurityConfiguration {
                             "/users/nickname-check",
                             "/users/join",
                             "/users/login",
-                            "/feeds/**",
-                            "/feed-comment",
-                            "/feed-comment/feed/**",
-                            "/notifications/**",
-                            "/feeds/search").permitAll();
+                            "/users/tel-check",
+                            "/users/send",
+                            "/users/modify-password",
+                            "/feeds").permitAll();
+//                            "/feeds/**",
+//                            "/feed-comment",
+//                            "/feed-comment/feed/**",
+//                            "/notifications/**",
+//                            "/feeds/search").permitAll();
 
                     // 나머지 요청은 인증이 필요하도록 설정한다.
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();

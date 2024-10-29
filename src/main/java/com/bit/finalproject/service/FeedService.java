@@ -13,4 +13,6 @@ public interface FeedService {
 
     // 해시태그를 이용해 관련된 게시글 찾기
     List<Feed> searchFeedsByHashtag(String hashtag);
+
+    Page<FeedDto> getAllFeedsExcludingUser(Long userId, Pageable pageable);
 }

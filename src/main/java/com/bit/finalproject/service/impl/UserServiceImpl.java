@@ -111,4 +111,40 @@ public class UserServiceImpl implements UserService {
         return nicknameCheckMap;
     }
 
+    @Override
+    public Map<String, String> telCheck(String tel) {
+
+        Map <String, String> telCheckMap = new HashMap<>();
+
+        long telCheck = userRepository.countByTel(tel);
+
+        if (telCheck == 0) {
+            telCheckMap.put("telCheckMsg", "not exist tel");
+        } else {
+            User user = userRepository.findByTel(tel);
+            if(user != null) {
+                telCheckMap.put("telCheckMsg", "exist tel");
+                telCheckMap.put("email", user.getEmail());
+                telCheckMap.put("nickname", user.getNickname());
+            }
+        }
+        return telCheckMap;
+    }
+
+    @Override
+    public UserDto modifyPw(UserDto userDto) {
+
+        User existingUser = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        User updatedUser = userRepository.save(existingUser);
+
+        UserDto modifyPw = updatedUser.toDto();
+        modifyPw.setPassword("");
+
+        return modifyPw;
+    }
+
 }

@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@SequenceGenerator(
+        name = "feedLikeSeqGenerator",
+        sequenceName = "FEEDLIKE_SEQ",
+        initialValue = 1,
+        allocationSize = 1
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +18,8 @@ import lombok.*;
 public class FeedLike {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                    generator = "feedLikeSeqGenerator")
     private Long like_id;
 
     @ManyToOne

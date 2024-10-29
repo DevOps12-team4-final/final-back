@@ -19,6 +19,7 @@ public class FeedCommentDto {
     private Long commentId;
     private Long feedId;
     private Long userId;
+    private String profileImage;
     private String comment;
     private Long parentCommentId;  // 부모 댓글 ID
     private int depth;
@@ -42,6 +43,24 @@ public class FeedCommentDto {
                 .moddate(this.moddate)
                 .deletedate(this.deletedate)
                 .isdelete(this.isdelete)
+                .build();
+    }
+
+    // 엔티티에서 DTO로 변환하는 메서드 (profileImage 포함)
+    public static FeedCommentDto fromEntity(FeedComment feedComment) {
+        return FeedCommentDto.builder()
+                .commentId(feedComment.getCommentId())
+                .feedId(feedComment.getFeed().getFeedId())
+                .userId(feedComment.getUser().getUserId())
+                .profileImage(feedComment.getUser().getProfileImage()) // profileImage 설정
+                .comment(feedComment.getComment())
+                .parentCommentId(feedComment.getParentCommentId())
+                .depth(feedComment.getDepth())
+                .orderNumber(feedComment.getOrderNumber())
+                .regdate(feedComment.getRegdate())
+                .moddate(feedComment.getModdate())
+                .deletedate(feedComment.getDeletedate())
+                .isdelete(feedComment.getIsdelete())
                 .build();
     }
 

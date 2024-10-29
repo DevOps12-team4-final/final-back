@@ -32,12 +32,14 @@ public class User {
     )
     private Long userId;
 
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String email;
     private String password;
     private String username; // 이름
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String nickname; // 닉네임
+    @Column(unique=true, nullable = false)
+    private String tel; // 닉네임
     private LocalDateTime regdate; // 등록일
     private LocalDateTime moddate; // 수정일
     @Column(name = "last_login_date")
@@ -69,6 +71,7 @@ public class User {
                 .password(this.password)
                 .username(this.username)
                 .nickname(this.nickname)
+                .tel(this.tel)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)

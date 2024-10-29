@@ -2,6 +2,7 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.service.CoolSmsService;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final CoolSmsService coolSmsService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
@@ -130,6 +132,70 @@ public class UserController {
             log.error("nickname-check error: {}", e.getMessage());
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+    // 전화번호 체크
+    @PostMapping("/tel-check")
+    public ResponseEntity<?> telCheck(@RequestBody UserDto userDto) {
+        ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
+
+        try{
+            log.info("tel-check: {}", userDto.getTel());
+            Map<String, String> telCheckMap = userService.telCheck(userDto.getTel());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(telCheckMap);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e){
+            log.error("tel-check error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+    // 인증메일 전송
+    @PostMapping("/send")
+    public ResponseEntity<?> sendSms(@RequestBody UserDto userDto) {
+        ResponseDto<String> responseDto = new ResponseDto<>();
+
+        try {
+            log.info("send sms : {}", userDto.toString());
+            String generatedCode = coolSmsService.sendSms(userDto.getTel());
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(generatedCode);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            log.error("send sms error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
+    // 비밀번호 수정
+    @PostMapping("/modify-password")
+    public ResponseEntity<?> modifyPassword(@RequestBody UserDto userDto) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
+
+        try{
+            log.info("modify password: {}", userDto.toString());
+            UserDto modifyPw = userService.modifyPw(userDto);
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(modifyPw);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e){
+            log.error("modify password error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }

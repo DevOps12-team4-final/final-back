@@ -2,6 +2,7 @@ package com.bit.finalproject.entity;
 
 
 import com.bit.finalproject.dto.FeedDto;
+import com.bit.finalproject.dto.FeedHashtagDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +10,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @SequenceGenerator(
@@ -47,8 +50,9 @@ public class Feed {
     // feed 엔티티가 feedfile 엔티티와 일대다 관계
     // feed가 여러개의 feedfile을 가질 수 있다.
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    @OrderBy("feedFileId ASC ") // 오름차순으로 사진불러옴
     @JsonManagedReference
-    private List<FeedFile> feedFileList;
+    private Set<FeedFile> feedFileList;
 
     // 좋아요와 일대다 관계
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
@@ -58,8 +62,8 @@ public class Feed {
     @OneToMany(mappedBy = "feed", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<FeedComment> feedCommentList;
 
-    // 해시태그와 일대다 관계
-    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // 피드해시태그와 일대다 관계
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<FeedHashtag> feedHashtags = new ArrayList<>();
 
     // 게시글의 좋아요 개수 반환
@@ -80,11 +84,19 @@ public class Feed {
                 .moddate(this.moddate)
                 .searchKeyword(this.searchKeyword)
                 .searchCondition(this.searchCondition)
-                .feeddFileDtoList(
+                .feedFileDtoList(
                         feedFileList != null && feedFileList.size() > 0
                                 ? feedFileList.stream().map(FeedFile::toDto).toList()
                                 : new ArrayList<>()
                 )
+                .feedHashtags(this.feedHashtags != null && !this.feedHashtags.isEmpty()
+                        ? this.feedHashtags.stream()
+                        .map(feedHashtag -> FeedHashtagDto.builder()
+                                .hashId(feedHashtag.getHashId())
+                                .hashtag(feedHashtag.getHashtag().getHashtag()) // Hashtag 문자열 추가
+                                .build())
+                        .collect(Collectors.toList())
+                        : new ArrayList<>()) // null인 경우 빈 리스트로 처리
                 .likeCount(this.getLikeCount())  // 좋아요 개수 추가
                 .build();
     }

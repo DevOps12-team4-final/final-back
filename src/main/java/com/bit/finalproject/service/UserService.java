@@ -12,4 +12,8 @@ public interface UserService {
     Map<String, String> emailCheck(String email);
 
     Map<String, String> nicknameCheck(String nickname);
+
+    Map<String, String> telCheck(String tel);
+
+    UserDto modifyPw(UserDto userDto);
 }

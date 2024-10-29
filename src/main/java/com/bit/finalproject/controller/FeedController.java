@@ -2,6 +2,7 @@ package com.bit.finalproject.controller;
 
 
 import com.bit.finalproject.dto.FeedDto;
+import com.bit.finalproject.dto.FeedHashtagDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -185,5 +187,42 @@ public class FeedController {
 //        return ResponseEntity.ok(feed);
 //    }
 
+    @GetMapping
+    public ResponseEntity<?> getAllFeedsExcludingUser(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                      @PageableDefault(page = 0, size = 10, sort = "regdate", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        ResponseDto<Page<FeedDto>> responseDto = new ResponseDto<>();
+
+        try {
+            // 인증된 사용자의 userId를 가져옴
+            Long userId = customUserDetails.getUser().getUserId(); // CustomUserDetails에서 userId를 가져옴
+
+            System.out.println(userId);
+
+            // 서비스에서 게시글 리스트 가져오기 (FeedHashtag 포함)
+            Page<FeedDto> feedList = feedService.getAllFeedsExcludingUser(userId, pageable);
+
+            // 각 FeedDto에 대해 feedHashtags를 추가
+            feedList.forEach(feedDto -> {
+                // 해당 피드에 연결된 해시태그 리스트를 FeedHashtagDto로 변환
+                List<FeedHashtagDto> feedHashtags = feedDto.getFeedHashtags();
+                if (feedHashtags != null) {
+                    feedDto.setFeedHashtags(feedHashtags); // FeedHashtagDto 리스트를 FeedDto에 설정
+                }
+            });
+
+            // 성공 시 응답 데이터 설정
+            responseDto.setStatusCode(HttpStatus.OK.value()); // 200
+            responseDto.setStatusMessage("Feed list retrieved successfully.");
+            responseDto.setItem(feedList);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Failed to retrieve Feed list: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
 
 }
