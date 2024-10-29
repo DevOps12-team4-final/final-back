@@ -1,7 +1,7 @@
-package com.bit.boardappbackend.repository;
+package com.bit.finalproject.repository;
 
-import com.bit.boardappbackend.entity.Room;
-import com.bit.boardappbackend.entity.RoomChat;
+import com.bit.finalproject.entity.Room;
+import com.bit.finalproject.entity.RoomChat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

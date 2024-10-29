@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.config.webSocket;
+package com.bit.finalproject.config.webSocket;
 
 
 import org.springframework.context.annotation.Configuration;

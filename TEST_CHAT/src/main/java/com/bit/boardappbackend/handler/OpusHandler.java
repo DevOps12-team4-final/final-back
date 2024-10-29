@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.handler;
+package com.bit.finalproject.handler;
 
 public class OpusHandler {
 }

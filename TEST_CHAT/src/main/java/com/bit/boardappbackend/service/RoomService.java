@@ -1,8 +1,8 @@
-package com.bit.boardappbackend.service;
+package com.bit.finalproject.service;
 
 
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.dto.RoomDto;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

@@ -1,14 +1,14 @@
-package com.bit.boardappbackend.service.impl;
+package com.bit.finalproject.service.impl;
 
 
-import com.bit.boardappbackend.common.FileUtils;
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.dto.RoomDto;
-import com.bit.boardappbackend.entity.Room;
-import com.bit.boardappbackend.entity.RoomChat;
-import com.bit.boardappbackend.repository.RoomChatRepository;
-import com.bit.boardappbackend.repository.RoomRepository;
-import com.bit.boardappbackend.service.RoomService;
+import com.bit.finalproject.common.FileUtils;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomDto;
+import com.bit.finalproject.entity.Room;
+import com.bit.finalproject.entity.RoomChat;
+import com.bit.finalproject.repository.RoomChatRepository;
+import com.bit.finalproject.repository.RoomRepository;
+import com.bit.finalproject.service.RoomService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

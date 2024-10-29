@@ -27,10 +27,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     UserDto findByUserId(Long userId);
     // ACTIVE 상태의 유저 목록을 가져오기
-    List<User> findByActiveTrue();
+    List<User> findByUserStatus(String status);
 
     // ACTIVE 상태의 유저 수를 계산
-    long countByActiveTrue();
+    long countByUserStatus(String status);
     // 총 사용자 수
     long count();
 

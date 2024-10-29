@@ -1,6 +1,6 @@
-package com.bit.boardappbackend.entity;
+package com.bit.finalproject.entity;
 
-import com.bit.boardappbackend.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomChatDto;
 import jakarta.persistence.*;
 import lombok.*;
 

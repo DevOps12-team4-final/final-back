@@ -6,6 +6,7 @@ import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.entity.User;
+import jakarta.servlet.http.HttpSession;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -90,10 +91,12 @@ public class UserController {
 
     // 로그아웃
     @GetMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(HttpSession session) {
         ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
         try {
+            long userId = (long) session.getAttribute("userId");  // 예: 세션에 저장된 사용자 ID
+            userService.logout(userId);
             log.info("logout success");
             Map<String, String> logoutMsgMap = new HashMap<>();
             SecurityContext securityContext = SecurityContextHolder.getContext();

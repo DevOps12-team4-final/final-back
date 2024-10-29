@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.config;
+package com.bit.finalproject.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
