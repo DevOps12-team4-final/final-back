@@ -27,11 +27,9 @@ public class UserDto {
     private String role;
     private String token;
 
-    @Builder.Default
-    private boolean active = true;
 
-    @Builder.Default
-    private boolean deleted = false; // 삭제 플래그
+
+
 
     private LocalDateTime deletedAt; // 삭제 요청 시간
     private UserDetailDto memberDetail;  // MemberDetailDto 포함
@@ -49,7 +47,6 @@ public class UserDto {
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
                 .role(this.role)
-                .deleted(this.deleted)
                 .deletedAt(this.deletedAt)
                 // MemberDetailDto가 null이 아닌 경우에만 엔티티로 변환
                 .userDetail(this.memberDetail != null ? this.memberDetail.toEntity() : null)

@@ -35,4 +35,8 @@ public interface UserService {
     Map<String, String> telCheck(String tel);
 
     UserDto modifyPw(UserDto userDto);
+
+
+
+    void logout(long userId);
 }

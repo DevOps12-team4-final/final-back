@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.bit.finalproject.entity.UserStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -61,22 +64,28 @@ public class UserServiceImpl implements UserService {
         if(!passwordEncoder.matches(userDto.getPassword(), user.getPassword())){
             throw new RuntimeException("wrong password");
         }
-        userDto.setUserStatus(UserStatus.ACTIVE);
+
+
         // user.toDto() -> Entity객체인 user를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
+        if(loginUserDto.getUserStatus().equals(UserStatus.BANNED)){
+            throw new RuntimeException("User Is Banded");
+        }
 
+        if(loginUserDto.getUserStatus().equals(UserStatus.WITHDRAWN)){
+            throw new RuntimeException("User Is WITHDRAWN");
+        }
+        loginUserDto.setUserStatus(ACTIVE);
         // 사용자 상태에 따른 로그인 여부
-        if(!loginUserDto.getUserStatus().equals(UserStatus.ACTIVE)){
+        if(!loginUserDto.getUserStatus().equals(ACTIVE)){
             throw new RuntimeException("user not active");
         }
 
         loginUserDto.setPassword("");
         loginUserDto.setLastLoginDate(LocalDateTime.now());
 
-        if(!loginUserDto.isActive()){
-            throw new RuntimeException("User Is Banded");
-        }
+
         loginUserDto.setUserId(user.getUserId());
         loginUserDto.setEmail(user.getEmail());
         loginUserDto.setNickname(user.getNickname());
@@ -100,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
         // 기본 권한, 활동 상태, 기본 프로필 이미지 설정
         userDto.setRole("ROLE_USER");
-        userDto.setUserStatus(UserStatus.ACTIVE);
+        userDto.setUserStatus(ACTIVE);
 
         // 사용자의 프로필 이미지가 없을 경우, 기본 이미지로 설정
         if (userDto.getProfileImage() == null || userDto.getProfileImage().isEmpty()) {
@@ -323,5 +332,24 @@ public class UserServiceImpl implements UserService {
 
         return modifyPw;
     }
+
+    @Override
+    public void logout(long userId) {
+        // userId로 User 엔티티 조회
+
+
+
+
+            // User 엔티티를 UserDto로 변환
+            UserDto userDto =  userRepository.findById(userId).get().toDto();
+
+            // 로그아웃 처리: 예를 들어, 로그인 상태 필드 업데이트
+        userDto.setUserStatus(UserStatus.valueOf("INACTIVE"));  // `loggedIn` 필드는 예시입니다.
+
+        userRepository.save(userDto.toEntity());
+
+
+    }
+
 
 }

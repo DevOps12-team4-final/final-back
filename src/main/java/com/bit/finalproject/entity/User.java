@@ -48,18 +48,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_Status")
     private UserStatus userStatus;
+    private LocalDateTime deletedAt; // 삭제 요청 시간
 
     // 프로필 이미지 파일을 경로로 저장하는 방식
     @Column(name = "profile_image")
     private String profileImage;
     private String role;
 
-    @Builder.Default
-    private boolean deleted = false; // 삭제 플래그
-    private LocalDateTime deletedAt; // 삭제 요청 시간
 
-    @Builder.Default
-    private boolean active = true;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_detail_id")  // 외래 키
@@ -85,10 +83,8 @@ public class User {
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
                 .role(this.role)
-                .deleted(this.deleted)
                 .deletedAt(this.deletedAt)
                 .memberDetail(this.userDetail != null ? this.userDetail.toDto() : null)
-                .active(this.active)
                 .build();
     }
 }

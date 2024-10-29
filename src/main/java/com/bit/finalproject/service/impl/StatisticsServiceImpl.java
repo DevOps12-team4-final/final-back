@@ -36,12 +36,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         return dto;
     }
     // ACTIVE 상태인 유저 목록을 가져오는 메소드
+    @Override
     public List<User> getActiveUsers() {
-        return userRepository.findByActiveTrue();
+        return userRepository.findByUserStatus("ACTIVE");
     }
-
+@Override
     // ACTIVE 상태인 유저 수를 세는 메소드
     public long countActiveUsers() {
-        return userRepository.countByActiveTrue();
+        return userRepository.countByUserStatus("ACTIVE");
     }
 }

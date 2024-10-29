@@ -28,6 +28,7 @@ public class AdminPageController {
     private final BanHistoryService banHistoryService;
 
 
+
     @GetMapping("/summary")
     public StatisticsDto getStatisticsSummary() {
         return statisticsService.getStatisticsSummary();
@@ -38,7 +39,11 @@ public class AdminPageController {
     public Page<User> getAllUsers(Pageable pageable) {
         return userService.getAllUsers(pageable);
     }
-
+    // 활성화 사용자수 보기 (페이징 지원)
+    @GetMapping("/activist")
+    public long getActivistAllUsers() {
+        return statisticsService.countActiveUsers();
+    }
     // 사용자 검색
     @GetMapping("/search")
     public Page<User> searchUsers(@RequestParam String keyword, Pageable pageable) {
