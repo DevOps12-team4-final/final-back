@@ -1,6 +1,6 @@
-package com.bit.boardappbackend.config;
+package com.bit.finalproject.config;
 
-import com.bit.boardappbackend.jwt.JwtAuthenticationFilter;
+import com.bit.finalproject.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

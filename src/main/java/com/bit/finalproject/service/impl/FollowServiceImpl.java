@@ -6,6 +6,9 @@ import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.FollowRepository;
 import com.bit.finalproject.repository.UserRepository;
 import com.bit.finalproject.service.FollowService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,12 +18,15 @@ import java.util.stream.Collectors;
 public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
-    public FollowServiceImpl(FollowRepository followRepository, UserRepository userRepository) {
+    private  final KafkaTemplate<String, String> kafkaTemplate;
+    public FollowServiceImpl(FollowRepository followRepository, UserRepository userRepository, KafkaTemplate<String, String> kafkaTemplate) {
         this.followRepository = followRepository;
         this.userRepository = userRepository;
+        this.kafkaTemplate = kafkaTemplate;
     }
     @Override
     // 팔로우 기능
+    @CacheEvict(value = {"followers", "followings"}, allEntries = true)
     public void follow(Long memberId, Long userId) {
         // memberId와 userId로 User 엔티티를 조회합니다. (팔로우하는 사람과 팔로우되는 사람)
         User follower = userRepository.findById(memberId)
@@ -37,10 +43,20 @@ public class FollowServiceImpl implements FollowService {
 
         // 팔로우 관계를 저장합니다.
         followRepository.save(follow);
+
+        kafkaTemplate.send("alarm-topic", "%d:%s:%s:%d:"
+                .formatted(memberId,
+                        "FOLLOW",
+                        "follow",
+                        userId
+                )
+        );
+
     }
 
     @Override
     // 언팔로우 기능
+    @CacheEvict(value = {"followers", "followings"}, allEntries = true)
     public void unfollow(Long memberId, Long userId) {
         // memberId와 userId로 팔로우 관계를 조회합니다.
         User follower = userRepository.findById(memberId)
@@ -60,6 +76,7 @@ public class FollowServiceImpl implements FollowService {
 
     // 팔로우하는 사람 목록 조회
     @Override
+    @Cacheable(value = "followers", key = "#userId")
     public List<FollowDto> getFollowers(Long userId) {
         // 특정 사용자를 팔로우하는 모든 팔로워 조회
         return followRepository.findAllByFollowing_UserId(userId).stream()
@@ -75,6 +92,7 @@ public class FollowServiceImpl implements FollowService {
 
 
     @Override
+    @Cacheable(value = "followings", key = "#userId")
     public List<FollowDto> getFollowings(Long userId) {
         // 특정 사용자가 팔로우하는 모든 사용자 조회
         return followRepository.findAllByFollowing_UserId(userId).stream()

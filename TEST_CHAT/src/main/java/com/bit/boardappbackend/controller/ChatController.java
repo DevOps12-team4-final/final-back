@@ -1,10 +1,10 @@
-package com.bit.boardappbackend.controller;
+package com.bit.finalproject.controller;
 
 
-import com.bit.boardappbackend.dto.ResponseDto;
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.dto.RoomDto;
-import com.bit.boardappbackend.service.RoomService;
+import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomDto;
+import com.bit.finalproject.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

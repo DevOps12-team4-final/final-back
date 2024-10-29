@@ -22,7 +22,7 @@ public class Hashtag {
     private String hashtag;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL)
-    private List<FeedHashtag> feedHashtags = new ArrayList<>();
+    private List<FeedHashtag> feedHashtags; //= new ArrayList<>();
 
     public HashtagDto toDto() {
         return HashtagDto.builder()

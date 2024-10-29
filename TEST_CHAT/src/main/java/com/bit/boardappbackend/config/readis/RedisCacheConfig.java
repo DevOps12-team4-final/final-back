@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.config.readis;
+package com.bit.finalproject.config.readis;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

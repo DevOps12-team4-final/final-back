@@ -1,13 +1,13 @@
-package com.bit.boardappbackend.kafka.consumer;
+package com.bit.finalproject.kafka.consumer;
 
 
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.dto.RoomChatMediaDto;
-import com.bit.boardappbackend.entity.RoomChat;
-import com.bit.boardappbackend.repository.ChatAlarmRepository;
-import com.bit.boardappbackend.repository.RoomChatRepository;
-import com.bit.boardappbackend.repository.RoomMemberRepository;
-import com.bit.boardappbackend.repository.RoomRepository;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomChatMediaDto;
+import com.bit.finalproject.entity.RoomChat;
+import com.bit.finalproject.repository.ChatAlarmRepository;
+import com.bit.finalproject.repository.RoomChatRepository;
+import com.bit.finalproject.repository.RoomMemberRepository;
+import com.bit.finalproject.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

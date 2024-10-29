@@ -4,10 +4,7 @@ import com.bit.finalproject.dto.UserDetailDto;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.*;
 import com.bit.finalproject.jwt.JwtProvider;
-import com.bit.finalproject.repository.DeletionRequestRepository;
-import com.bit.finalproject.repository.FollowRepository;
-import com.bit.finalproject.repository.UserDetailRepository;
-import com.bit.finalproject.repository.UserRepository;
+import com.bit.finalproject.repository.*;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.bit.finalproject.entity.UserStatus.ACTIVE;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -37,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final UserDetailRepository userDetailRepository;
     private final DeletionRequestRepository deletionRequestRepository; // 삭제 요청 레포지토리 추가
     private final FollowRepository followRepository;
+    private  final RoomRepository roomRepository;
 
     @Override
     public UserDto modifymember(UserDto userDto) {
@@ -65,22 +65,27 @@ public class UserServiceImpl implements UserService {
         if(!passwordEncoder.matches(userDto.getPassword(), user.getPassword())){
             throw new RuntimeException("wrong password");
         }
-        userDto.setUserStatus(UserStatus.ACTIVE);
+
         // member.toDto() -> Entity객체인 member를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
+        if(loginUserDto.getUserStatus().equals(UserStatus.BANNED)){
+            throw new RuntimeException("User Is Banded");
+        }
 
+        if(loginUserDto.getUserStatus().equals(UserStatus.WITHDRAWN)){
+            throw new RuntimeException("User Is WITHDRAWN");
+        }
+        loginUserDto.setUserStatus(ACTIVE);
         // 사용자 상태에 따른 로그인 여부
-        if(!loginUserDto.getUserStatus().equals(UserStatus.ACTIVE)){
+        if(!loginUserDto.getUserStatus().equals(ACTIVE)){
             throw new RuntimeException("user not active");
         }
 
         loginUserDto.setPassword("");
         loginUserDto.setLastLoginDate(LocalDateTime.now());
 
-        if(!loginUserDto.isActive()){
-            throw new RuntimeException("User Is Banded");
-        }
+
         // JWT 토큰 발급
         loginUserDto.setToken(jwtProvider.createJwt(user));
         System.out.println(loginUserDto.getToken());
@@ -93,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
         // 권한, 활동중, 기본프로필이미지 설정
         userDto.setRole("ROLE_USER");
-        userDto.setUserStatus(UserStatus.ACTIVE);
+        userDto.setUserStatus(ACTIVE);
 
         // 사용자의 프로필 이미지가 없을 경우, 기본 이미지로 설정
         if (userDto.getProfileImage() == null || userDto.getProfileImage().isEmpty()) {
@@ -111,6 +116,16 @@ public class UserServiceImpl implements UserService {
         // DB에 저장된 후 joinedUserDto의 password를 빈 문자열로 설정한다.
         // 보안적인 이유로 password가 클라이언트측에 노출되는 것을 방지하기 위함이다.
         joinedUserDto.setPassword("");
+
+        //join시 room 만들기
+        roomRepository.save(Room.builder()
+                        .title(joinedUserDto.getNickname()) //default 닉네임
+                        .description("%s님의 채팅방 입니다".formatted(joinedUserDto.getNickname())) //default 내용
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .profileImg(null)
+                        .user(joinedUserDto.toEntity())
+                .build());
 
         return joinedUserDto;
     }
@@ -267,6 +282,16 @@ public class UserServiceImpl implements UserService {
         modifyPw.setPassword("");
 
         return modifyPw;
+    }
+
+    @Override
+    public void logout(long userId) {
+        // userId로 User 엔티티 조회
+        // User 엔티티를 UserDto로 변환
+        UserDto userDto =  userRepository.findById(userId).get().toDto();
+        // 로그아웃 처리: 예를 들어, 로그인 상태 필드 업데이트
+        userDto.setUserStatus(UserStatus.valueOf("INACTIVE"));  // `loggedIn` 필드는 예시입니다.
+        userRepository.save(userDto.toEntity());
     }
 
 }

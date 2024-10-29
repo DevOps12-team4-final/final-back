@@ -12,8 +12,11 @@ import com.bit.finalproject.service.FeedCommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,8 +37,10 @@ public class FeedCommentServiceImpl implements FeedCommentService {
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
     private NotificationServiceImpl notificationService;
+    private  final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
+    @CacheEvict(value = "commentsByFeed", key = "#feedCommentDto.feedId")
     public FeedCommentDto createComment(FeedCommentDto feedCommentDto) {
         // Feed 엔티티 설정
         Feed feed = feedRepository.findById(feedCommentDto.getFeedId())
@@ -73,35 +78,18 @@ public class FeedCommentServiceImpl implements FeedCommentService {
 
         // 댓글 저장
         FeedComment savedComment = feedCommentRepository.save(feedComment);
-
-        // 알림 생성
-        NotificationDto notificationDto = null;
-        try {
-            notificationDto = new NotificationDto(
-                    null,
-                    savedComment.getUser().getUserId(),  // 댓글 작성자에게 알림
-                    "새로운 댓글이 달렸습니다.",
-                    savedComment.getCommentId(),  // 댓글 ID
-                    "COMMENT",
-                    LocalDateTime.now(),
-                    false
-            );
-            notificationService.createNotification(notificationDto);
-        } catch (Exception e) {
-            log.error("알림 생성 중 오류 발생: {}", e.getMessage());
-        }
+        // kafka 로 보내고 작업
+        kafkaTemplate.send("alarm-topic",
+                "%d:%s:%s:%d:".formatted(feedCommentDto.getUserId(),
+                        "FEED_COMMENT",
+                        feedCommentDto.getComment(),
+                        savedComment.getCommentId()
+                )
+        );
 
         // 필드 값들을 로그로 출력
         log.info("feedComment ID: {}", savedComment.getCommentId());
         log.info("feedComment 작성자 ID: {}", savedComment.getUser().getUserId());
-
-        if (notificationDto != null) {
-            log.info("Alarm Content: {}", notificationDto.getAlarmContent());
-            log.info("Alarm Target ID: {}", notificationDto.getAlarmTargetId());
-            log.info("Alarm Type: {}", notificationDto.getAlarmType());
-            log.info("Created Alarm Time: {}", notificationDto.getCreatedAlarmTime());
-            log.info("Is Read: {}", notificationDto.isRead());
-        }
 
         // 저장된 댓글을 FeedCommentDto로 변환하여 반환
         FeedCommentDto savedCommentDto = new FeedCommentDto();
@@ -146,6 +134,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
     }
 
     @Override
+    @Cacheable(value = "commentsByFeed", key = "#feedId")
     public List<FeedCommentDto> findAllCommentsByFeedId(Long feedId) {
         // Feed 엔티티가 존재하는지 확인
         Feed feed = feedRepository.findById(feedId)
@@ -173,6 +162,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
     }
 
     @Override
+    @CacheEvict(value = "commentsByFeed", key = "#feedComment.feedId")
     public FeedCommentDto updateComment(Long commentId, FeedCommentDto feedCommentDto) {
         // 댓글 조회
         FeedComment feedComment = feedCommentRepository.findById(commentId)
@@ -202,6 +192,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
     }
 
     @Override
+    @CacheEvict(value = "commentsByFeed", key = "#feedComment.feedId")
     public void deleteComment(Long commentId, Long userId) throws AccessDeniedException, NoSuchElementException {
         FeedComment feedComment = feedCommentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("삭제할 댓글이 존재하지 않습니다."));

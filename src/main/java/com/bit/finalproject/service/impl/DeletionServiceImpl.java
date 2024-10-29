@@ -33,7 +33,7 @@ public class DeletionServiceImpl implements DeletionService {
             // 사용자 삭제
             userRepository.deleteById(request.getUserId());
             // 삭제 요청 후 처리 (예: 로그 출력 등)
-            System.out.println("User with ID " + request.getUserId() + " has been deleted.");
+            System.out.println("User with ID " + request.getUserId() +"User with delete RequestTim " +request.getRequestTime()+" has been deleted.");
         }
 
         // 처리한 요청 삭제

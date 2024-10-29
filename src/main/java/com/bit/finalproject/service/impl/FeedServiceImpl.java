@@ -15,10 +15,13 @@ import com.bit.finalproject.repository.HashtagRepository;
 import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,8 +40,10 @@ public class FeedServiceImpl implements FeedService {
     private final FileUtils fileUtils;
     private final FeedHashtagRepository feedHashtagRepository;
     private final HashtagRepository hashtagRepository;
+    private  final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
+    @CacheEvict(value = {"allFeeds", "feedsByUser", "feedsByHashtag"}, allEntries = true)
     public FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user) {
 
         feedDto.setRegdate(LocalDateTime.now());
@@ -103,12 +108,21 @@ public class FeedServiceImpl implements FeedService {
             });
         }
 
-        feedRepository.save(feed);
+        Feed savedFeed = feedRepository.save(feed);
+
+        kafkaTemplate.send("alarm-topic", "%d:%s:%s:%d:"
+                .formatted(user.getUserId(),
+                        "FEED",
+                        savedFeed.getFeedFileList().stream().toList().get(0),
+                        savedFeed.getFeedId()
+                )
+        );
 
         return feed.toDto();
     }
 
     @Override
+    @Cacheable(value = "allFeeds")
     public List<FeedDto> getAllFeeds() {
 
         // feedFile을 순서대로 가져오기위한 sort 객체 사용
@@ -141,6 +155,7 @@ public class FeedServiceImpl implements FeedService {
 //    }
 
     @Override
+    @Cacheable(value = "feedsByUser", key = "#userId")
     public Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable) {
 
         // 모든 게시글 가져오기
@@ -187,6 +202,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Cacheable(value = "feedsByHashtag", key = "#hashtag")
     public List<Feed> searchFeedsByHashtag(String hashtag) {
         // 먼저 해당 해시태그가 존재하는지 확인
         Optional<Hashtag> optionalHashtag = feedHashtagRepository.findByHashtag_Hashtag(hashtag);

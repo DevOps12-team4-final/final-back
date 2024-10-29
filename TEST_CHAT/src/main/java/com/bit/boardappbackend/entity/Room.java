@@ -1,8 +1,8 @@
-package com.bit.boardappbackend.entity;
+package com.bit.finalproject.entity;
 
 
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.dto.RoomDto;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.dto.RoomDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
