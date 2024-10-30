@@ -9,10 +9,10 @@ import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedHashtag;
 import com.bit.finalproject.entity.Hashtag;
 import com.bit.finalproject.entity.User;
-import com.bit.finalproject.repository.FeedHashtagRepository;
-import com.bit.finalproject.repository.FeedRepository;
-import com.bit.finalproject.repository.HashtagRepository;
+import com.bit.finalproject.repository.*;
 import com.bit.finalproject.service.FeedService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +38,8 @@ import java.util.stream.Collectors;
 public class FeedServiceImpl implements FeedService {
 
     private final FeedRepository feedRepository;
+    private final FeedFileRepository feedFileRepository;
+    private final FollowRepository followRepository;
     private final FileUtils fileUtils;
     private final FeedHashtagRepository feedHashtagRepository;
     private final HashtagRepository hashtagRepository;
@@ -46,63 +49,41 @@ public class FeedServiceImpl implements FeedService {
     @CacheEvict(value = {"allFeeds", "feedsByUser", "feedsByHashtag"}, allEntries = true)
     public FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user) {
 
+
         feedDto.setRegdate(LocalDateTime.now());
         feedDto.setModdate(LocalDateTime.now());
-//        System.out.println("@@@@@@@@@@@@@@@@@@@@@feedDto = " + feedDto.getFeedHashtags());
-        // 해시태그가 있으면 처리
 
         List<String> hashtagNames = feedDto.getFeedHashtags().stream()
                 .map(FeedHashtagDto::getHashtag)
                 .collect(Collectors.toList());
 
         List<Hashtag> hashtags = hashtagNames.stream()
-                .map(tag -> {
+                                .map(tag -> {
                     Optional<Hashtag> existingTag = hashtagRepository.findByHashtag(tag);
-                    if (existingTag.isPresent()) {
-
-                        return existingTag.get();
-                    } else {
+                    return existingTag.orElseGet(() -> {
                         Hashtag newHashtag = new Hashtag();
                         newHashtag.setHashtag(tag);
-                        hashtagRepository.save(newHashtag);
-
-                        return newHashtag;
-                    }
+                        return hashtagRepository.save(newHashtag); // 새 해시태그 저장
+                    });
                 })
-                .collect(Collectors.toList());
+                                .collect(Collectors.toList());
 
-        // feedDto를 Feed 엔티티로 변환하면서 사용자 정보와 해시태그도 포함
-        Feed feed = feedDto.toEntity(user, hashtags);
-//        System.out.println("feed = " + feed);
-        // Feed 저장 (Feed는 Hashtag와 관계 없이 먼저 저장)
-        Feed feedhash = feedDto.toEntity(user, new ArrayList<>()); // 일단 빈 해시태그 리스트로 저장
-        feedRepository.save(feedhash); // Feed 먼저 저장
+        // FeedDto의 정보를 Feed 엔티티로 변환하면서 user 정보를 같이 넘긴다.
+        Feed feed = feedDto.toEntity(user,hashtags);
 
-        // FeedHashtag 생성 및 저장
-        List<FeedHashtag> feedHashtags = hashtags.stream()
-                .map(hashtag -> FeedHashtag.builder()
-                        .feed(feed)      // Feed와 Hashtag 연결
-                        .hashtag(hashtag)
-                        .build())
-                .collect(Collectors.toList());
-
-        feedHashtagRepository.saveAll(feedHashtags); // FeedHashtag 저장
-
-        feedHashtagRepository.saveAll(feed.getFeedHashtags());
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@feed = " + feed.getFeedHashtags());
-
-        feedRepository.save(feed); // Feed 저장
-
-
-        // 파일이 업로드 된다면 파일 처리 로직
-        if (uploadFiles != null && uploadFiles.length > 0) {
+        // 파일이 업로드 된다면 진행
+        if(uploadFiles != null && uploadFiles.length > 0) {
+            // uploadFiles 배열에 들어있는 각각의 파일들을 순회하며 처리한다.
             Arrays.stream(uploadFiles).forEach(multipartFile -> {
+                // 원본 파일명을 확인한다.
                 if (multipartFile.getOriginalFilename() != null &&
                         !multipartFile.getOriginalFilename().equalsIgnoreCase("")) {
                     FeedFileDto feedFileDto = fileUtils.parserFileInfo(multipartFile, "feed/");
+
                     // filestatus와 newfilename 설정
                     feedFileDto.setFilestatus("uploaded");  // 파일이 업로드됨
-                    feedFileDto.setNewfilename(feedFileDto.getFilename());  // 새 파일명 설
+                    feedFileDto.setFilename(feedFileDto.getFilename());  // 새 파일명 설정
+
                     feed.getFeedFileList().add(feedFileDto.toEntity(feed));
                 }
             });
@@ -118,7 +99,74 @@ public class FeedServiceImpl implements FeedService {
                 )
         );
 
-        return feed.toDto();
+        return savedFeed.toDto();
+    }
+
+    @Override
+    @CacheEvict(value = {"allFeeds", "feedsByUser", "feedsByHashtag"}, allEntries = true)
+    public FeedDto updateFeed(Long feedId, FeedDto feedDto, MultipartFile[] uploadFiles, String originFiles, User user) {
+        List<FeedFileDto> originFileList = new ArrayList<>();
+
+        // originFiles JSON 문자열을 List<FeedFileDto>로 변환
+        try {
+            originFileList = new ObjectMapper().readValue(
+                    originFiles,
+                    new TypeReference<List<FeedFileDto>>() {}
+            );
+        } catch (IOException ie) {
+            System.out.println(ie.getMessage());
+        }
+
+        List<FeedFileDto> uFileList = new ArrayList<>();
+
+        // originFiles에서 삭제할 파일만 처리
+        if (!originFileList.isEmpty()) {
+            originFileList.forEach(feedFileDto -> {
+                if (feedFileDto.getFilestatus().equals("D")) {
+                    FeedFileDto deleteFeedFileDto = new FeedFileDto();
+
+                    deleteFeedFileDto.setFeedId(feedDto.getFeedId());
+                    deleteFeedFileDto.setFeedFileId(feedFileDto.getFeedFileId());
+                    deleteFeedFileDto.setFilestatus("D");
+
+                    fileUtils.deleteFile("feed/", feedFileDto.getFilename());
+                    uFileList.add(deleteFeedFileDto);
+                }
+            });
+        }
+
+        // 새로 업로드된 파일 처리
+        if (uploadFiles != null && uploadFiles.length > 0) {
+            Arrays.stream(uploadFiles).forEach(file -> {
+                if (!file.getOriginalFilename().isEmpty()) {
+                    FeedFileDto postFeedfileDto = fileUtils.parserFileInfo(file, "feed/");
+                    postFeedfileDto.setFeedId(feedDto.getFeedId());
+                    postFeedfileDto.setFilestatus("I");
+
+                    uFileList.add(postFeedfileDto);
+                }
+            });
+        }
+
+        feedDto.setModdate(LocalDateTime.now());
+
+        Feed feed = feedRepository.findById(feedDto.getFeedId())
+                .orElseThrow(() -> new RuntimeException("Feed not exist"));
+
+        feed.setContent(feedDto.getContent());
+        feed.setModdate(feedDto.getModdate());
+
+        uFileList.forEach(feedFileDto -> {
+            if (feedFileDto.getFilestatus().equals("I")) {
+                feed.getFeedFileList().add(feedFileDto.toEntity(feed));
+            } else if (feedFileDto.getFilestatus().equals("D")) {
+                fileUtils.deleteFile("feed/", feedFileDto.getFilename());
+                feedFileRepository.delete(feedFileDto.toEntity(feed));
+            }
+        });
+
+        Feed updatedFeed = feedRepository.save(feed);
+        return updatedFeed.toDto();
     }
 
     @Override
@@ -137,32 +185,30 @@ public class FeedServiceImpl implements FeedService {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<FeedDto> getAllFeedsExcludingUser(Long userId) {
-//
-//        // 모든 게시글 가져오기
-//        List<Feed> feedList = feedRepository.findAll();
-//
-//        // 사용자 게시물 제외
-//        List<Feed> filteredFeedList = feedList.stream()
-//                .filter(feed -> !feed.getUser().getUserId().equals(userId))
-//                .toList();
-//
-//        // 각 게시글을 Dto로 변환하여 리스트로 반환
-//        return filteredFeedList.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
+
+
 
     @Override
     @Cacheable(value = "feedsByUser", key = "#userId")
-    public Page<FeedDto> getAllFeedsExcludingUserP(Long userId, Pageable pageable) {
+    public Page<FeedDto> getAllFeedsExcludingUser(Long userId, Pageable pageable) {
 
         // 모든 게시글 가져오기
         Page<Feed> feedList = feedRepository.findByUser_UserIdNot(userId, pageable);
 
         return feedList.map(this::convertToDto);
     }
+
+    @Override
+    public Page<FeedDto> getAllFollowingFeeds(Long userId, Pageable pageable) {
+
+        // 팔로우한 사용자 목록 가져오기
+        List<Long> followingIdList = followRepository.findFollowingUserIdsByFollowerUserId(userId);
+
+        // 팔로우한 사용자 게시물 가져오기
+        return feedRepository.findByUser_UserIdIn(followingIdList, pageable)
+                .map(this::convertToDto);
+    }
+
 
     private FeedDto convertToDto(Feed feed) {
         FeedDto feedDto = new FeedDto();
@@ -173,6 +219,7 @@ public class FeedServiceImpl implements FeedService {
         feedDto.setUserId(feed.getUser().getUserId());    // 게시글 올린 유저 id
         feedDto.setNickname(feed.getUser().getNickname());  // 게시글 올린 유저 nickname
         feedDto.setProfileImage(feed.getUser().getProfileImage());
+        feedDto.setFollowing(feed.isFollowing());
 
         // 사진 파일 리스트
         List<FeedFileDto> feedFileDtoList = feed.getFeedFileList().stream()
@@ -185,7 +232,6 @@ public class FeedServiceImpl implements FeedService {
                     feedFileDto.setFileoriginname(file.getFileoriginname());
                     feedFileDto.setFiletype(file.getFiletype());
                     feedFileDto.setFilestatus(file.getFilestatus());
-                    feedFileDto.setNewfilename(file.getNewfilename());
                     return feedFileDto;
                 }).toList();
         feedDto.setFeedFileDtoList(feedFileDtoList);
@@ -195,29 +241,8 @@ public class FeedServiceImpl implements FeedService {
 
         // 댓글 가져오는 기능 구현
 
-        // 운동 가져오는 기능 구현
-
         return feedDto;
-//        return feedRepository.findAll(pageable).map(Feed::toDto);
     }
 
-    @Override
-    @Cacheable(value = "feedsByHashtag", key = "#hashtag")
-    public List<Feed> searchFeedsByHashtag(String hashtag) {
-        // 먼저 해당 해시태그가 존재하는지 확인
-        Optional<Hashtag> optionalHashtag = feedHashtagRepository.findByHashtag_Hashtag(hashtag);
 
-        // 해시태그가 존재하지 않으면 빈 리스트 반환
-        if (!optionalHashtag.isPresent()) {
-            return Collections.emptyList();
-        }
-
-        // 해시태그에 해당하는 FeedHashtag 리스트 가져오기
-        List<FeedHashtag> feedHashtags = feedHashtagRepository.findByHashtag(optionalHashtag.get());
-
-        // FeedHashtag 객체에서 Feed 객체를 추출하여 리스트로 반환
-        return feedHashtags.stream()
-                .map(FeedHashtag::getFeed)
-                .collect(Collectors.toList());
-    }
 }

@@ -18,7 +18,8 @@ public class FeedFileDto {
     private String fileoriginname;
     private String filetype;
     private String filestatus;
-    private String newfilename;
+
+
 
     public FeedFile toEntity(Feed feed) {
         return FeedFile.builder()
@@ -29,7 +30,6 @@ public class FeedFileDto {
                 .fileoriginname(this.fileoriginname)
                 .filetype(this.filetype)
                 .filestatus(this.filestatus)
-                .newfilename(this.newfilename)
                 .build();
     }
 }

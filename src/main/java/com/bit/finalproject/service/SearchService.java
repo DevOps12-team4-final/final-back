@@ -1,7 +1,11 @@
 package com.bit.finalproject.service;
 
+import com.bit.finalproject.dto.SearchDto;
+
 import java.util.List;
 
 public interface SearchService {
-    List<?> searchByUser(String searchKeyword);
+    List<SearchDto> searchByUser(String searchKeyword);
+
+    List<SearchDto> searchByFeedContent(String searchKeyword);
 }

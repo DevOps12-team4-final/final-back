@@ -11,6 +11,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -48,7 +49,9 @@ public class RedisConfiguration {
     public RedisTemplate<String, RoomChatDto> chatRedisTemplate() {
         RedisTemplate<String,RoomChatDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+        //redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+        Jackson2JsonRedisSerializer<RoomChatDto> serializer = new Jackson2JsonRedisSerializer<>(objectMapper(),RoomChatDto.class);
+        redisTemplate.setValueSerializer(serializer);
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }

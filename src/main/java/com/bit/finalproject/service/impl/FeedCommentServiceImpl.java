@@ -101,6 +101,8 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         savedCommentDto.setModdate(savedComment.getModdate());  // 수정일 설정
         savedCommentDto.setIsdelete(savedComment.getIsdelete());  // 삭제 여부 설정
         savedCommentDto.setDepth(savedComment.getDepth());  // Depth 설정
+        savedCommentDto.setParentCommentId(savedComment.getParentCommentId());
+        savedCommentDto.setProfileImage(feedCommentDto.getProfileImage());
 
         // 부모 댓글 ID 설정
         if (savedComment.getParentCommentId() != null) {
@@ -127,6 +129,8 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         feedCommentDto.setModdate(feedComment.getModdate());
         feedCommentDto.setIsdelete(feedComment.getIsdelete());
         feedCommentDto.setDepth(feedComment.getDepth());
+        feedCommentDto.setParentCommentId(feedComment.getParentCommentId());
+        feedCommentDto.setProfileImage(feedCommentDto.getProfileImage());
         if (feedComment.getParentCommentId() != null) {
             feedCommentDto.setParentCommentId(feedComment.getParentCommentId());
         }
@@ -156,6 +160,12 @@ public class FeedCommentServiceImpl implements FeedCommentService {
                     commentDto.setRegdate(comment.getRegdate());
                     commentDto.setModdate(comment.getModdate());
                     commentDto.setIsdelete(comment.getIsdelete());
+                    // 프로필 이미지 설정 (user가 null이 아닐 때만)
+                    String profileImage = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
+                            ? comment.getUser().getProfileImage()
+                            : ""; // 기본 이미지 경로 설정
+                    commentDto.setProfileImage(profileImage);
+
                     return commentDto;
                 })
                 .collect(Collectors.toList());
@@ -185,6 +195,8 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         updatedCommentDto.setModdate(updatedComment.getModdate());
         updatedCommentDto.setIsdelete(updatedComment.getIsdelete());
         updatedCommentDto.setDepth(updatedComment.getDepth());
+        updatedCommentDto.setParentCommentId(updatedComment.getParentCommentId());
+        updatedCommentDto.setProfileImage(updatedCommentDto.getProfileImage());
         if (updatedComment.getParentCommentId() != null) {
             updatedCommentDto.setParentCommentId(updatedComment.getParentCommentId());
         }

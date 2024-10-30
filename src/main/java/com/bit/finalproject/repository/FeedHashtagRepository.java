@@ -1,5 +1,6 @@
 package com.bit.finalproject.repository;
 
+import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedHashtag;
 import com.bit.finalproject.entity.Hashtag;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ public interface FeedHashtagRepository extends JpaRepository<FeedHashtag, Long> 
     Optional<Hashtag> findByHashtag_Hashtag(String hashtag);
 
     List<FeedHashtag> findByHashtag(Hashtag hashtag);
+
+    Optional<FeedHashtag> findByFeedAndHashtag(Feed feed, Hashtag hashtag);
 }

@@ -42,12 +42,12 @@ public class AlarmConsumer {
              Long target_id =follow.getFollower().getUserId();
              String nickname =  follow.getFollower().getNickname();
              String profile =  follow.getFollower().getProfileImage();
-             String jsonMessage = String.format("{\"message\":\"%s\", " +
-                                                "\"type\":\"%s\", " +
-                                                "\"nickname\":%s, " +
-                                                "\"profile\":%s, " +
-                                                "\"url\":%d}",
-                                        chatMessage, type, nickname, profile, url);
+            String jsonMessage = String.format("{\"message\":\"%s\", " +
+                            "\"type\":\"%s\", " +
+                            "\"nickname\":\"%s\", " +
+                            "\"profile\":\"%s\", " +
+                            "\"url\":%d}",
+                    chatMessage, type, nickname, profile, url);
             String way = String.format("/topic/alarm/%s",target_id);
             messagingTemplate.convertAndSend(way,jsonMessage);
         }
@@ -71,8 +71,8 @@ public class AlarmConsumer {
             String profile =  follow.getFollower().getProfileImage();
             String JsonMessage = String.format("{\"message\":\"%s\", " +
                             "\"type\":\"%s\", " +
-                            "\"nickname\":%s, " +
-                            "\"profile\":%s, " +
+                            "\"nickname\":\"%s\", " +
+                            "\"profile\":\"%s\", " +
                             "\"url\":%d}",
                     chatMessage, type, nickname, profile, url);
             notificationRepository.save(Notification.builder()
@@ -87,17 +87,6 @@ public class AlarmConsumer {
     }
 
 
-    @KafkaListener(topics = "chat-topic", groupId = "alarm_id")
-    public void sendChatAlarm(String message) {
-        System.out.println(message);
-        String[] parts = message.split(":", 4);
-        Long roomId = Long.parseLong(parts[0]);
-        String type = parts[1];
-        Long user_id = Long.parseLong(parts[2]);
-        String chatMessage = parts[3];
-        String jsonMessage = String.format("{\"message\":\"%s\", \"type\":\"%s\", \"user_id\":%d}", chatMessage, type, user_id);
-        String way = String.format("/topic/alarm/%s",user_id);
-        messagingTemplate.convertAndSend(way,jsonMessage);
-    }
+
 
 }

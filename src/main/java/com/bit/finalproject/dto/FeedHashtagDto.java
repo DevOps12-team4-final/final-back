@@ -23,6 +23,7 @@ public class FeedHashtagDto {
     // FeedHashtagDto에서 FeedHashtag 엔티티로 변환하는 메소드
     public FeedHashtag toEntity(Feed feed, Hashtag hashtagEntity) {
         return FeedHashtag.builder()
+                .hashId(hashId)
                 .feed(feed)
                 .hashtag(hashtagEntity)
                 .build();

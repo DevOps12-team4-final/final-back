@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@SequenceGenerator(
+        name = "feedLikeSeqGenerator",
+        sequenceName = "FEEDLIKE_SEQ",
+        initialValue = 1,
+        allocationSize = 1
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,14 +18,15 @@ import lombok.*;
 public class FeedLike {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long like_id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "feedLikeSeqGenerator")
+    private Long feedLikeId;
 
     @ManyToOne
-    @JoinColumn(name = "feedId")
+    @JoinColumn(name = "feed_id")
     private Feed feed;  // 게시글과의 관계
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;  // 좋아요한 사용자
 }
