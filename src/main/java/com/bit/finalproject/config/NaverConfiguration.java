@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:/application.properties")
 @Getter
 public class NaverConfiguration {
+
     @Value("${ncp.accessKey}")
     private String accessKey;
 
@@ -20,4 +21,5 @@ public class NaverConfiguration {
 
     @Value("${ncp.endPoint}")
     private String endPoint;
+
 }

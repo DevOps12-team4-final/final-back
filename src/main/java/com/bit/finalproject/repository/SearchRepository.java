@@ -4,7 +4,7 @@ import com.bit.finalproject.entity.User;
 
 import java.util.List;
 
-public interface SearchRepository {
+public interface SearchRepository{
 
     // 계정 검색
     List<User> searchByUser(String keyword);

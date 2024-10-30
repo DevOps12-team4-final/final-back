@@ -28,6 +28,8 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public final NumberPath<Long> feedId = createNumber("feedId", Long.class);
 
+    public final BooleanPath isFollowing = createBoolean("isFollowing");
+
     public final SetPath<FeedLike, QFeedLike> likes = this.<FeedLike, QFeedLike>createSet("likes", FeedLike.class, QFeedLike.class, PathInits.DIRECT2);
 
     public final DateTimePath<java.time.LocalDateTime> moddate = createDateTime("moddate", java.time.LocalDateTime.class);

@@ -2,9 +2,9 @@ package com.bit.finalproject.service;
 
 public interface FeedLikeService {
 
-    void removeLike(Long feedId, Long userId);
+    void removeLike(Long FeedId, Long userId);
 
-    int getLikeCount(Long feedId);
+    int getLikeCount(Long FeedId);
 
-    void addLike(Long feedId, Long userId);
+    void addLike(Long FeedId, Long userId);
 }

@@ -36,8 +36,6 @@ public class QFeedFile extends EntityPathBase<FeedFile> {
 
     public final StringPath filetype = createString("filetype");
 
-    public final StringPath newfilename = createString("newfilename");
-
     public QFeedFile(String variable) {
         this(FeedFile.class, forVariable(variable), INITS);
     }

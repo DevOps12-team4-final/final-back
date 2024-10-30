@@ -9,17 +9,17 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FeedLike {
+public class BookMark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feedLikeId;
+    private Long bookMarkId;
 
     @ManyToOne
     @JoinColumn(name = "feed_id")
-    private Feed feed;  // 게시글과의 관계
+    private Feed feed;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;  // 좋아요한 사용자
+    private User user;
 }

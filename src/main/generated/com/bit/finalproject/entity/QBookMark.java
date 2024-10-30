@@ -11,40 +11,40 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QFeedLike is a Querydsl query type for FeedLike
+ * QBookMark is a Querydsl query type for BookMark
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QFeedLike extends EntityPathBase<FeedLike> {
+public class QBookMark extends EntityPathBase<BookMark> {
 
-    private static final long serialVersionUID = -1985109725L;
+    private static final long serialVersionUID = 211464228L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QFeedLike feedLike = new QFeedLike("feedLike");
+    public static final QBookMark bookMark = new QBookMark("bookMark");
+
+    public final NumberPath<Long> bookMarkId = createNumber("bookMarkId", Long.class);
 
     public final QFeed feed;
 
-    public final NumberPath<Long> feedLikeId = createNumber("feedLikeId", Long.class);
-
     public final QUser user;
 
-    public QFeedLike(String variable) {
-        this(FeedLike.class, forVariable(variable), INITS);
+    public QBookMark(String variable) {
+        this(BookMark.class, forVariable(variable), INITS);
     }
 
-    public QFeedLike(Path<? extends FeedLike> path) {
+    public QBookMark(Path<? extends BookMark> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QFeedLike(PathMetadata metadata) {
+    public QBookMark(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QFeedLike(PathMetadata metadata, PathInits inits) {
-        this(FeedLike.class, metadata, inits);
+    public QBookMark(PathMetadata metadata, PathInits inits) {
+        this(BookMark.class, metadata, inits);
     }
 
-    public QFeedLike(Class<? extends FeedLike> type, PathMetadata metadata, PathInits inits) {
+    public QBookMark(Class<? extends BookMark> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.feed = inits.isInitialized("feed") ? new QFeed(forProperty("feed"), inits.get("feed")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
