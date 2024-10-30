@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailDto getprofilepage(Long UserId) {
-        User user=  userRepository.findById(UserId).orElseThrow();
+
         UserDetail userDetail=  userDetailRepository.findById(UserId).orElseThrow();
 
         UserDetailDto ReMemberDetailDto = userDetail.toDto();

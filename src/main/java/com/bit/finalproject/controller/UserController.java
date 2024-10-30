@@ -157,20 +157,19 @@ public class UserController {
     }
 
     @GetMapping("/my_page")
-    public ResponseEntity<?> getMyPage(Authentication authentication) {
+    public ResponseEntity<?> getMyPage(HttpSession session) {
         ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
         try {
             // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Long memberId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
+            long userId = (long) session.getAttribute("userId");  // 예: 세션에 저장된 사용자 ID
 
             // 사용자 ID를 이용해 마이페이지 정보 조회
-            UserDetailDto userDetailDto = userService.getmypage(memberId);
+            UserDetailDto userDetailDto = userService.getmypage(userId);
 
             // 팔로워 및 팔로잉 수 조회
-            int followerCount = userService.countFollowers(memberId);  // 팔로워 수
-            int followingCount = userService.countFollowing(memberId); // 팔로잉 수
+            int followerCount = userService.countFollowers(userId);  // 팔로워 수
+            int followingCount = userService.countFollowing(userId); // 팔로잉 수
 
             // 팔로워 및 팔로잉 정보를 DTO에 추가
             userDetailDto.setFollowerCount(followerCount);
@@ -219,7 +218,6 @@ public class UserController {
             // 전달된 UserId를 이용해 사용자 프로필 정보 조회
             UserDetailDto memberDataDto = userService.getprofilepage(UserId);
 
-            Long memberId = UserId;
 
             // 팔로워 및 팔로잉 수 조회
             int followerCount = userService.countFollowers(UserId);  // 팔로워 수
