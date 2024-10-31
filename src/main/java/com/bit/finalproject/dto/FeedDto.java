@@ -1,10 +1,9 @@
 package com.bit.finalproject.dto;
 
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.FeedHashtag;
 import com.bit.finalproject.entity.Hashtag;
 import com.bit.finalproject.entity.User;
-import jakarta.persistence.Column;
+
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -5,7 +5,7 @@ import com.bit.finalproject.dto.NotificationDto;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CommentLike;
 import com.bit.finalproject.entity.FeedComment;
-import com.bit.finalproject.entity.Notification;
+
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.CommentLikeRepository;
 import com.bit.finalproject.repository.FeedCommentRepository;
@@ -14,11 +14,10 @@ import com.bit.finalproject.service.CommentLikeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.Logger;
-import org.springframework.data.annotation.CreatedDate;
+
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -14,6 +14,12 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     @EntityGraph(attributePaths = {"user", "feedFileList", "likes"})
     List<Feed> findAll();  // 관련 엔티티들과 함께 모든 게시글을 가져오기
 
+
     Page<Feed> findByUser_UserIdNot(Long userId, Pageable pageable);
 
+
+    // ------- //
+    // 옮길 코드 //
+    // ------- //
+    List<Feed> findByUser_UserId(Long userId);
 }

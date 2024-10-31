@@ -4,7 +4,7 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.FeedFileDto;
 import com.bit.finalproject.dto.FeedHashtagDto;
-import com.bit.finalproject.dto.HashtagDto;
+
 import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedHashtag;
 import com.bit.finalproject.entity.Hashtag;
@@ -16,7 +16,7 @@ import com.bit.finalproject.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -176,7 +176,7 @@ public class FeedServiceImpl implements FeedService {
         feedDto.setFeedFileDtoList(feedFileDtoList);
 
         // 좋아요 개수
-        feedDto.setLikeCount(feed.getLikeCount());
+//        feedDto.setLikeCount(feed.getLikeCount());
 
         // 댓글 가져오는 기능 구현
 
@@ -203,5 +203,22 @@ public class FeedServiceImpl implements FeedService {
         return feedHashtags.stream()
                 .map(FeedHashtag::getFeed)
                 .collect(Collectors.toList());
+    }
+
+
+    // ------- //
+    // 옮길 코드 //
+    // ------- //
+    @Override
+    public List<FeedDto> getFeedsByUserId(Long userId) {
+        List<FeedDto> feedDtoList = new ArrayList<>();
+
+        List<Feed> feedList = feedRepository.findByUser_UserId(userId);
+
+        for (Feed feed : feedList) {
+            feedDtoList.add(convertToDto(feed));
+
+        }
+        return feedDtoList;
     }
 }

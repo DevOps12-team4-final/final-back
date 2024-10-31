@@ -6,7 +6,6 @@ import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedLike;
 
 import com.bit.finalproject.entity.User;
-import com.bit.finalproject.repository.FeedCommentRepository;
 import com.bit.finalproject.repository.FeedLikeRepository;
 import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.repository.UserRepository;

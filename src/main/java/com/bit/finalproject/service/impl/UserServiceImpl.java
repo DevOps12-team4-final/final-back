@@ -12,14 +12,10 @@ import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.bit.finalproject.common.FileUtils;
-import com.bit.finalproject.dto.UserDto;
+
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.entity.UserStatus;
-import com.bit.finalproject.jwt.JwtProvider;
-import com.bit.finalproject.repository.UserRepository;
-import com.bit.finalproject.service.UserService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,16 +35,16 @@ public class UserServiceImpl implements UserService {
     private final FollowRepository followRepository;
 
     @Override
-    public UserDto modifymember(UserDto userDto) {
+    public UserDto modifyUser(UserDto userDto) {
         User user = userDto.toEntity();
         return userRepository.save(user).toDto();
 
     }
 
     @Override
-    public UserDetailDto modifymemberDetail(User user, UserDetailDto userDetailDto) {
-        UserDetail memberDtail = userDetailDto.toEntity();
-        return userDetailRepository.save(memberDtail).toDto();    }
+    public UserDetailDto modifyUserDetail(User user, UserDetailDto userDetailDto) {
+        UserDetail userDtail = userDetailDto.toEntity();
+        return userDetailRepository.save(userDtail).toDto();    }
 
     @Override
     public UserDto login(UserDto userDto) {
@@ -66,7 +62,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("wrong password");
         }
         userDto.setUserStatus(UserStatus.ACTIVE);
-        // member.toDto() -> Entity객체인 member를 Dto객체로 변환한다.
+        // user.toDto() -> Entity객체인 user를 Dto객체로 변환한다.
         // DB에 저장된 사용자 정보를 Dto객체로 전달하기 위함이다.
         UserDto loginUserDto = user.toDto();
 
@@ -81,9 +77,20 @@ public class UserServiceImpl implements UserService {
         if(!loginUserDto.isActive()){
             throw new RuntimeException("User Is Banded");
         }
+        loginUserDto.setUserId(user.getUserId());
+        loginUserDto.setEmail(user.getEmail());
+        loginUserDto.setNickname(user.getNickname());
+        loginUserDto.setUsername(user.getUsername());
+        loginUserDto.setTel(user.getTel());
+        loginUserDto.setUserStatus(user.getUserStatus());
+        loginUserDto.setRole(user.getRole());
+        loginUserDto.setProfileImage(user.getProfileImage());
+
+
         // JWT 토큰 발급
         loginUserDto.setToken(jwtProvider.createJwt(user));
         System.out.println(loginUserDto.getToken());
+        System.out.println(loginUserDto);
         return loginUserDto;
     }
 
@@ -91,7 +98,7 @@ public class UserServiceImpl implements UserService {
     public UserDto join(UserDto userDto) {
         String defaultProfileImageUrl = "profileImage/default-profile.jpg";
 
-        // 권한, 활동중, 기본프로필이미지 설정
+        // 기본 권한, 활동 상태, 기본 프로필 이미지 설정
         userDto.setRole("ROLE_USER");
         userDto.setUserStatus(UserStatus.ACTIVE);
 
@@ -100,20 +107,35 @@ public class UserServiceImpl implements UserService {
             userDto.setProfileImage(defaultProfileImageUrl);
         }
 
-        // 사용자가입력한 password를 passwordEncoder를 이용해 암호화한다.
+        // 입력한 password를 passwordEncoder를 이용해 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        // 1. userDto.toEntity() -> Dto 객체를 Entity 객체로 변환시켜 DB에 저장할 수 있는 상태로 만든다.
-        // 2. save 메서드는 Entity 객체를 DB에 저장하고, 저장된 Entity 객체를 반환한다.
-        // 3. userRepository.save(userDto.toEntity()).toDto() -> Entity 객체를 타입에맞게 Dto객체로 다시 변환한다.
-        UserDto joinedUserDto = userRepository.save(userDto.toEntity()).toDto();
+        // User 엔티티 생성
+        User newUser = userDto.toEntity();
 
-        // DB에 저장된 후 joinedUserDto의 password를 빈 문자열로 설정한다.
-        // 보안적인 이유로 password가 클라이언트측에 노출되는 것을 방지하기 위함이다.
+        // UserDetail을 생성하고 기본값을 설정한 뒤 유저와 연관 설정
+        UserDetail userDetail = UserDetail.builder()
+                .user(newUser)
+                .gender("Not Specified")
+                .birthDate("0000-00-00")
+                .usingTitle("User")
+                .statusMessage("Hello, I'm using this app!")
+                .followerCount(0)
+                .followingCount(0)
+                .build();
+
+        // User에 UserDetail 연결
+        newUser.setUserDetail(userDetail);
+
+        // User와 UserDetail을 함께 저장
+        UserDto joinedUserDto = userRepository.save(newUser).toDto();
+
+        // 보안을 위해 password를 빈 문자열로 설정
         joinedUserDto.setPassword("");
 
         return joinedUserDto;
     }
+
 
     @Override
     public Map<String, String> emailCheck(String email) {
@@ -148,32 +170,65 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailDto getmypage(Long UserId) {
-        UserDetail userDetail=  userDetailRepository.findById(UserId).orElseThrow();
+    public UserDetailDto getmypage(Long userId) {
+        // UserDetail을 조회하고, 존재하지 않을 경우 새로 생성하여 기본값 설정 후 저장
+        UserDetail userDetail = userDetailRepository.findByUser_UserId(userId)
+                .orElseGet(() -> {
+                    // User 엔티티 조회 (UserDetail 생성에 필요)
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserDetailDto RememberDetailDto = userDetail.toDto();
+                    // 기본값이 설정된 새 UserDetail 생성
+                    UserDetail newUserDetail = UserDetail.builder()
+                            .user(user)
+                            .gender("Not Specified")         // 기본값
+                            .birthDate("0000-00-00")          // 기본값
+                            .usingTitle("User")               // 기본값
+                            .statusMessage("Hello, I'm using this app!") // 기본값
+                            .followerCount(0)
+                            .followingCount(0)
+                            .build();
+
+                    // 기본값을 포함한 UserDetail 저장
+                    return userDetailRepository.save(newUserDetail);
+                });
+
+        // UserDetail을 DTO로 변환하여 반환
+        UserDetailDto reuserDetailDto = userDetail.toDto();
+        return reuserDetailDto;
+    }
 
 
+    @Override
+    public UserDetailDto getprofilepage(Long userId) {
+        // User를 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // UserDetail 조회, 없을 경우 새로 생성하여 기본값과 함께 저장
+        UserDetail userDetail = userDetailRepository.findByUser_UserId(userId)
+                .orElseGet(() -> {
+                    UserDetail newUserDetail = UserDetail.builder()
+                            .user(user)
+                            .gender("Not Specified")         // 기본값
+                            .birthDate("0000-00-00")          // 기본값
+                            .usingTitle("User")               // 기본값
+                            .statusMessage("Hello, I'm using this app!") // 기본값
+                            .followerCount(0)
+                            .followingCount(0)
+                            .build();
 
-        return RememberDetailDto ;
+                    // 기본값이 포함된 UserDetail 저장
+                    return userDetailRepository.save(newUserDetail);
+                });
+
+        // UserDetail을 DTO로 변환하여 반환
+        UserDetailDto userDetailDto = userDetail.toDto();
+        return userDetailDto;
     }
 
     @Override
-    public UserDetailDto getprofilepage(Long UserId) {
-        User user=  userRepository.findById(UserId).orElseThrow();
-        UserDetail userDetail=  userDetailRepository.findById(UserId).orElseThrow();
-
-        UserDetailDto ReMemberDetailDto = userDetail.toDto();
-
-
-
-
-        return ReMemberDetailDto;
-    }
-
-    @Override
-    public void deleteMember(Long userId) {
+    public void deleteUser(Long userId) {
         // 사용자 삭제 요청 생성
         DeletionRequest deletionRequest = DeletionRequest.builder()
                 .userId(userId)
@@ -186,13 +241,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public int countFollowers(Long memberId) {
-        return followRepository.countFollowers(memberId);
+    public int countFollowers(Long userId) {
+        return followRepository.countFollowers(userId);
     }
 
     @Override
-    public int countFollowing(Long memberId) {
-        return followRepository.countFollowing(memberId);
+    public int countFollowing(Long userId) {
+        return followRepository.countFollowing(userId);
     }
 
 

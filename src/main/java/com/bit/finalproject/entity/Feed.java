@@ -54,21 +54,21 @@ public class Feed {
     @JsonManagedReference
     private Set<FeedFile> feedFileList;
 
-    // 좋아요와 일대다 관계
-    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
-    private Set<FeedLike> likes;
+//    // 좋아요와 일대다 관계
+//    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+//    private Set<FeedLike> likes;
 
     // 해시태그와 일대다 관계
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedHashtag> feedHashtags = new ArrayList<>();
 
-    // 게시글의 좋아요 개수 반환
-    public int getLikeCount() {
-        if (this.likes == null) {
-            return 0;  // likes가 null이면 0을 반환
-        }
-        return this.likes.size();  // 좋아요 개수를 계산
-    }
+//    // 게시글의 좋아요 개수 반환
+//    public int getLikeCount() {
+//        if (this.likes == null) {
+//            return 0;  // likes가 null이면 0을 반환
+//        }
+//        return this.likes.size();  // 좋아요 개수를 계산
+//    }
 
     public FeedDto toDto() {
         return FeedDto.builder()
@@ -86,7 +86,7 @@ public class Feed {
                                 ? feedFileList.stream().map(FeedFile::toDto).toList()
                                 : new ArrayList<>()
                 )
-                .likeCount(this.getLikeCount())  // 좋아요 개수 추가
+//                .likeCount(this.getLikeCount())  // 좋아요 개수 추가
                 .build();
     }
 

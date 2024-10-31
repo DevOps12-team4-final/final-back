@@ -4,12 +4,12 @@ package com.bit.finalproject.controller;
 import com.bit.finalproject.dto.ResponseDto;
 import com.bit.finalproject.dto.SearchDto;
 import com.bit.finalproject.service.SearchService;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +35,7 @@ public class SearchController {
 
         try {
             // 검색 조건에 따른 검색 실행
-            if (searchCondition.equalsIgnoreCase("MEMBER")) {
+            if (searchCondition.equalsIgnoreCase("USER")) {
                 results = searchService.searchByUser(searchKeyword);
             } else {
                 // 잘못된 검색 조건 처리

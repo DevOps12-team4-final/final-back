@@ -1,6 +1,6 @@
 package com.bit.finalproject.entity;
 
-import jakarta.persistence.Entity;
+
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

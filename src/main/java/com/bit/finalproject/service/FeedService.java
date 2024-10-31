@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-import java.util.List;
+
 
 public interface FeedService {
     FeedDto post(FeedDto feedDto, MultipartFile[] uploadFiles, User user);
@@ -22,4 +22,10 @@ public interface FeedService {
 
     // 해시태그를 이용해 관련된 게시글 찾기
     List<Feed> searchFeedsByHashtag(String hashtag);
+
+
+    // ------- //
+    // 옮길 코드 //
+    // ------- //
+    List<FeedDto> getFeedsByUserId(Long userId);
 }

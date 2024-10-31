@@ -3,11 +3,10 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.FeedDto;
 import com.bit.finalproject.dto.ResponseDto;
-import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 
 import com.bit.finalproject.entity.Feed;
-import com.bit.finalproject.entity.Hashtag;
+
 import com.bit.finalproject.service.FeedLikeService;
 import com.bit.finalproject.service.FeedService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 
-import java.net.URI;
+
 import java.util.List;
 
 
@@ -267,6 +266,33 @@ public class FeedController {
 //
 //        return ResponseEntity.ok(feed);
 //    }
+
+    // ------- //
+    // 옮길 코드 //
+    // ------- //
+    @GetMapping("/my-page")
+    public ResponseEntity<?> getFeedsByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDto<List<FeedDto>> responseDto = new ResponseDto<>();
+
+        try{
+            Long userId = customUserDetails.getUser().getUserId();
+
+            System.out.println(userId);
+
+            List<FeedDto> feedList = feedService.getFeedsByUserId(userId);
+
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Feed list retrieved successfully.");
+            responseDto.setItem(feedList);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e){
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage("Failed to retrieve Feed list: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
+    }
 
 
 }

@@ -21,7 +21,7 @@ public class UserDto {
     private String nickname;
     private String tel;
     private LocalDateTime lastLoginDate;
-    private String PhoneNumber;
+
     private UserStatus userStatus;
     private String profileImage;
     private String role;

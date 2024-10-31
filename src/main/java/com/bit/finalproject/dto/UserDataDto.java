@@ -3,7 +3,7 @@ package com.bit.finalproject.dto;
 import com.bit.finalproject.entity.*;
 import lombok.*;
 
-import java.util.List;
+
 
 @Getter
 @Setter
@@ -18,13 +18,14 @@ public class UserDataDto {
     private UserStatus userStatus;
     private String profileImage;
     private String token;
-    private String phoneNumber;
+    private String tel;
+
 
     @Builder.Default
     private boolean active = true;
 
-    private Long memberDetailId;      // camelCase로 변경
-    private Long memberId;            // camelCase로 변경
+    private Long userDetailId;      // camelCase로 변경
+    private Long userIdchek;            // camelCase로 변경
     private String gender;
     private String birthDate;          // camelCase로 변경
     private String usingTitle;         // camelCase로 변경
@@ -50,22 +51,13 @@ public class UserDataDto {
         this.userStatus = userDto.getUserStatus();
         this.profileImage = userDto.getProfileImage();
         this.token = userDto.getToken();  // 필요시 추가
-        this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
-        this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
+        this.userDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
+        this.userIdchek = userDetailDto.getUserId();  // camelCase로 변경
         this.gender = userDetailDto.getGender();
-        this.phoneNumber = userDto.getPhoneNumber();  // camelCase로 변경
+        this.tel = userDto.getTel();  // camelCase로 변경
         this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경
-        this.usingTitle = userDetailDto.getUsingTitle();  // camelCase로 변경
         this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
-        this.favoriteExercise = userDetailDto.getFavoriteExercise();
-        this.favoriteExercisePlen = userDetailDto.getFavoriteExercisePlen();
 
-        // 운동 관련 기록 필드 초기화
-        this.totalWeightLifted = userDetailDto.getTotalWeightLifted();
-        this.totalMountainsClimbed = userDetailDto.getTotalMountainsClimbed();
-        this.consecutiveWorkoutDays = userDetailDto.getConsecutiveWorkoutDays();
-        this.yogaSessionsCompleted = userDetailDto.getYogaSessionsCompleted();
-        this.totalDistanceCovered = userDetailDto.getTotalDistanceCovered();
 
         this.followerCount = userDetailDto.getFollowerCount(); // 팔로워 수 초기화
         this.followingCount = userDetailDto.getFollowingCount(); // 팔로잉 수 초기화
