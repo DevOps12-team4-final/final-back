@@ -1,16 +1,17 @@
 package com.bit.finalproject.entity;
 
-import com.bit.finalproject.dto.MemberDto;
+import com.bit.finalproject.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 // JPA 엔티티임을 나타내는 어노테이션, DB테이블과 매핑시킨다.
 @Entity
 @SequenceGenerator(
-        name = "memberSeqGenerator",
-        sequenceName = "MEMBER_SEQ",
+        name = "userSeqGenerator",
+        sequenceName = "USER_SEQ",
         initialValue = 1,
         allocationSize = 1
 )
@@ -20,22 +21,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 // 엔티티가 매핑될 DB테이블 이름을 지정하는 어노테이션이다, 만약에 생략되면 클래스이름으로 매핑된다.
-// @Table(name = "member1")
-public class Member {
+// @Table(name = "user1")
+public class User {
 
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "memberSeqGenerator"
+            generator = "userSeqGenerator"
     )
-    private Long UserId;
+    private Long userId;
 
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String email;
     private String password;
     private String username; // 이름
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String nickname; // 닉네임
+    @Column(unique=true)
+    private String tel;
     private LocalDateTime regdate; // 등록일
     private LocalDateTime moddate; // 수정일
     @Column(name = "last_login_date")
@@ -52,13 +55,18 @@ public class Member {
     private String profileImage;
     private String role;
 
-    public MemberDto toDto() {
-        return MemberDto.builder()
-                .UserId(this.UserId)
+    // 한 명의 회원이 여러 개의 좋아요를 가질 수 있는 관계 설정
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedLike> likes;  // 사용자가 누른 좋아요 리스트
+
+    public UserDto toDto() {
+        return UserDto.builder()
+                .userId(this.userId)
                 .email(this.email)
                 .password(this.password)
                 .username(this.username)
                 .nickname(this.nickname)
+                .tel(this.tel)
                 .lastLoginDate(this.lastLoginDate)
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
