@@ -36,18 +36,18 @@ public class AlarmConsumer {
         Long url = Long.parseLong(parts[3]);// 경로: roomId ,feedId, profileId
 
 
-        List<Follow> list = followRepository.findAllByFollower_UserId(user_id);
+        List<Follow> list = followRepository.findAllByFollowing_UserId(user_id);
         for (Follow follow : list) {
              //type 별로 쪼개기
              Long target_id =follow.getFollower().getUserId();
              String nickname =  follow.getFollower().getNickname();
              String profile =  follow.getFollower().getProfileImage();
-             String jsonMessage = String.format("{\"message\":\"%s\", " +
-                                                "\"type\":\"%s\", " +
-                                                "\"nickname\":%s, " +
-                                                "\"profile\":%s, " +
-                                                "\"url\":%d}",
-                                        chatMessage, type, nickname, profile, url);
+            String jsonMessage = String.format("{\"message\":\"%s\", " +
+                            "\"type\":\"%s\", " +
+                            "\"nickname\":\"%s\", " +
+                            "\"profile\":\"%s\", " +
+                            "\"url\":%d}",
+                    chatMessage, type, nickname, profile, url);
             String way = String.format("/topic/alarm/%s",target_id);
             messagingTemplate.convertAndSend(way,jsonMessage);
         }
@@ -63,7 +63,7 @@ public class AlarmConsumer {
         String chatMessage = parts[2]; //이미지 url
         Long url = Long.parseLong(parts[3]);// 경로: roomId ,feedId, profileId
         //보내야될 팔로워들 id 목록
-        List<Follow> list = followRepository.findAllByFollower_UserId(user_id);
+        List<Follow> list = followRepository.findAllByFollowing_UserId(user_id);
         for (Follow follow : list) {
             //type 별로 쪼개기
             Long target_id =follow.getFollower().getUserId();
@@ -71,33 +71,22 @@ public class AlarmConsumer {
             String profile =  follow.getFollower().getProfileImage();
             String JsonMessage = String.format("{\"message\":\"%s\", " +
                             "\"type\":\"%s\", " +
-                            "\"nickname\":%s, " +
-                            "\"profile\":%s, " +
+                            "\"nickname\":\"%s\", " +
+                            "\"profile\":\"%s\", " +
                             "\"url\":%d}",
                     chatMessage, type, nickname, profile, url);
             notificationRepository.save(Notification.builder()
-                            .alarmUserId(user_id)
-                            .alarmTargetId(target_id)
-                            .alarmType(type)
-                            .alarmContent(JsonMessage)
-                            .createdAlarmTime(LocalDateTime.now())
-                            .isRead(false)
+                            .userId(target_id)
+                            .senderId(user_id)
+                            .url(url)
+                            .type(type)
+                            .createdAt(LocalDateTime.now())
+                            .message(JsonMessage)
                             .build());
         }
     }
 
 
-    @KafkaListener(topics = "chat-topic", groupId = "alarm_id")
-    public void sendChatAlarm(String message) {
-        System.out.println(message);
-        String[] parts = message.split(":", 4);
-        Long roomId = Long.parseLong(parts[0]);
-        String type = parts[1];
-        Long user_id = Long.parseLong(parts[2]);
-        String chatMessage = parts[3];
-        String jsonMessage = String.format("{\"message\":\"%s\", \"type\":\"%s\", \"user_id\":%d}", chatMessage, type, user_id);
-        String way = String.format("/topic/alarm/%s",user_id);
-        messagingTemplate.convertAndSend(way,jsonMessage);
-    }
+
 
 }

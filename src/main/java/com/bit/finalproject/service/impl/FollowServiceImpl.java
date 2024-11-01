@@ -30,33 +30,32 @@ public class FollowServiceImpl implements FollowService {
     @Override
     // 팔로우 기능
     @CacheEvict(value = {"followers", "followings"}, allEntries = true)
-    public void follow(Long memberId, Long userId) {
-        // memberId와 userId로 User 엔티티를 조회합니다. (팔로우하는 사람과 팔로우되는 사람)
-        User follower = userRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다: " + memberId));
+    public void followUser(Long followerId, Long followingId) {
 
-        User following = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로잉할 사용자를 찾을 수 없습니다: " + userId));
+        // 1. 중복된 팔로우 관계 확인
+        boolean isAlreadyFollowing = followRepository.existsByFollower_UserIdAndFollowing_UserId(followerId, followingId);
+        if(isAlreadyFollowing){
+            throw new IllegalArgumentException("이미 팔로우 중입니다.");
+        }
 
-        // Follow 엔티티를 생성합니다.
-        Follow follow = Follow.builder()
-                .follower(follower)  // 팔로워 설정
-                .following(following) // 팔로우 대상 설정
-                .build();
+        // 2. 사용자 정보 조회
+        User follower = userRepository.findById(followerId).orElseThrow(
+                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
+        User following = userRepository.findById(followingId).orElseThrow(
+                () -> new IllegalArgumentException("팔로우할 사용자를 찾을 수 없습니다.")
+        );
 
-        // 팔로우 관계를 저장합니다.
+        // 3. Follow 엔티티에 저장(DB 저장)
+        Follow follow = new Follow();
+        follow.setFollower(follower);
+        follow.setFollowing(following);
         followRepository.save(follow);
-        //Room맴버에 추가합니다
-        roomMemberRepository.save(RoomMember.builder()
-                        .user(follower)
-                        .room(roomRepository.findByUserId(userId))
-                .build());
-
         kafkaTemplate.send("alarm-topic", "%d:%s:%s:%d:"
-                .formatted(memberId,
+                .formatted(followerId,
                         "FOLLOW",
                         "follow",
-                        userId
+                        followingId
                 )
         );
 
@@ -65,56 +64,20 @@ public class FollowServiceImpl implements FollowService {
     @Override
     // 언팔로우 기능
     @CacheEvict(value = {"followers", "followings"}, allEntries = true)
-    public void unfollow(Long memberId, Long userId) {
-        // memberId와 userId로 팔로우 관계를 조회합니다.
-        User follower = userRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로워를 찾을 수 없습니다: " + memberId));
+    public void unfollowUser(Long followerId, Long followingId) {
 
-        User following = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상을 찾을 수 없습니다: " + userId));
-
-        // Follow 엔티티를 조회합니다.
-        Follow follow = (Follow) followRepository.findByFollowerAndFollowing(follower, following)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 존재하지 않습니다."));
-
-        // 팔로우 관계를 삭제합니다.
-        followRepository.delete(follow);
-
+        System.out.println(followerId);
+        System.out.println(followingId);
+        if(followRepository.existsByFollower_UserIdAndFollowing_UserId(followerId, followingId)){
+            followRepository.deleteByFollower_UserIdAndFollowing_UserId(followerId, followingId);
+        } else{
+            throw new IllegalArgumentException("팔로우 관계가 아닙니다.");
+        }
         //Room맴버에서 제거합니다
-        roomMemberRepository.deleteByRoomIdAndUserUserId(roomRepository.findByUserId(userId).getId(), memberId);
+        roomMemberRepository.deleteByRoomIdAndUserUserId(roomRepository.findByUserId(followingId).getId(), followerId);
     }
 
 
-    // 팔로우하는 사람 목록 조회
-    @Override
-    @Cacheable(value = "followers", key = "#userId")
-    public List<FollowDto> getFollowers(Long userId) {
-        // 특정 사용자를 팔로우하는 모든 팔로워 조회
-        return followRepository.findAllByFollowing_UserId(userId).stream()
-                .map(follow -> FollowDto.builder()
-                        .followerId(follow.getFollower().getUserId())           // 팔로워의 ID
-                        .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
-                        .followingId(follow.getFollowing().getUserId())         // 팔로잉 대상의 ID
-                        .followingName(follow.getFollowing().getUsername())     // 팔로잉 대상의 이름
-                        .followingNameprofileImage(follow.getFollowing().getProfileImage())
-                        .build())
-                .collect(Collectors.toList());  // DTO 리스트로 변환 후 반환
-    }
 
-
-    @Override
-    @Cacheable(value = "followings", key = "#userId")
-    public List<FollowDto> getFollowings(Long userId) {
-        // 특정 사용자가 팔로우하는 모든 사용자 조회
-        return followRepository.findAllByFollowing_UserId(userId).stream()
-                .map(follow -> FollowDto.builder()
-                        .followerId(follow.getFollower().getUserId())           // 팔로워의 ID
-                        .followerName(follow.getFollower().getUsername())       // 팔로워의 이름
-                        .followingId(follow.getFollowing().getUserId())         // 팔로잉 대상의 ID
-                        .followingName(follow.getFollowing().getUsername())     // 팔로잉 대상의 이름
-                        .followingNameprofileImage(follow.getFollowing().getProfileImage())
-                        .build())
-                .collect(Collectors.toList());  // DTO 리스트로 변환 후 반환
-    }
 
 }

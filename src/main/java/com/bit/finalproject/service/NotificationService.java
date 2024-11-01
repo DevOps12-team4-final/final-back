@@ -24,10 +24,6 @@ public interface NotificationService {
      */
     NotificationDto createNotification(NotificationDto notificationDto);
 
-    /**
-     * 특정 알림을 읽음 상태로 표시합니다.
-     *
-     * @param notificationId 읽음 상태로 변경할 알림의 ID
-     */
-    void markNotificationAsRead(Long notificationId);
+
+    void markNotificationAsRead(Long userId,Long url ,String type);
 }

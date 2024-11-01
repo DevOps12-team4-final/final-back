@@ -1,7 +1,7 @@
 package com.bit.finalproject.dto;
 
-import com.bit.finalproject.entity.UserStatus;
 import com.bit.finalproject.entity.User;
+import com.bit.finalproject.entity.UserStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,21 +21,12 @@ public class UserDto {
     private String nickname;
     private String tel;
     private LocalDateTime lastLoginDate;
-    private String PhoneNumber;
     private UserStatus userStatus;
     private String profileImage;
     private String role;
     private String token;
 
-
-
-
-
-    private LocalDateTime deletedAt; // 삭제 요청 시간
-    private UserDetailDto memberDetail;  // MemberDetailDto 포함
-
-    // MemberDto를 Member 엔티티로 변환하는 메서드
-    public User toEntity() {
+    public User toEntity(){
         return User.builder()
                 .userId(this.userId)
                 .email(this.email)
@@ -47,9 +38,6 @@ public class UserDto {
                 .userStatus(this.userStatus)
                 .profileImage(this.profileImage)
                 .role(this.role)
-                .deletedAt(this.deletedAt)
-                // MemberDetailDto가 null이 아닌 경우에만 엔티티로 변환
-                .userDetail(this.memberDetail != null ? this.memberDetail.toEntity() : null)
                 .build();
     }
 }

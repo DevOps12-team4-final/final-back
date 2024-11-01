@@ -55,6 +55,7 @@ dependencies {
 
     // Jackson을 사용한 JSON 처리를 위해 추가
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+    implementation 'org.springframework.cloud:spring-cloud-openfeign-core:2.2.3.RELEASE'
 
     // AWS 서비스와의 통합을 쉽게 해주는 다양한 기능을 제공합니다.
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'

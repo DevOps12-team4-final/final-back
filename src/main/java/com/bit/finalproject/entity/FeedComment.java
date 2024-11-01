@@ -63,6 +63,8 @@ public class FeedComment {
     public FeedCommentDto toDto(){
         return FeedCommentDto.builder()
                 .commentId(commentId)
+                .userId(user.getUserId())
+                .profileImage(user.getProfileImage())
                 .feedId(feed.getFeedId())
                 .parentCommentId(parentCommentId)
                 .comment(comment)

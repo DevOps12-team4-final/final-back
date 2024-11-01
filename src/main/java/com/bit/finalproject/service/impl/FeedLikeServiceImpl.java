@@ -29,8 +29,6 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     private final FeedLikeRepository feedLikeRepository;
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
-    @Autowired
-    private NotificationServiceImpl notificationService;
     private  final KafkaTemplate<String, String> kafkaTemplate;
 
     // 좋아요 추가

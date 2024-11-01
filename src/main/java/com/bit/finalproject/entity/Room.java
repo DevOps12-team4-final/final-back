@@ -38,7 +38,7 @@ public class Room {
     private  String description;
     private String profileImg; // 일단 주인장 프로필 이미지 챙겨오기
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;  // 방 주인
 

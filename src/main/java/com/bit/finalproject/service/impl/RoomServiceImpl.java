@@ -6,12 +6,16 @@ import com.bit.finalproject.common.FileUtils;
 import com.bit.finalproject.dto.RoomChatDto;
 import com.bit.finalproject.dto.RoomDto;
 import com.bit.finalproject.entity.Room;
+import com.bit.finalproject.entity.RoomChat;
 import com.bit.finalproject.repository.RoomChatRepository;
 import com.bit.finalproject.repository.RoomMemberRepository;
 import com.bit.finalproject.repository.RoomRepository;
 import com.bit.finalproject.service.RoomService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ListOperations;
@@ -20,6 +24,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 
@@ -30,10 +35,10 @@ public class RoomServiceImpl implements RoomService {
 
     private  final RoomRepository roomRepository;
     private  final KafkaTemplate<String, String> kafkaTemplate;
-    private final RoomChatRepository roomChatRepository;
-    private final RoomMemberRepository roomMemberRepository;
     private final ChatFileUtils fileUtils;
     private final RedisTemplate<String, RoomChatDto> redisTemplate;
+    private  final RoomChatRepository roomChatRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Page<RoomDto> getRooms(String searchKeyword, Pageable pageable) {
@@ -90,30 +95,36 @@ public class RoomServiceImpl implements RoomService {
         List<RoomChatDto> chatList =null;
         try {
             String type = redisTemplate.type("chat:" + roomId).toString();
-            System.out.println(type);
             if(type.equals("STRING")){
                 redisTemplate.delete("chat:" + roomId);
             }
             chatList = listOps.range("chat:" + roomId, 0, -1);
+            System.out.println(chatList);
         }catch (Exception e){
             System.out.println(e.getMessage());
+        }
+
+        //없거나 조건 불만족
+        if(chatList == null || chatList.isEmpty()) {
+            System.out.println("No data in room current");
+            chatList =roomChatRepository.findByRoom_id(roomId).stream().map(RoomChat::toDto).toList();
+            listOps.rightPushAll("chat:" + roomId, chatList);
         }
 
         //chatList 필터링  주인인지 일반인지
         Long masterId =room.getUser().getUserId();
         if (!masterId.equals(userId) && chatList != null) {
             // 일반 사용자일 경우 자신과 주인 간의 채팅만 필터링
+            System.out.println("SADSADSA");
             chatList = chatList.stream()
-                    .filter(chat -> chat.getUserId().equals(userId) || chat.getUserId().equals(masterId))
+                    .filter(chatDto -> chatDto!= null &&
+                            chatDto.getUserId() != null &&
+                            (chatDto.getUserId().equals(userId) || chatDto.getUserId().equals(masterId)))
                     .toList();
+            System.out.println("SADSADSA");
         }
 
-        //없거나 조건 불만족
-        if(chatList == null || chatList.isEmpty()) {
-            System.out.println("No data in room current");
-            //chatList =roomChatRepository.findByRoom_id(roomId).stream().map(RoomChat::toDto).toList();
-            //listOps.rightPushAll("chat:" + roomId, chatList);
-        }
+
 
         return chatList;
     }
@@ -121,15 +132,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto joinRoom(long roomId, long userId) {
         //참여조건 확인하고 향후 구현
-
         boolean flag = true;
-        //메세지 제작
-        if (flag) {
-            System.out.println("TEST JOIN");
-            String message = "%s 님이 참여 했습니다.".formatted(userId);
-            kafkaTemplate.send("chat-topic" ,"%s:join:%s:%s".formatted(roomId, userId, message));
-            //return roomRepository.findById(roomId).orElseThrow().toDto();
-        }
         return null;
     }
 

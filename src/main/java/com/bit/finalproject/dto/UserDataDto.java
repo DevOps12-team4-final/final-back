@@ -53,7 +53,7 @@ public class UserDataDto {
         this.memberDetailId = userDetailDto.getDetailId();  // UserDetailDto에서 ID 가져오기
         this.memberId = userDetailDto.getMemberId();  // camelCase로 변경
         this.gender = userDetailDto.getGender();
-        this.phoneNumber = userDto.getPhoneNumber();  // camelCase로 변경
+        this.phoneNumber = userDto.getTel();  // camelCase로 변경
         this.birthDate = userDetailDto.getBirthDate();  // camelCase로 변경
         this.usingTitle = userDetailDto.getUsingTitle();  // camelCase로 변경
         this.statusMessage = userDetailDto.getStatusMessage();  // camelCase로 변경
