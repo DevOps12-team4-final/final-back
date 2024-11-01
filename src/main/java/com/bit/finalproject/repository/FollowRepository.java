@@ -4,6 +4,7 @@ import com.bit.finalproject.entity.Follow;
 import com.bit.finalproject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // 팔로우 관계 삭제 (Follower와 Followee의 User ID 사용)
     void deleteByFollower_UserIdAndFollowing_UserId(Long followerId, Long followingId);
+
+    @Query("SELECT f.following.userId FROM Follow f WHERE f.follower.userId = :userId")
+    List<Long> findFollowingUserIdsByFollowerUserId(@Param("userId") Long userId);
 
     // 팔로워의 User ID로 모든 팔로우 관계 조회
     List<Follow> findAllByFollower_UserId(Long followerId);

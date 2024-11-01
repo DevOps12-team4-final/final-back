@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.entity;
+package com.bit.finalproject.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

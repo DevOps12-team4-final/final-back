@@ -1,8 +1,8 @@
-package com.bit.boardappbackend.dto;
+package com.bit.finalproject.dto;
 
 
-import com.bit.boardappbackend.entity.Room;
-import com.bit.boardappbackend.entity.RoomMember;
+import com.bit.finalproject.entity.Room;
+import com.bit.finalproject.entity.RoomMember;
 import lombok.*;
 
 @Getter

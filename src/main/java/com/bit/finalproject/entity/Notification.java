@@ -20,40 +20,37 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notificationId")  // Primary Key
-    private Long notificationId;
+    private Long id;
 
-    @Column(name = "alarmUserId", nullable = false)  // 알람 대상 사용자 ID
-    private Long alarmUserId;
+    private Long userId;
 
-    @Column(name = "alarmContent", nullable = false)  // 알람 내용
-    private String alarmContent;
+    private String type;
 
-    @Column(name = "alarmTargetId", nullable = false)  // 알람 대상 ID (댓글이나 게시물)
-    private Long alarmTargetId;
+    private String message;
 
-    // 알람 타입 (댓글, 댓글 좋아요, 게시물 등)
-    @Column(name = "alarmType", nullable = false)
-    private String alarmType;
+    private Long url;
+
+    private Long senderId;
+;
+    private LocalDateTime createdAt;
+
+
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAlarmTime; // 알림 생성 시간
 
-    // 알림을 읽었는지 여부를 저장 (알림이 읽혔는지 확인하기 위해 사용)
-    @Column(nullable = false)
-    private boolean isRead;
-
 
     // NotificationDto로 변환하는 메서드 수정
     public NotificationDto toDto() {
         return NotificationDto.builder()
-                .alarmUserId(this.alarmUserId)  // 알림을 받은 사용자 ID
-                .alarmContent(this.alarmContent)  // 알림 내용
-                .alarmTargetId(this.alarmTargetId)  // 알림 대상 ID (댓글이나 게시물)
-                .alarmType(this.alarmType)  // 알림 유형 (댓글, 좋아요 등)
-                .createdAlarmTime(this.createdAlarmTime)  // 알림 생성 시간
-                .isRead(this.isRead)  // 알림이 읽혔는지 여부
+                .id(id)
+                .userId(userId)
+                .type(type)
+                .message(message)
+                .url(url)
+                .senderId(senderId)
+                .createdAt(createdAt)
                 .build();
     }
 }

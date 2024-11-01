@@ -6,6 +6,7 @@ import com.bit.finalproject.entity.Feed;
 import com.bit.finalproject.entity.FeedLike;
 
 import com.bit.finalproject.entity.User;
+import com.bit.finalproject.repository.FeedCommentRepository;
 import com.bit.finalproject.repository.FeedLikeRepository;
 import com.bit.finalproject.repository.FeedRepository;
 import com.bit.finalproject.repository.UserRepository;
@@ -13,6 +14,9 @@ import com.bit.finalproject.service.FeedLikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,11 +29,11 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     private final FeedLikeRepository feedLikeRepository;
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
-    @Autowired
-    private NotificationServiceImpl notificationService;
+    private  final KafkaTemplate<String, String> kafkaTemplate;
 
     // 좋아요 추가
     @Override
+    @CacheEvict(value = "likeCount", key = "#feedId")
     public void addLike(Long feedId, Long userId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid feedId:" + feedId));
@@ -47,39 +51,20 @@ public class FeedLikeServiceImpl implements FeedLikeService {
                 .user(user)
                 .build();
         feedLikeRepository.save(feedLike);
+        //kafka 로 보내기
+        kafkaTemplate.send("alarm-topic", "%d:%s:%s:%d:"
+                .formatted(userId,
+                        "FEED_LIKE",
+                        "feed_like",
+                        feedId
+                )
+        );
 
-        // 알림 생성 로직 추가
-        NotificationDto notificationDto = null;
-        try {
-            notificationDto = new NotificationDto(
-                    null,
-                    feed.getUser().getUserId(),  // 게시글 작성자에게 알림
-                    "게시글에 좋아요가 눌렸습니다.",
-                    feed.getFeedId(),  // 게시글 ID
-                    "FEED_LIKE",
-                    LocalDateTime.now(),
-                    false
-            );
-
-            notificationService.createNotification(notificationDto);
-        } catch (Exception e) {
-            log.error("알림 생성 중 오류 발생: {}", e.getMessage());
-        }
-
-        // 로그 기록
-        log.info("feed ID: {}", feed.getFeedId());
-        log.info("feed 작성자 ID: {}", feed.getUser().getUserId());
-        if (notificationDto != null) {
-            log.info("Alarm Content: {}", notificationDto.getAlarmContent());
-            log.info("Alarm Target ID: {}", notificationDto.getAlarmTargetId());
-            log.info("Alarm Type: {}", notificationDto.getAlarmType());
-            log.info("Created Alarm Time: {}", notificationDto.getCreatedAlarmTime());
-            log.info("Is Read: {}", notificationDto.isRead());
-        }
     }
 
     // 좋아요 삭제
     @Override
+    @CacheEvict(value = "likeCount", key = "#feedId")
     public void removeLike(Long feedId, Long userId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid boardId:" + feedId));
@@ -96,6 +81,7 @@ public class FeedLikeServiceImpl implements FeedLikeService {
 
     // 게시글의 좋아요 총 개수 가져오기
     @Override
+    @Cacheable(value = "likeCount", key = "#feedId")
     public int getLikeCount(Long feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid boardId:" + feedId));

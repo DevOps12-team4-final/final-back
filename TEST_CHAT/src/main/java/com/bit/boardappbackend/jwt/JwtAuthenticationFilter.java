@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.jwt;
+package com.bit.finalproject.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

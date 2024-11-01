@@ -1,7 +1,7 @@
-package com.bit.boardappbackend.config.readis;
+package com.bit.finalproject.config.readis;
 
-import com.bit.boardappbackend.dto.RoomChatDto;
-import com.bit.boardappbackend.entity.RoomChat;
+import com.bit.finalproject.dto.RoomChatDto;
+import com.bit.finalproject.entity.RoomChat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

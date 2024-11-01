@@ -5,7 +5,7 @@ import com.bit.finalproject.dto.NotificationDto;
 import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CommentLike;
 import com.bit.finalproject.entity.FeedComment;
-
+import com.bit.finalproject.entity.Notification;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.repository.CommentLikeRepository;
 import com.bit.finalproject.repository.FeedCommentRepository;
@@ -14,10 +14,14 @@ import com.bit.finalproject.service.CommentLikeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +37,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private FeedCommentRepository feedCommentRepository;
     private UserRepository userRepository;
     private NotificationServiceImpl notificationService;
+    private  final KafkaTemplate<String, String> kafkaTemplate;
 
 
     @Override
@@ -48,37 +53,18 @@ public class CommentLikeServiceImpl implements CommentLikeService {
             commentLike.setUser(user);
             commentLikeRepository.save(commentLike);
 
-
+            evictLikeCaches(commentId);
         } else {
             throw new IllegalStateException("Comment is already liked by user");
         }
-        // **여기서 알림 생성 로직을 추가합니다.**
-        NotificationDto notificationDto = null;
-        try {
-            notificationDto = new NotificationDto(
-                    null,
-                    feedComment.getUser().getUserId(),
-                    "댓글에 좋아요가 눌렸습니다.",
-                    feedComment.getCommentId(),
-                    "COMMENT_LIKE",
-                    LocalDateTime.now(),
-                    false
-
-            );
-
-            notificationService.createNotification(notificationDto);
-        } catch (Exception e) {
-            log.error("알림 생성 중 오류 발생: {}", e.getMessage());
-        }
-            log.info("feedComment ID: {}", feedComment.getCommentId());
-            log.info("feedComment 작성자 ID: {}", feedComment.getUser().getUserId());
-            if (notificationDto != null) {
-            log.info("Alarm Content: {}", notificationDto.getAlarmContent());
-            log.info("Alarm Target ID: {}", notificationDto.getAlarmTargetId());
-            log.info("Alarm Type: {}", notificationDto.getAlarmType());
-            log.info("Created Alarm Time: {}", notificationDto.getCreatedAlarmTime());
-            log.info("Is Read: {}", notificationDto.isRead());
-        }
+        // kafka 로 보내고 작업
+        kafkaTemplate.send("alarm-topic", "%d:%s:%s:%d:"
+                .formatted(userId,
+                        "COMMENT_LIKE",
+                        "like_comment",
+                        commentId
+                )
+        );
     }
 
     @Override
@@ -94,15 +80,18 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
         // 좋아요 취소
         commentLikeRepository.delete(commentLike);
+        evictLikeCaches(commentId);
     }
 
     @Override
+    @Cacheable(value = "likeCount", key = "#commentId")
     public Long getLikeCount(Long commentId) {
         // 댓글 ID로 좋아요 수를 가져옵니다.
         return commentLikeRepository.countByFeedCommentCommentId(commentId);
     }
 
     @Override
+    @Cacheable(value = "likedUsers", key = "#commentId")
     public List<User> getLikedUsers(Long commentId) {
         // 댓글 ID로 해당 댓글을 좋아요한 사용자 목록을 가져옵니다.
         List<CommentLike> commentLikes = commentLikeRepository.findByFeedCommentCommentId(commentId);
@@ -112,6 +101,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     }
 
     // 좋아요 수와 사용자 목록을 동시에 가져오는 메서드
+    @Cacheable(value = "likeData", key = "#commentId")
     public LikeDataDto getLikeCountAndUsers(Long commentId) {
         Long likeCount = commentLikeRepository.countByFeedCommentCommentId(commentId);
         List<UserDto> likedUsers = commentLikeRepository.findByFeedCommentCommentId(commentId)
@@ -131,6 +121,13 @@ public class CommentLikeServiceImpl implements CommentLikeService {
                 .likedUsers(likedUsers)
                 .build();
     }
+
+    // 캐시 삭제 메서드
+    @CacheEvict(value = {"likeCount", "likedUsers", "likeData"}, key = "#commentId")
+    public void evictLikeCaches(Long commentId) {
+        // 캐시 자동 삭제
+    }
+
 
 
 }

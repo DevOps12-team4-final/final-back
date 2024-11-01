@@ -3,7 +3,7 @@ package com.bit.finalproject.controller;
 
 import com.bit.finalproject.dto.StatisticsDto;
 import com.bit.finalproject.dto.UserDto;
-
+import com.bit.finalproject.entity.BanHistory;
 import com.bit.finalproject.entity.User;
 import com.bit.finalproject.service.BanHistoryService;
 import com.bit.finalproject.service.StatisticsService;
@@ -36,24 +36,30 @@ public class AdminPageController {
     // 사용자 목록 보기 (페이징 지원)
     @GetMapping("/list")
     public Page<User> getAllUsers(Pageable pageable) {
-        return userService.getAllUsers(pageable);
+        return null ;//userService.getAllUsers(pageable);
+    }
+
+    // 활성화 사용자수 보기 (페이징 지원)
+    @GetMapping("/activist")
+    public long getActivistAllUsers() {
+        return statisticsService.countActiveUsers();
     }
 
     // 사용자 검색
     @GetMapping("/search")
     public Page<User> searchUsers(@RequestParam String keyword, Pageable pageable) {
-        return userService.searchUsers(keyword, pageable);
+        return null ;//userService.searchUsers(keyword, pageable);
     }
 
     // 역할별 사용자 필터링
     @GetMapping("/filter")
     public Page<User> getUsersByRole(@RequestParam String role, Pageable pageable) {
-        return userService.getUsersByRole(role, pageable);
+        return null ;//userService.getUsersByRole(role, pageable);
     }
 
     @PutMapping("/ban/{id}")
     public UserDto banUser(@PathVariable Long id, @RequestParam Long banDays, String reason) {
-        UserDto bannedUser = userService.banUser(id);
+        UserDto bannedUser = null ;//userService.banUser(id);
 
         // 밴 성공 시 밴 기록과 기간 저장
         banHistoryService.addBanHistory(bannedUser.getUserId(), banDays, reason);

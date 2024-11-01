@@ -1,56 +1,67 @@
 package com.bit.finalproject.controller;
 
-import com.bit.finalproject.dto.FollowDto;
+import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
 import com.bit.finalproject.service.FollowService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/follow")
+@RequestMapping("/follows")
 @RequiredArgsConstructor
+@Slf4j
 public class FollowController {
+
     private final FollowService followService;
 
-    // 팔로우 API
-    @PostMapping("/follow/{UserId}")
-    public ResponseEntity<Void> follow(@PathVariable("UserId") long UserId, Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long memberId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
+    @PostMapping("/follow")
+    public ResponseEntity<?> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                    @RequestBody UserDto userDto) {
 
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
 
+        try{
+            Long followerId = customUserDetails.getUser().getUserId();
+            Long followingId = userDto.getUserId();
 
-        followService.follow(memberId ,UserId);
-        return ResponseEntity.ok().build();
+            followService.followUser(followerId, followingId);
+
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Following Successfully");
+
+            return ResponseEntity.ok(responseDto);
+        } catch(Exception e){
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
     }
 
-    // 언팔로우 API
-    @DeleteMapping("/follow/{UserId}")
-    public ResponseEntity<Void> unfollow(@PathVariable("UserId") long UserId, Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long memberId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
+    @DeleteMapping("/unfollow/{userId}")
+    public ResponseEntity<?> unfollow(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                      @PathVariable("userId") Long userId) {
 
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
+        System.out.println(userId);
+        try {
+            Long followerId = customUserDetails.getUser().getUserId();
 
+            System.out.println(followerId + " " + userId);
+            followService.unfollowUser(followerId, userId);
 
-        followService.follow(memberId ,UserId);
-        return ResponseEntity.ok().build();
-    }
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("Unfollowing Successfully");
 
-    // 팔로워 목록 조회 API
-    @GetMapping("/followers/{userId}")
-    public ResponseEntity<List<FollowDto>> getFollowers(@PathVariable Long userId) {
-        List<FollowDto> followers = followService.getFollowers(userId);
-        return ResponseEntity.ok(followers);
-    }
-
-    // 팔로우 목록 조회 API
-    @GetMapping("/followees/{userId}")
-    public ResponseEntity<List<FollowDto>> getFollowees(@PathVariable Long userId) {
-        List<FollowDto> followees = followService.getFollowings(userId);
-        return ResponseEntity.ok(followees);
+            return ResponseEntity.ok(responseDto);
+        } catch(Exception e){
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        }
     }
 }

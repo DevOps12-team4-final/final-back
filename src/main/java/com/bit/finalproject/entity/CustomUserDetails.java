@@ -1,6 +1,5 @@
 package com.bit.finalproject.entity;
 
-
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,8 +17,8 @@ import java.util.List;
 // UserDetails 인터페이스를 구현하여, Spring Security가 사용자 인증을 처리할 수 있도록 사용자 정보를 제공한다.
 // User 객체를 이용해 Email, password, authorities(권한)정보를 UserDetails로 변환해준다.
 public class CustomUserDetails implements UserDetails {
-
     private User user;
+    private Follow follow;
 
     private Collection<? extends GrantedAuthority> authorities;
 

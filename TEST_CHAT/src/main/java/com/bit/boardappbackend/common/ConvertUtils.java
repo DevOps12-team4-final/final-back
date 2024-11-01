@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.common;
+package com.bit.finalproject.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;

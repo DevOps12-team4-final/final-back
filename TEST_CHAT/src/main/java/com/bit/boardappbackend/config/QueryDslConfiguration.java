@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.config;
+package com.bit.finalproject.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

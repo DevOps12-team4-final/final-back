@@ -1,6 +1,6 @@
-package com.bit.boardappbackend.jwt;
+package com.bit.finalproject.jwt;
 
-import com.bit.boardappbackend.entity.User;
+import com.bit.finalproject.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

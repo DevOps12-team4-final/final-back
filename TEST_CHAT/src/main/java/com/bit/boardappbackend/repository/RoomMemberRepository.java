@@ -1,6 +1,6 @@
-package com.bit.boardappbackend.repository;
+package com.bit.finalproject.repository;
 
-import com.bit.boardappbackend.entity.RoomMember;
+import com.bit.finalproject.entity.RoomMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

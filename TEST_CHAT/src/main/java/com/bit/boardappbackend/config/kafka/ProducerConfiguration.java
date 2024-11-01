@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.config.kafka;
+package com.bit.finalproject.config.kafka;
 
 import org.apache.kafka.common.serialization.StringSerializer;
 

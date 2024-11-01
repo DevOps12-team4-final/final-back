@@ -1,29 +1,23 @@
 package com.bit.finalproject.controller;
 
-import com.bit.finalproject.common.FileUtils;
-import com.bit.finalproject.dto.*;
+import com.bit.finalproject.dto.ResponseDto;
+import com.bit.finalproject.dto.UserDetailDto;
+import com.bit.finalproject.dto.UserDto;
 import com.bit.finalproject.entity.CustomUserDetails;
-import com.bit.finalproject.entity.User;
+import com.bit.finalproject.service.CoolSmsService;
 import com.bit.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import com.bit.finalproject.dto.UserDto;
-import com.bit.finalproject.dto.ResponseDto;
-import com.bit.finalproject.service.CoolSmsService;
-
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 //@RestController는 내부적으로 @ResponseBody를 포함하고 있어
 //메서드의 반환 값을 뷰가 아닌 HTTP 응답 본문(body)으로 직렬화하여 클라이언트로 반환합니다.
@@ -37,7 +31,6 @@ public class UserController {
 
     private final UserService userService;
     private final CoolSmsService coolSmsService;
-    private final FileUtils fileUtils;
 
     // 로그인
     @PostMapping("/login")
@@ -62,6 +55,7 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
+
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserDto userDto) {
@@ -148,40 +142,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/my-page")
-    public ResponseEntity<?> getMyPage(Authentication authentication) {
-        ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
-
-        try {
-            // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Long userId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
-
-            // 사용자 ID를 이용해 마이페이지 정보 조회
-            UserDetailDto userDetailDto = userService.getmypage(userId);
-
-            // 팔로워 및 팔로잉 수 조회
-            int followerCount = userService.countFollowers(userId);  // 팔로워 수
-            int followingCount = userService.countFollowing(userId); // 팔로잉 수
-
-            // 팔로워 및 팔로잉 정보를 DTO에 추가
-            userDetailDto.setFollowerCount(followerCount);
-            userDetailDto.setFollowingCount(followingCount);
-
-            // 성공 응답 설정
-            responseDto.setStatusCode(HttpStatus.OK.value());
-            responseDto.setStatusMessage("ok");
-            responseDto.setItem(userDetailDto);
-            return ResponseEntity.ok(responseDto);
-
-        } catch (Exception e) {
-            // 에러 로그 출력 및 실패 응답 설정
-            log.error("Page Loading error: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDto.setStatusMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDto);
-        }
-    }
     // 전화번호 체크
     @PostMapping("/tel-check")
     public ResponseEntity<?> telCheck(@RequestBody UserDto userDto) {
@@ -202,38 +162,7 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
-    @GetMapping("/profile-page/{UserId}")
-    public ResponseEntity<?> getProfilePage(@PathVariable("UserId") long UserId) {
-        ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
 
-        try {
-            log.info("profile-page userId: {}", UserId);
-            // 전달된 UserId를 이용해 사용자 프로필 정보 조회
-            UserDetailDto userDataDto = userService.getprofilepage(UserId);
-
-
-            // 팔로워 및 팔로잉 수 조회
-            int followerCount = userService.countFollowers(UserId);  // 팔로워 수
-            int followingCount = userService.countFollowing(UserId); // 팔로잉 수
-
-            // 팔로워 및 팔로잉 정보를 DTO에 추가
-            userDataDto.setFollowerCount(followerCount);
-            userDataDto.setFollowingCount(followingCount);
-            // 성공 응답 설정
-            responseDto.setStatusCode(HttpStatus.OK.value());
-            responseDto.setStatusMessage("ok");
-
-            responseDto.setItem(userDataDto);
-            return ResponseEntity.ok(responseDto);
-
-        } catch (Exception e) {
-            // 에러 로그 출력 및 실패 응답 설정
-            log.error("Profile Loading error: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDto.setStatusMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDto);
-        }
-    }
     // 인증메일 전송
     @PostMapping("/send")
     public ResponseEntity<?> sendSms(@RequestBody UserDto userDto) {
@@ -252,101 +181,6 @@ public class UserController {
             responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             responseDto.setStatusMessage(e.getMessage());
             return ResponseEntity.internalServerError().body(responseDto);
-        }
-    }
-
-    @PatchMapping
-    public ResponseEntity<?> modify(
-            @RequestPart("userDto") UserDto userDto,  // 회원 기본 정보
-            @RequestPart("userDetailDto") UserDetailDto userDetailDto,
-            @RequestPart(value = "file", required = false) MultipartFile file,// 회원 상세 정보
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,  // 로그인된 사용자 정보
-            Authentication authentication) {  // 인증 정보 제공
-
-        ResponseDto<UserDataDto> responseDto = new ResponseDto<>();  // 응답 객체 초기화
-
-        try {
-            // 요청 받은 회원 정보 출력 (디버깅용 로그)
-            log.info("modify userDto: {}", userDto);
-            log.info("modify userDetailDto: {}", userDetailDto);
-            // 파일이 업로드 된다면 파일 처리 로직
-            if (file != null) {
-
-                    if (file.getOriginalFilename() != null &&
-                            !file.getOriginalFilename().equalsIgnoreCase("")) {
-                        fileUtils.deleteFile("User/",userDto.getProfileImage());
-                        FeedFileDto feedFileDto = fileUtils.parserFileInfo(file, "User/");
-                        // filestatus와 newfilename 설정
-                        // filestatus와 newfilename 설정
-                        feedFileDto.setFilestatus("uploaded");  // 파일이 업로드됨
-                        feedFileDto.setNewfilename(feedFileDto.getFilename());  // 새 파일명 설
-                        userDto.setProfileImage(feedFileDto.getFilepath());
-                    }
-
-            }
-            // 회원 기본 정보 수정
-            userService.modifyUser(userDto);  // 서비스에서 회원 기본 정보 수정
-
-            // 현재 로그인된 사용자 정보에서 user 추출
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            User user = userDetails.getUser();
-
-            // 회원 상세 정보 수정
-            userService.modifyUserDetail(user, userDetailDto);  // 서비스에서 회원 상세 정보 수정
-
-            // 수정된 회원 정보를 DTO로 변환하여 응답에 포함
-            UserDataDto updatedUserDataDto = new UserDataDto(userDto, userDetailDto);
-            updatedUserDataDto.setDataId(null); // 새로 생성된 경우 dataId는 null로 설정
-
-            // 성공 로그 출력
-            log.info("modify userDto: {}", userDto);
-            log.info("modify userDetailDto: {}", userDetailDto);
-
-            // 응답에 수정된 회원 정보를 포함
-            responseDto.setItem(updatedUserDataDto);  // 수정된 기본 정보와 상세 정보를 포함
-            responseDto.setStatusCode(HttpStatus.OK.value());  // 응답 코드 200 설정
-            responseDto.setStatusMessage("회원 정보가 성공적으로 수정되었습니다.");
-
-            return ResponseEntity.ok(responseDto);  // 200 OK 응답 반환
-
-        } catch (Exception e) {
-            // 예외 처리 및 에러 로그 출력
-            log.error("modify error: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());  // 응답 코드 500 설정
-            responseDto.setStatusMessage("서버 오류로 인해 회원 정보 수정에 실패했습니다: " + e.getMessage());
-
-            return ResponseEntity.internalServerError().body(responseDto);  // 500 에러 응답 반환
-        }
-    }
-
-    @DeleteMapping
-    public ResponseEntity<?> delete(Authentication authentication) {
-        ResponseDto<String> responseDto = new ResponseDto<>(); // 응답 객체 초기화
-
-        try {
-            // 현재 로그인된 사용자 정보 가져오기
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            User user = userDetails.getUser(); // user 객체 가져오기
-
-            // 회원 삭제 서비스 호출
-            userService.deleteUser(user.getUserId()); // 사용자 ID를 사용하여 삭제
-
-            // 성공 로그 출력
-            log.info("user with ID {} has been successfully marked as deleted.", user.getUserId());
-
-            // 응답 설정
-            responseDto.setStatusCode(HttpStatus.OK.value());
-            responseDto.setStatusMessage("회원 정보가 성공적으로 삭제 요청되었습니다.");
-
-            return ResponseEntity.ok(responseDto); // 200 OK 응답 반환
-
-        } catch (Exception e) {
-            // 예외 처리 및 에러 로그 출력
-            log.error("Error deleting user: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()); // 응답 코드 500 설정
-            responseDto.setStatusMessage("서버 오류로 인해 회원 삭제에 실패했습니다: " + e.getMessage());
-
-            return ResponseEntity.internalServerError().body(responseDto); // 500 에러 응답 반환
         }
     }
 
@@ -371,4 +205,41 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
+
+    @GetMapping("/my-page")
+    public ResponseEntity<?> getMyPage(Authentication authentication) {
+        ResponseDto<UserDetailDto> responseDto = new ResponseDto<>();
+
+        try {
+            // Authentication 객체에서 사용자 이메일(또는 username) 가져오기
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long userId = userDetails.getUser().getUserId(); // 사용자의 ID 가져오기
+
+            // 사용자 ID를 이용해 마이페이지 정보 조회
+            UserDetailDto userDetailDto = userService.getmypage(userId);
+
+
+            int followerCount = userService.countFollowers(userId);  // 팔로워 수
+            int followingCount = userService.countFollowing(userId); // 팔로잉 수
+
+            // 팔로워 및 팔로잉 정보를 DTO에 추가
+            userDetailDto.setFollowerCount(followerCount);
+            userDetailDto.setFollowingCount(followingCount);
+
+            // 성공 응답 설정
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(userDetailDto);
+            return ResponseEntity.ok(responseDto);
+
+        } catch (Exception e) {
+            // 에러 로그 출력 및 실패 응답 설정
+            log.error("Page Loading error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.kafka.producer;
+package com.bit.finalproject.kafka.producer;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import com.bit.finalproject.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -23,10 +27,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     UserDto findByUserId(Long userId);
     // ACTIVE 상태의 유저 목록을 가져오기
-    List<User> findByActiveTrue();
+    List<User> findByUserStatus(String status);
 
     // ACTIVE 상태의 유저 수를 계산
-    long countByActiveTrue();
+    long countByUserStatus(String status);
     // 총 사용자 수
     long count();
 

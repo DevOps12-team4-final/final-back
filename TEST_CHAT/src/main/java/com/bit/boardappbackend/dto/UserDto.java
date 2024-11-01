@@ -1,4 +1,4 @@
-package com.bit.boardappbackend.dto;
+package com.bit.finalproject.dto;
 
 import lombok.*;
 

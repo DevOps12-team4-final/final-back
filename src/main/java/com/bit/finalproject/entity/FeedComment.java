@@ -7,7 +7,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,6 +63,8 @@ public class FeedComment {
     public FeedCommentDto toDto(){
         return FeedCommentDto.builder()
                 .commentId(commentId)
+                .userId(user.getUserId())
+                .profileImage(user.getProfileImage())
                 .feedId(feed.getFeedId())
                 .parentCommentId(parentCommentId)
                 .comment(comment)

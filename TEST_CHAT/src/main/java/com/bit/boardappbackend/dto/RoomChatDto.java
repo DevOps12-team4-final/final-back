@@ -1,7 +1,7 @@
-package com.bit.boardappbackend.dto;
+package com.bit.finalproject.dto;
 
-import com.bit.boardappbackend.entity.Room;
-import com.bit.boardappbackend.entity.RoomChat;
+import com.bit.finalproject.entity.Room;
+import com.bit.finalproject.entity.RoomChat;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -50,39 +50,14 @@ public class NotificationController {
         return response;
     }
 
-//    /**
-//     * 새로운 알림을 생성하는 API입니다.
-//     *
-//     * @param notificationDto 알림 생성에 필요한 데이터를 포함한 DTO
-//     * @return 생성된 알림을 포함한 ResponseDto
-//     */
-//    @PostMapping("/create")
-//    public ResponseDto<NotificationDto> createNotification(@RequestBody NotificationDto notificationDto) {
-//        ResponseDto<NotificationDto> response = new ResponseDto<>();
-//        try {
-//            NotificationDto createdNotification = notificationService.createNotification(notificationDto);
-//            response.setItem(createdNotification);
-//            response.setStatusCode(200);
-//            response.setStatusMessage("알림이 성공적으로 생성되었습니다.");
-//        } catch (Exception e) {
-//            response.setItem(null);
-//            response.setStatusCode(500);
-//            response.setStatusMessage("알림 생성에 실패했습니다.");
-//        }
-//        return response;
-//    }
 
-    /**
-     * 특정 알림을 읽음 상태로 변경하는 API입니다.
-     *
-     * @param notificationId 읽음 상태로 변경할 알림의 ID
-     * @return 성공 여부를 나타내는 메시지 포함한 ResponseDto
-     */
-    @PutMapping("/{notificationId}/read")
-    public ResponseDto<Void> markNotificationAsRead(@PathVariable Long notificationId) {
+    @DeleteMapping
+    public ResponseDto<Void> markNotificationAsRead(Long userId,
+                                                    Long url,
+                                                    String type ) {
         ResponseDto<Void> response = new ResponseDto<>();
         try {
-            notificationService.markNotificationAsRead(notificationId);
+            notificationService.markNotificationAsRead(userId,url,type);
             response.setStatusCode(200);
             response.setStatusMessage("알림이 읽음 처리되었습니다.");
         } catch (Exception e) {
